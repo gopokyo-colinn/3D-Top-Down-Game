@@ -8,23 +8,27 @@ public class PlayerController : MonoBehaviour
     Animator anim;
     public float speed;
     public float speedMultiplier = 1.5f;
+    const float shieldWalkSpeedDivision = 0.5f;
 
     float horizontal;
     float vertical;
     Vector3 lastFacinDirection;
-
+    [HideInInspector]
+    public bool isShielding;
     bool isSprinting;
+    
     // Start is called before the first frame update
     void Start()
     {
         controller = GetComponent<CharacterController>();
-        anim = GetComponent<Animator>();
+        anim = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
         DirectionalMovement();
+        UseShield();
     }
 
     void DirectionalMovement()
@@ -33,18 +37,20 @@ public class PlayerController : MonoBehaviour
         vertical = -Input.GetAxis("Vertical");
 
         anim.SetBool("isSprinting", isSprinting);
+        anim.SetFloat("walkDir", (horizontal * vertical > 0) ? -1 : 1) ;
 
         if (horizontal != 0 || vertical != 0)
         {
             anim.SetFloat("moveVelocity", 1f);
 
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetButton("Sprint") && !isShielding)
                 isSprinting = true;
             else
                 isSprinting = false;
 
-            if (Mathf.Abs(horizontal) > 0.2f || Mathf.Abs(vertical) > 0.2f)
-                lastFacinDirection = new Vector3(horizontal, 0f, vertical);
+            if (!isShielding)
+                if (Mathf.Abs(horizontal) > 0.2f || Mathf.Abs(vertical) > 0.2f)
+                    lastFacinDirection = new Vector3(horizontal, 0f, vertical);
         }
         else
         {
@@ -56,8 +62,21 @@ public class PlayerController : MonoBehaviour
 
         if (isSprinting)
             controller.Move(new Vector3(horizontal, 0, vertical).normalized * speed * speedMultiplier * Time.deltaTime /** Time.deltaTime*/);
+        else if(isShielding)
+            controller.Move(new Vector3(horizontal, 0, vertical).normalized * shieldWalkSpeedDivision * speedMultiplier * Time.deltaTime /** Time.deltaTime*/);
         else
             controller.Move(new Vector3(horizontal, 0, vertical).normalized * speed * Time.deltaTime /** Time.deltaTime*/);
+    }
+
+    void UseShield()
+    {   
+        if (Input.GetButton("Shield"))
+        {
+            isShielding = true;
+        }
+        else
+            isShielding = false;
+        anim.SetBool("isShielding", isShielding);
     }
     
 }
