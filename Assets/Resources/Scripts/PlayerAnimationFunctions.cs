@@ -14,6 +14,7 @@ public class PlayerAnimationFunctions : MonoBehaviour
     private void Start()
     {
         player = GetComponentInParent<PlayerController>();
+        Debug.Log("worked");
     }
     void ShieldParentCheck()
     {
