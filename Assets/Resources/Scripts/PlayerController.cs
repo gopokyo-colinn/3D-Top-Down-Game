@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     {
         DirectionalMovement();
         UseShield();
+        DrawSword();
     }
 
     void DirectionalMovement()
@@ -77,6 +78,17 @@ public class PlayerController : MonoBehaviour
         else
             isShielding = false;
         anim.SetBool("isShielding", isShielding);
+    }
+
+    void DrawSword()
+    {
+        if (Input.GetButton("Attack"))
+        {
+            anim.SetBool("draw_Sword", true);
+        }
+        else
+            anim.SetBool("draw_Sword", false);
+
     }
     
 }
