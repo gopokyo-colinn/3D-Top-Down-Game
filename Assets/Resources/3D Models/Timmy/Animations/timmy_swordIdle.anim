@@ -19,7 +19,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: {x: -4.214, y: -258.19098, z: -117.537}
+        value: {x: -30.113, y: -241.88199, z: -132.453}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
@@ -36,7 +36,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: {x: 0.336, y: -0.137, z: 0.331}
+        value: {x: 0.307, y: -0.072, z: 0.344}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
@@ -1430,7 +1430,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.36
+        value: 0.24
         inSlope: -0.029590575
         outSlope: -0.029590575
         tangentMode: 0
@@ -1468,7 +1468,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -0.15440735
+        value: -0.12
         inSlope: 0.22050528
         outSlope: 0.22050528
         tangentMode: 0
@@ -1487,7 +1487,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.35
+        value: 0.42
         inSlope: -0.2926835
         outSlope: -0.2926835
         tangentMode: 0
@@ -1544,9 +1544,9 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -0.54
-        inSlope: 0
-        outSlope: 0
+        value: -0.55
+        inSlope: -0.6903433
+        outSlope: -0.6903433
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
@@ -2913,6 +2913,13 @@ AnimationClip:
       isPPtrCurve: 0
     - serializedVersion: 2
       path: 0
+      attribute: 88
+      script: {fileID: 0}
+      typeID: 95
+      customType: 8
+      isPPtrCurve: 0
+    - serializedVersion: 2
+      path: 0
       attribute: 89
       script: {fileID: 0}
       typeID: 95
@@ -3327,13 +3334,6 @@ AnimationClip:
     - serializedVersion: 2
       path: 0
       attribute: 60
-      script: {fileID: 0}
-      typeID: 95
-      customType: 8
-      isPPtrCurve: 0
-    - serializedVersion: 2
-      path: 0
-      attribute: 88
       script: {fileID: 0}
       typeID: 95
       customType: 8
@@ -4881,7 +4881,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.36
+        value: 0.24
         inSlope: -0.029590575
         outSlope: -0.029590575
         tangentMode: 0
@@ -4919,7 +4919,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -0.15440735
+        value: -0.12
         inSlope: 0.22050528
         outSlope: 0.22050528
         tangentMode: 0
@@ -4938,7 +4938,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.35
+        value: 0.42
         inSlope: -0.2926835
         outSlope: -0.2926835
         tangentMode: 0
@@ -4995,9 +4995,9 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -0.54
-        inSlope: 0
-        outSlope: 0
+        value: -0.55
+        inSlope: -0.6903433
+        outSlope: -0.6903433
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
@@ -6002,7 +6002,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -4.214
+        value: -30.113
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -6021,7 +6021,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -258.19098
+        value: -241.88199
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -6040,7 +6040,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -117.537
+        value: -132.453
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -6059,7 +6059,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.336
+        value: 0.307
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -6078,7 +6078,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -0.137
+        value: -0.072
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -6097,7 +6097,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.331
+        value: 0.344
         inSlope: 0
         outSlope: 0
         tangentMode: 136
