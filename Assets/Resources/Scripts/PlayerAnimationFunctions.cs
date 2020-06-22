@@ -10,11 +10,15 @@ public class PlayerAnimationFunctions : MonoBehaviour
     public Transform spine;
     public Transform leftHand;
     public GameObject shield;
+    Animator anim;
+    AvatarMask mask;
 
     private void Start()
     {
         player = GetComponentInParent<PlayerController>();
+        anim = GetComponent<Animator>();
         Debug.Log("worked");
+        MaskSwitch();
     }
     void ShieldParentCheck()
     {
@@ -41,4 +45,11 @@ public class PlayerAnimationFunctions : MonoBehaviour
     {
         shield.transform.parent = leftHand.transform;
     }
+
+    public void MaskSwitch()
+    {
+        Debug.Log(anim.GetLayerName(3));
+    }
+
+    
 }
