@@ -53,9 +53,10 @@ public class PlayerController : MonoBehaviour
             else
                 isSprinting = false;
 
-            if (!isShielding)
-                if (Mathf.Abs(horizontal) > 0.2f || Mathf.Abs(vertical) > 0.2f)
-                    lastFacinDirection = new Vector3(horizontal, 0f, vertical);
+            //if (!isShielding)
+            //    if (Mathf.Abs(horizontal) > 0.2f || Mathf.Abs(vertical) > 0.2f)
+            //        lastFacinDirection = new Vector3(horizontal, 0f, vertical);
+            lastFacinDirection = new Vector3(horizontal, 0f, vertical);
         }
         else
         {

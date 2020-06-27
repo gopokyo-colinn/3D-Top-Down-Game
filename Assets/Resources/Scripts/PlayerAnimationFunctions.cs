@@ -2,69 +2,60 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum BodyPart { spine, leftHand }
+public enum BodyPartToAttachTo { spine, leftHand, rightHand }
 
 public class PlayerAnimationFunctions : MonoBehaviour
 {
     PlayerController player;
-    public Transform spine;
-    public Transform leftHand;
-    public Transform rightHand;
+
+    public Transform shieldDefault;
+    public Transform swordDefault;
+    public Transform shieldHandParent;
+    public Transform swordHandParent;
+
     public GameObject shield;
     public GameObject sword;
-    Animator anim;
-    AvatarMask mask;
 
     private void Start()
     {
         player = GetComponentInParent<PlayerController>();
-        anim = GetComponent<Animator>();
-        Debug.Log("worked");
-        MaskSwitch();
     }
 
-    private void Update()
+    public void ShieldActivate(BodyPartToAttachTo bodyPart)
     {
-        ShieldParentCheck();
-        SwordParentCheck();
+        if(bodyPart == BodyPartToAttachTo.spine)
+            shield.transform.parent = shieldDefault.transform;
+        else if(bodyPart == BodyPartToAttachTo.leftHand)
+            shield.transform.parent = shieldHandParent.transform;
+
+        shield.transform.localPosition = Vector3.zero;
+        shield.transform.localRotation = Quaternion.Euler(0, 0, 0);
     }
-    void ShieldParentCheck()
+    public void SwordActivate(BodyPartToAttachTo bodyPart)
     {
-        if (!player.isShielding)
-            shield.transform.parent = spine.transform;
-        else
-            shield.transform.parent = leftHand.transform;
-    }
-    void SwordParentCheck()
-    {
-        if (!player.swordEquipped)
-            sword.transform.parent = spine.transform;
-        else
-            sword.transform.parent = rightHand.transform;
+        if(bodyPart == BodyPartToAttachTo.spine)
+            sword.transform.parent = swordDefault.transform;
+        else if(bodyPart == BodyPartToAttachTo.rightHand)
+            sword.transform.parent = swordHandParent.transform;
+
+        sword.transform.localPosition = Vector3.zero;
+        sword.transform.localRotation = Quaternion.Euler(0, 0, 0);
     }
 
-    public void ShieldOnBodyPart(BodyPart bodyPart)
-    {
-        if(bodyPart == BodyPart.spine)
-            shield.transform.parent = spine.transform;
-        else if(bodyPart == BodyPart.leftHand)
-            shield.transform.parent = leftHand.transform;
-    }
+    //public void ShielOnSpine()
+    //{
+    //    shield.transform.parent = spine.transform;
 
-    public void ShielOnSpine()
-    {
-        shield.transform.parent = spine.transform;
+    //}
+    //public void ShieldInHand()
+    //{
+    //    shield.transform.parent = leftHand.transform;
+    //}
 
-    }
-    public void ShieldInHand()
-    {
-        shield.transform.parent = leftHand.transform;
-    }
-
-    public void MaskSwitch()
-    {
-        Debug.Log(anim.GetLayerName(3));
-    }
+    //public void MaskSwitch()
+    //{
+    //    Debug.Log(anim.GetLayerName(3));
+    //}
 
     
 }

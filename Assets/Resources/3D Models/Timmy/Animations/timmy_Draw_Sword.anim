@@ -5500,7 +5500,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.23333335
-        value: 0.20721589
+        value: 0.55
         inSlope: -0.1806944
         outSlope: -0.1806944
         tangentMode: 0
@@ -5600,7 +5600,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.26666668
-        value: -0.18
+        value: -0.53
         inSlope: -3.4406052
         outSlope: -3.4406052
         tangentMode: 0
@@ -5682,7 +5682,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.26666668
-        value: -1.2684308
+        value: -1.99
         inSlope: 2.014686
         outSlope: 2.014686
         tangentMode: 0
@@ -14040,7 +14040,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.23333335
-        value: 0.20721589
+        value: 0.55
         inSlope: -0.1806944
         outSlope: -0.1806944
         tangentMode: 0
@@ -14140,7 +14140,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.26666668
-        value: -0.18
+        value: -0.53
         inSlope: -3.4406052
         outSlope: -3.4406052
         tangentMode: 0
@@ -14222,7 +14222,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.26666668
-        value: -1.2684308
+        value: -1.99
         inSlope: 2.014686
         outSlope: 2.014686
         tangentMode: 0
@@ -16160,4 +16160,11 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0.26666668
+    functionName: SwordActivate
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
