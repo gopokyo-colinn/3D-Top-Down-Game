@@ -9,7 +9,9 @@ public class PlayerAnimationFunctions : MonoBehaviour
     PlayerController player;
     public Transform spine;
     public Transform leftHand;
+    public Transform rightHand;
     public GameObject shield;
+    public GameObject sword;
     Animator anim;
     AvatarMask mask;
 
@@ -20,12 +22,25 @@ public class PlayerAnimationFunctions : MonoBehaviour
         Debug.Log("worked");
         MaskSwitch();
     }
+
+    private void Update()
+    {
+        ShieldParentCheck();
+        SwordParentCheck();
+    }
     void ShieldParentCheck()
     {
-        //if (!player.isShielding)
-        //    shield.transform.parent = spine.transform;
-        //else
-        //    shield.transform.parent = leftHand.transform;
+        if (!player.isShielding)
+            shield.transform.parent = spine.transform;
+        else
+            shield.transform.parent = leftHand.transform;
+    }
+    void SwordParentCheck()
+    {
+        if (!player.swordEquipped)
+            sword.transform.parent = spine.transform;
+        else
+            sword.transform.parent = rightHand.transform;
     }
 
     public void ShieldOnBodyPart(BodyPart bodyPart)

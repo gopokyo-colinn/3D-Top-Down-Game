@@ -16,6 +16,9 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public bool isShielding;
     bool isSprinting;
+    [HideInInspector]
+    public bool swordEquipped = false;
+    int attackCombo = 0;
     
     // Start is called before the first frame update
     void Start()
@@ -30,6 +33,7 @@ public class PlayerController : MonoBehaviour
         DirectionalMovement();
         UseShield();
         DrawSword();
+        SwordAttacks();
     }
 
     void DirectionalMovement()
@@ -85,10 +89,24 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButton("Attack"))
         {
             anim.SetBool("draw_Sword", true);
+            swordEquipped = true;
         }
-        else
+        if(Input.GetKeyDown(KeyCode.T))
+        {
             anim.SetBool("draw_Sword", false);
+            swordEquipped = false;
+        }
+    }
 
+    void SwordAttacks()
+    {
+        if (swordEquipped && attackCombo == 0)
+        {
+            if (Input.GetButtonDown("Attack"))
+            {
+                anim.SetTrigger("attack1");
+            }
+        }
     }
     
 }
