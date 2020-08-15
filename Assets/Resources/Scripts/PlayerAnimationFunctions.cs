@@ -15,10 +15,11 @@ public class PlayerAnimationFunctions : MonoBehaviour
 
     public GameObject shield;
     public GameObject sword;
-
+    public GameObject swordSlashParticles;
     private void Start()
     {
         player = GetComponentInParent<PlayerController>();
+        swordSlashParticles.gameObject.SetActive(false);
     }
 
     public void ShieldActivate(BodyPartToAttachTo bodyPart)
@@ -40,6 +41,15 @@ public class PlayerAnimationFunctions : MonoBehaviour
 
         sword.transform.localPosition = Vector3.zero;
         sword.transform.localRotation = Quaternion.Euler(0, 0, 0);
+    }
+
+    public void EnableSlashParticles()
+    {
+        swordSlashParticles.gameObject.SetActive(true);
+    }
+    public void DisableSlashParticles()
+    {
+        swordSlashParticles.gameObject.SetActive(false);
     }
 
     //public void ShielOnSpine()

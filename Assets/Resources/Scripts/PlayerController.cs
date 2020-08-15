@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     bool isSprinting;
     [HideInInspector]
     public bool swordEquipped = false;
+    public bool isAttacking = false;
+
     int attackCombo = 0;
     
     // Start is called before the first frame update
@@ -105,6 +107,7 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetButtonDown("Attack"))
             {
+                isAttacking = true;
                 anim.SetTrigger("attack1");
             }
         }
