@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
         vertical = -Input.GetAxis("Vertical");
 
         anim.SetBool("isSprinting", isSprinting);
-        anim.SetFloat("walkDir", (horizontal * vertical > 0) ? -1 : 1) ;
+        //anim.SetFloat("walkDir", (horizontal * vertical > 0) ? -1 : 1) ;
 
         if (horizontal != 0 || vertical != 0)
         {
@@ -178,6 +178,7 @@ public class PlayerController : MonoBehaviour
     public void DisablePlayerMoveActions()
     {
         anim.SetTrigger("idle");
+        anim.SetFloat("moveVelocity", 0f);
         anim.SetBool("isShielding", false);
     }
 

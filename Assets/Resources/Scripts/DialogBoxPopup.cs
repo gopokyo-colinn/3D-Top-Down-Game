@@ -18,8 +18,9 @@ public class DialogBoxPopup : Popup
     public void setDialogText(string[] _dialogLines)
     {
         base.open();
+        dialogLineNumber = -1;
         dialogLines = _dialogLines;
-        dialogText.text = dialogLines[dialogLineNumber];
+        //dialogText.text = dialogLines[dialogLineNumber];
     }
 
     public void NextLine()
@@ -31,7 +32,7 @@ public class DialogBoxPopup : Popup
             if (dialogLineNumber > dialogLines.Length - 1)
             {
                 base.close();
-                dialogLineNumber = 0;
+                dialogLineNumber = -1;
                 GameController.Instance.inPlayMode = true;
             }
             else
