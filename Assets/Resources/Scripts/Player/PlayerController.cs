@@ -52,6 +52,10 @@ public class PlayerController : MonoBehaviour
             if (isInteracting)
                 DisablePlayerMoveActions();
         }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("TestScene2");
+        }
             
     }
 
@@ -156,12 +160,13 @@ public class PlayerController : MonoBehaviour
             {
                 if (Input.GetButtonDown("Interact"))
                 {
+                    NPCEntity _collidedNPC = hit.transform.GetComponent<NPCEntity>();
                     isInteracting = true;
-                    MenuManager.Instance.dialogBoxPopup.setDialogText(hit.transform.GetComponent<NPCEntity>().dialogLines);
+                    PopupUIManager.Instance.dialogBoxPopup.setDialogText(_collidedNPC.dialogLines);
+                    _collidedNPC.LookAtTarget(transform);
                     controller.Move(new Vector3(0, 0, 0));
                     GameController.Instance.inPlayMode = false;
                     DirectionalMovement();
-
                 }
             }
             else
