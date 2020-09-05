@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum NPCBehaviour { IDLE = 0, QUEST_GIVER = 1, MERCHANT = 2, ACTIVITY_DOER = 3 }
-public enum NPCActivities { MOVE_RANDOMLY = 0, PATROLLING = 1, FIGHTER = 2, SLEEPING = 3 }
+public enum NPCActivities { IDLE = 0, MOVE_RANDOMLY = 1, PATROLLING = 2, FIGHTER = 3, SLEEPING = 4 }
 public class NPCEntity : MonoBehaviour
 {
     public static List<NPCEntity> npcList;
@@ -30,8 +30,7 @@ public class NPCEntity : MonoBehaviour
     private Animator anim;
     private Transform defaultPos;
 
-    public bool goToDefaultPos = false;
-    private Transform targetToLookAt;
+    private bool goToDefaultPos = false;
 
     // Start is called before the first frame update
     void Start()
@@ -85,25 +84,6 @@ public class NPCEntity : MonoBehaviour
         StopAllCoroutines();
         StartCoroutine(RotateTowardsTarget(_target));
     }
-    IEnumerator RotateTowardsTarget(Transform _target)
-    {
-        var targetRotation = Quaternion.LookRotation(_target.position - transform.position);
-        while(transform.rotation != targetRotation)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.05f);
-            transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, 0);
-            yield return null;
-        }
-        
-        yield return new WaitForSeconds(1f);
-        Debug.Log("It Finished");
-    }
-    IEnumerator RotateToDefaultPosition(Transform _target)
-    {
-        var targetRotation = Quaternion.LookRotation(_target.position - transform.position);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.05f);
-        yield return new WaitForSeconds(1f);
-    }
     public void DoActivity(NPCActivities _activity)
     {
 
@@ -115,5 +95,26 @@ public class NPCEntity : MonoBehaviour
     public void MerchantShop()
     {
 
+    }
+
+    // Enumerators
+    IEnumerator RotateTowardsTarget(Transform _target)
+    {
+        var targetRotation = Quaternion.LookRotation(_target.position - transform.position);
+        while (transform.rotation != targetRotation)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.05f);
+            transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, 0);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(1f);
+        Debug.Log("It Finished");
+    }
+    IEnumerator RotateToDefaultPosition(Transform _target)
+    {
+        var targetRotation = Quaternion.LookRotation(_target.position - transform.position);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.05f);
+        yield return new WaitForSeconds(1f);
     }
 }

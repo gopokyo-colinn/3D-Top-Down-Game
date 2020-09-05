@@ -5,13 +5,16 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     const float HEAD_OFFSET = 1f;
-    const float NPC_DISTANCE_CHECK = 0.8f;
+    const float NPC_DISTANCE_CHECK = 1.2f;
+    const float DISTANCE_TO_GROUND = 0.1f;
 
-    CharacterController controller;
+    //CharacterController controller;
+    Rigidbody rbody;
     Animator anim;
     public float speed;
+    public float jumpForce;
     public float speedMultiplier = 1.5f;
-    const float shieldWalkSpeedDivision = 0.5f;
+    const float walkSpeedDivision = 0.5f;
 
     float horizontal;
     float vertical;
@@ -25,14 +28,14 @@ public class PlayerController : MonoBehaviour
     public bool isAttacking = false;
 
     private bool isInteracting = false;
-
     int attackCombo = -1;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        controller = GetComponent<CharacterController>();
+        // controller = GetComponent<CharacterController>();
+        rbody = GetComponent<Rigidbody>();
         anim = GetComponentInChildren<Animator>();
     }
 
@@ -41,31 +44,48 @@ public class PlayerController : MonoBehaviour
     {
         if (GameController.Instance.inPlayMode)
         {
-            DirectionalMovement();
+            GetDirectionalInput();
             UseShield();
             DrawSword();
             SwordAttacks();
             CheckForNPC();
         }
-        else
-        {
-            if (isInteracting)
-                DisablePlayerMoveActions();
-        }
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("TestScene2");
-        }
-            
+        
+
+        /// For Jumping
+        //if (Grounded())
+        //{
+        //    if (Input.GetKeyDown(KeyCode.Space))
+        //        rbody.AddForce(rbody.velocity.x, jumpForce, rbody.velocity.z, ForceMode.Impulse);
+        //}
+
     }
 
-    void DirectionalMovement()
+    private void FixedUpdate()
+    {
+        if (GameController.Instance.inPlayMode)
+        {
+            if (Grounded())
+            {
+                DirectionalMovement();
+            }
+            else // for natural jumping, can't change direction in mid air
+            {
+                rbody.velocity = new Vector3(horizontal * speed * Time.fixedDeltaTime, rbody.velocity.y, vertical * speed * Time.fixedDeltaTime);
+            }
+
+        }
+    }
+
+    void GetDirectionalInput()
     {
         horizontal = -Input.GetAxis("Horizontal");
         vertical = -Input.GetAxis("Vertical");
+    }
+    void DirectionalMovement()
+    {
 
         anim.SetBool("isSprinting", isSprinting);
-        //anim.SetFloat("walkDir", (horizontal * vertical > 0) ? -1 : 1) ;
 
         if (horizontal != 0 || vertical != 0)
         {
@@ -90,12 +110,18 @@ public class PlayerController : MonoBehaviour
 
         transform.forward = lastFacinDirection.normalized;
 
-        if (isSprinting)
-            controller.Move(new Vector3(horizontal, 0, vertical).normalized * speed * speedMultiplier * Time.deltaTime /** Time.deltaTime*/);
-        else if(isShielding)
-            controller.Move(new Vector3(horizontal, 0, vertical).normalized * shieldWalkSpeedDivision * speedMultiplier * Time.deltaTime /** Time.deltaTime*/);
-        else
-            controller.Move(new Vector3(horizontal, 0, vertical).normalized * speed * Time.deltaTime /** Time.deltaTime*/);
+        Vector3 movementVector = new Vector3(horizontal, rbody.velocity.y, vertical);
+
+        if (movementVector.magnitude > 0.1f)
+        {
+            
+            if (isSprinting)
+                rbody.velocity = movementVector.normalized * speed * speedMultiplier * Time.fixedDeltaTime;
+            else if (isShielding)
+                rbody.velocity = movementVector.normalized * walkSpeedDivision * speed * Time.fixedDeltaTime;
+            else
+                rbody.velocity = movementVector.normalized * speed * Time.fixedDeltaTime;
+        }
     }
 
     void UseShield()
@@ -151,6 +177,12 @@ public class PlayerController : MonoBehaviour
         } 
     }
 
+    public bool Grounded()
+    {
+       // use a spherecast instead
+        return Physics.Raycast(transform.position, Vector3.down, DISTANCE_TO_GROUND);
+    }
+
     public void CheckForNPC()
     {
         RaycastHit hit;
@@ -160,13 +192,17 @@ public class PlayerController : MonoBehaviour
             {
                 if (Input.GetButtonDown("Interact"))
                 {
-                    NPCEntity _collidedNPC = hit.transform.GetComponent<NPCEntity>();
                     isInteracting = true;
+                    NPCEntity _collidedNPC = hit.transform.GetComponent<NPCEntity>();
                     PopupUIManager.Instance.dialogBoxPopup.setDialogText(_collidedNPC.dialogLines);
+
+                    // can make it bit more good
+                    var targetRotation = Quaternion.LookRotation(_collidedNPC.transform.position - transform.position);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
+
                     _collidedNPC.LookAtTarget(transform);
-                    controller.Move(new Vector3(0, 0, 0));
+                    DisablePlayerMoveActions();
                     GameController.Instance.inPlayMode = false;
-                    DirectionalMovement();
                 }
             }
             else
@@ -182,6 +218,7 @@ public class PlayerController : MonoBehaviour
     }
     public void DisablePlayerMoveActions()
     {
+        rbody.velocity = Vector3.zero;
         anim.SetTrigger("idle");
         anim.SetFloat("moveVelocity", 0f);
         anim.SetBool("isShielding", false);
