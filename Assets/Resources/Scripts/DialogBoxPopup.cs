@@ -12,6 +12,7 @@ public class DialogBoxPopup : Popup
     private int dialogLineNumber = 0;
     private bool isTyping = false;
 
+    private static bool dialogInProgress;
 
     private void Update()
     {
@@ -41,19 +42,22 @@ public class DialogBoxPopup : Popup
 
     public void NextLine()
     {
-       dialogLineNumber++;
+        dialogLineNumber++;
+        if (!dialogInProgress)
+            dialogInProgress = true;
 
-       if (dialogLineNumber > dialogLines.Length - 1)
-       {
+        if (dialogLineNumber > dialogLines.Length - 1)
+        {
             base.close();
             dialogLineNumber = -1;
+            dialogInProgress = false;
             GameController.Instance.inPlayMode = true;
-       }
-       else
-       {
+        }
+        else
+        {
             StopAllCoroutines();
             StartCoroutine(TypeSentence(dialogLines[dialogLineNumber]));
-       }
+        }
     }
     IEnumerator TypeSentence(string _sentence)
     {
@@ -66,6 +70,11 @@ public class DialogBoxPopup : Popup
             yield return new WaitForSeconds(TEXT_SPEED);
         }
         isTyping = false;
+    }
+
+    public bool GetDialogInProgress()
+    {
+        return dialogInProgress;
     }
     
 }

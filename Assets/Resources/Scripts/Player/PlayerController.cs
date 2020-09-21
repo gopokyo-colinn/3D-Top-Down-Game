@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     const float HEAD_OFFSET = 1f;
-    const float NPC_DISTANCE_CHECK = 1.2f;
+    const float NPC_DISTANCE_CHECK = 0.8f;
     const float DISTANCE_TO_GROUND = 0.1f;
 
     //CharacterController controller;
@@ -50,18 +50,10 @@ public class PlayerController : MonoBehaviour
             SwordAttacks();
             CheckForNPC();
         }
-        
-
-        /// For Jumping
-        //if (Grounded())
-        //{
-        //    if (Input.GetKeyDown(KeyCode.Space))
-        //        rbody.AddForce(rbody.velocity.x, jumpForce, rbody.velocity.z, ForceMode.Impulse);
-        //}
 
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         if (GameController.Instance.inPlayMode)
         {
@@ -73,7 +65,6 @@ public class PlayerController : MonoBehaviour
             {
                 rbody.velocity = new Vector3(horizontal * speed * Time.fixedDeltaTime, rbody.velocity.y, vertical * speed * Time.fixedDeltaTime);
             }
-
         }
     }
 
@@ -113,8 +104,7 @@ public class PlayerController : MonoBehaviour
         Vector3 movementVector = new Vector3(horizontal, rbody.velocity.y, vertical);
 
         if (movementVector.magnitude > 0.1f)
-        {
-            
+        { 
             if (isSprinting)
                 rbody.velocity = movementVector.normalized * speed * speedMultiplier * Time.fixedDeltaTime;
             else if (isShielding)
@@ -179,27 +169,45 @@ public class PlayerController : MonoBehaviour
 
     public bool Grounded()
     {
-       // use a spherecast instead
+        // use a spherecast instead
         return Physics.Raycast(transform.position, Vector3.down, DISTANCE_TO_GROUND);
     }
 
+    public void Jumping()
+    {
+        /// For Jumping
+        if (Grounded())
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+                rbody.AddForce(rbody.velocity.x, jumpForce, rbody.velocity.z, ForceMode.Impulse);
+        }
+    }
+
+
     public void CheckForNPC()
     {
+       // Debug.DrawRay(transform.position + new Vector3(0.1f, HEAD_OFFSET, 0), transform.forward * NPC_DISTANCE_CHECK, Color.red);
+       // Debug.DrawRay(transform.position + new Vector3(-0.1f, HEAD_OFFSET, 0), transform.forward * NPC_DISTANCE_CHECK, Color.red);
+
         RaycastHit hit;
-        if(Physics.Raycast(transform.position + new Vector3(0, HEAD_OFFSET,  0), transform.forward, out hit , NPC_DISTANCE_CHECK))
+       // if(Physics.Raycast(transform.position + new Vector3(-0.1f, HEAD_OFFSET,  0), transform.forward, out hit , NPC_DISTANCE_CHECK) || Physics.Raycast(transform.position + new Vector3(0.1f, HEAD_OFFSET, 0), transform.forward, out hit, NPC_DISTANCE_CHECK))
+        if(Physics.CapsuleCast(transform.position, transform.position + new Vector3(0, HEAD_OFFSET * 2, 0), 0.8f/*radius*/, transform.forward, out hit, NPC_DISTANCE_CHECK/*distance*/)
+            || Physics.Raycast(transform.position + new Vector3(0, HEAD_OFFSET, 0), transform.forward, out hit, NPC_DISTANCE_CHECK))
         {
             if (hit.transform.GetComponent<NPCEntity>() && !isInteracting)
             {
+                Debug.Log("in range");
                 if (Input.GetButtonDown("Interact"))
                 {
                     isInteracting = true;
                     NPCEntity _collidedNPC = hit.transform.GetComponent<NPCEntity>();
-                    PopupUIManager.Instance.dialogBoxPopup.setDialogText(_collidedNPC.dialogLines);
+                    //PopupUIManager.Instance.dialogBoxPopup.setDialogText(_collidedNPC.dialogLines);
 
                     // can make it bit more good
                     var targetRotation = Quaternion.LookRotation(_collidedNPC.transform.position - transform.position);
                     transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
 
+                    _collidedNPC.SetDialog();
                     _collidedNPC.LookAtTarget(transform);
                     DisablePlayerMoveActions();
                     GameController.Instance.inPlayMode = false;
@@ -218,11 +226,18 @@ public class PlayerController : MonoBehaviour
     }
     public void DisablePlayerMoveActions()
     {
-        rbody.velocity = Vector3.zero;
+        rbody.velocity = new Vector3(0, rbody.velocity.y, 0);
         anim.SetTrigger("idle");
         anim.SetFloat("moveVelocity", 0f);
         anim.SetBool("isShielding", false);
     }
 
 
+    ///// Gizmos
+    private void OnDrawGizmos()
+    {
+        //Gizmos.color = Color.blue;
+        //Gizmos.DrawSphere(transform.position + new Vector3(transform.forward.x / 2, HEAD_OFFSET, transform.forward.z / 2), 0.6f);
+       // Gizmos.DrawWireCube(transform.position, Vector3.one / 2);
+    }
 }

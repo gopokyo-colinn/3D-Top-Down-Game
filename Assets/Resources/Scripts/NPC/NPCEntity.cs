@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum NPCBehaviour { IDLE = 0, QUEST_GIVER = 1, MERCHANT = 2, ACTIVITY_DOER = 3 }
+public enum NPCBehaviour { SIMPLE = 0, QUEST_GIVER = 1, MERCHANT = 2}
 public enum NPCActivities { IDLE = 0, MOVE_RANDOMLY = 1, PATROLLING = 2, FIGHTER = 3, SLEEPING = 4 }
 public class NPCEntity : MonoBehaviour
 {
+    const float DISTANCE_TO_GROUND = 0.1f;
+    const float DISTANCE_TO_COLIS = 1.2f;
+
     public static List<NPCEntity> npcList;
 
     [HideInInspector]
@@ -17,27 +20,40 @@ public class NPCEntity : MonoBehaviour
     public NPCBehaviour behaviour;
     public NPCActivities activity;
 
+    public Transform[] patrolPoints;
+
     //if npc is quest giver
     // public AddNewQuest [] questsToAdd;
-    
-    //if npc is patrolling
-    //public Transform[] patrolPositions;
-
     //if npc want to sleep
     //public Transform sleepLocation;
 
-    private bool stayStill;
     private Animator anim;
-    private Transform defaultPos;
+    private Rigidbody rbody;
 
-    private bool goToDefaultPos = false;
+    public float walkTime;
+    public float waitTime;
 
-    // Start is called before the first frame update
+    private Vector3 randomVector;
+    private Vector3 lastDirection;
+    private Vector3 startPos;
+    
+    private bool isMovingRandomly = false;
+    private bool canMove = true;
+    private bool isInteracting;
+    private bool dialogCheck = false;
+    private bool _dirReverse;
+
+    public bool reveseDirection;
+
+    private int patrolPos = 0;
+
     void Start()
     {
-        defaultPos = transform;
-
         anim = GetComponent<Animator>();
+        rbody = GetComponent<Rigidbody>();
+        startPos = transform.position;
+
+        rbody.isKinematic = true;
 
         if (string.IsNullOrEmpty(npcID))
             npcID = System.Guid.NewGuid().ToString();
@@ -47,14 +63,18 @@ public class NPCEntity : MonoBehaviour
             npcList.Add(this);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        SetRbodyAccToGroundCheck();
+        CheckForDialogToFinish();
+
+        if (!canMove)
+        {
+            rbody.velocity = VectorZero();
+        }
         switch (behaviour)
         {
-            case NPCBehaviour.IDLE:
-                StayStill();
+            case NPCBehaviour.SIMPLE:
                 break;
             case NPCBehaviour.QUEST_GIVER:
                 AddQuest();
@@ -62,48 +82,198 @@ public class NPCEntity : MonoBehaviour
             case NPCBehaviour.MERCHANT:
                 MerchantShop();
                 break;
-            case NPCBehaviour.ACTIVITY_DOER:
+        }
+    }
+    private void FixedUpdate()
+    {
+        switch (behaviour)
+        {
+            case NPCBehaviour.SIMPLE:
+                DoActivity(activity);
+                break;
+            case NPCBehaviour.QUEST_GIVER:
+                DoActivity(activity);
+                break;
+            case NPCBehaviour.MERCHANT:
                 DoActivity(activity);
                 break;
         }
     }
+
+    /// <summary>
+    /// Behaviours
+    /// </summary>
     public void StayStill()
     {
         anim.SetTrigger("idle");
+        rbody.velocity = VectorZero();
+        Debug.Log("I m idle");
     }
-    public void MoveToTarget()
+    public void DoActivity(NPCActivities _activity)
     {
-
+        if (!isInteracting)
+        {
+            //Debug.Log("I m doing some activity");
+            switch (activity)
+            {
+                case NPCActivities.IDLE:
+                    StayStill();
+                    break;
+                case NPCActivities.MOVE_RANDOMLY:
+                    MovingRandomly();
+                    break;
+                case NPCActivities.PATROLLING:
+                    Patrolling();
+                    break;
+            }
+        }      
     }
+    public void AddQuest()
+    {
+        Debug.Log("I will give you a quest");
+    }
+    public void MerchantShop()
+    {
+        Debug.Log("I m a Merchant");
+    }
+
+    /// <summary>
+    /// Activities
+    /// </summary>
     public void MovingRandomly()
+    {       
+        if (!isMovingRandomly)
+        {
+            StopAllCoroutines();
+            StartCoroutine(MoveRandom());
+        }
+        else
+        {
+            if (canMove)
+            {
+                if(CheckAheadForColi())
+                {
+                    canMove = false;
+                    StartCoroutine(ChangeBoolAfter((bool b) =>{ isMovingRandomly = b; }, false, waitTime));
+                }
+                else
+                {
+                    transform.forward = new Vector3(randomVector.normalized.x, transform.forward.y, randomVector.normalized.z);
+                    rbody.MovePosition(transform.position + randomVector.normalized * speed * Time.fixedDeltaTime);
+                }
+            }
+        }
+    }
+    public void Patrolling()
     {
+        if (canMove)
+        {
+            lastDirection = patrolPoints[patrolPos].position - transform.position;
 
+            if (CheckAheadForColi())
+            {
+                canMove = false;
+                StartCoroutine(ChangeBoolAfter((bool b) => { canMove = b; }, true, waitTime));
+            }
+
+            if ((transform.position - patrolPoints[patrolPos].position).sqrMagnitude <= 1f)
+            {
+                canMove = false;
+                StartCoroutine(ChangeBoolAfter((bool b) => { canMove = b; }, true, waitTime));
+                if (_dirReverse)
+                    patrolPos--;
+                else
+                    patrolPos++;
+            }
+            if(patrolPos >= patrolPoints.Length)
+            {
+                if (reveseDirection)
+                {
+                    patrolPos--;
+                    _dirReverse = true;
+                }
+                else
+                    patrolPos = 0;
+            }
+            else if(patrolPos == 0)
+            {
+                if (_dirReverse)
+                {
+                    _dirReverse = false;
+                }   
+            }
+
+            transform.forward = new Vector3(lastDirection.x, transform.forward.y, lastDirection.z);        
+            rbody.MovePosition(transform.position + transform.forward * speed * Time.fixedDeltaTime);
+        }
+    }
+
+    /// <summary>
+    // Setter Functions
+    /// </summary>
+    public void SetDialog()
+    {
+        isInteracting = true;
+        dialogCheck = true;
+        PopupUIManager.Instance.dialogBoxPopup.setDialogText(dialogLines);
+    }
+    public void SetRbodyAccToGroundCheck()
+    {
+        if (Grounded())
+        {
+            rbody.isKinematic = true;
+        }
+        else
+            rbody.isKinematic = false;
     }
     public void LookAtTarget(Transform _target)
     {
         StopAllCoroutines();
+        isMovingRandomly = false;
+        canMove = false;
         StartCoroutine(RotateTowardsTarget(_target));
     }
-    public void DoActivity(NPCActivities _activity)
+
+    /// <summary>
+    /// Checker Functions
+    /// </summary>
+    public bool Grounded()
     {
-
+        // use a spherecast instead
+        return Physics.Raycast(transform.position, Vector3.down, DISTANCE_TO_GROUND);
     }
-    public void AddQuest()
+    public bool CheckAheadForColi()
     {
-
+        return Physics.Raycast(transform.position + new Vector3(0, 1, 0), transform.forward, DISTANCE_TO_COLIS);
     }
-    public void MerchantShop()
+    public bool CheckAheadForColi(string _layerName)
     {
-
+        return Physics.Raycast(transform.position + new Vector3(0, 1, 0), transform.forward, DISTANCE_TO_COLIS, LayerMask.GetMask(_layerName));
+    }
+    public void CheckForDialogToFinish()
+    {
+        if (isInteracting)
+        {
+            if (!PopupUIManager.Instance.dialogBoxPopup.GetDialogInProgress())
+            {
+                if (dialogCheck)
+                {
+                    StartCoroutine(ChangeBoolAfter((bool b) => { isInteracting = b; canMove = true; }, false, 1f));
+                    dialogCheck = false;
+                }
+            }
+        }
     }
 
-    // Enumerators
+    /// <summary>
+    /// Enumerators
+    /// </summary>
     IEnumerator RotateTowardsTarget(Transform _target)
     {
         var targetRotation = Quaternion.LookRotation(_target.position - transform.position);
         while (transform.rotation != targetRotation)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.05f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.2f);
             transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, 0);
             yield return null;
         }
@@ -111,10 +281,34 @@ public class NPCEntity : MonoBehaviour
         yield return new WaitForSeconds(1f);
         Debug.Log("It Finished");
     }
-    IEnumerator RotateToDefaultPosition(Transform _target)
+    IEnumerator MoveRandom()
     {
-        var targetRotation = Quaternion.LookRotation(_target.position - transform.position);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.05f);
-        yield return new WaitForSeconds(1f);
+        randomVector = new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
+        if (CheckAheadForColi())
+        {
+            randomVector = new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
+        }
+        transform.forward = new Vector3(randomVector.normalized.x, transform.forward.y, randomVector.normalized.z);
+        //lastFacingDir = randomVector;
+        canMove = true;
+        isMovingRandomly = true;
+        yield return new WaitForSeconds(walkTime);
+        canMove = false;
+        yield return new WaitForSeconds(waitTime);
+        isMovingRandomly = false;
+    }
+    IEnumerator ChangeBoolAfter(System.Action<bool> _callBack,bool _setBool , float _time)
+    {
+        yield return new WaitForSeconds(_time);
+        _callBack(_setBool);
+        StopAllCoroutines();
+    }
+
+    /// <summary>
+    /// Other Helper Functions
+    /// </summary>
+    public Vector3 VectorZero()
+    {
+        return new Vector3(0, rbody.velocity.y, 0);
     }
 }
