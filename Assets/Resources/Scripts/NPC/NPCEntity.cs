@@ -207,6 +207,28 @@ public class NPCEntity : MonoBehaviour
             rbody.MovePosition(transform.position + transform.forward * speed * Time.fixedDeltaTime);
         }
     }
+    //public void FindPathToLocation()
+    //{
+    //    bool bf = Physics.Raycast(startPos, Vector3.forward, 5f);
+    //    bool bb = Physics.Raycast(startPos, Vector3.forward * -1, 5f);
+    //    bool br = Physics.Raycast(startPos, Vector3.right, 5f);
+    //    bool bl = Physics.Raycast(startPos, Vector3.right * -1, 5f);
+    //    if (bf || bb || br || bl)
+    //    {
+    //        Debug.DrawRay(startPos, Vector3.forward * 5f, Color.red);
+    //        Debug.DrawRay(startPos, Vector3.forward * -1 * 5f, Color.red);
+    //        Debug.DrawRay(startPos, Vector3.right * 5f, Color.red);
+    //        Debug.DrawRay(startPos, Vector3.right * -1 * 5f, Color.red);
+    //        startPos = new Vector3(startPos.x + 0.2f, startPos.y, startPos.z);
+    //    }
+    //    else
+    //    {
+    //        Debug.DrawRay(startPos, Vector3.forward * 5f, Color.red);
+    //        Debug.DrawRay(startPos, Vector3.forward * -1 * 5f, Color.red);
+    //        Debug.DrawRay(startPos, Vector3.right * 5f, Color.red);
+    //        Debug.DrawRay(startPos, Vector3.right * -1 * 5f, Color.red);
+    //    }
+    //}
 
     /// <summary>
     // Setter Functions

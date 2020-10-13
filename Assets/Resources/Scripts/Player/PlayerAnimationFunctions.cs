@@ -6,6 +6,8 @@ public enum BodyPartToAttachTo { spine, leftHand, rightHand }
 
 public class PlayerAnimationFunctions : MonoBehaviour
 {
+    PlayerController player;
+
     public Transform shieldDefault;
     public Transform swordDefault;
     public Transform shieldHandParent;
@@ -15,6 +17,10 @@ public class PlayerAnimationFunctions : MonoBehaviour
     public GameObject sword;
     public GameObject swordSlashParticles;
 
+    private void Start()
+    {
+        player = GetComponentInParent<PlayerController>();
+    }
     public void ShieldActivate(BodyPartToAttachTo bodyPart)
     {
         if(bodyPart == BodyPartToAttachTo.spine)
@@ -39,10 +45,25 @@ public class PlayerAnimationFunctions : MonoBehaviour
     public void EnableSlashParticles()
     {
         swordSlashParticles.gameObject.SetActive(true);
+      //  swordSlashParticles.transform.GetChild(0).GetComponent<ParticleSimulationSpaceChanger>().useLocal = true;
+       // swordSlashParticles.transform.GetChild(1).GetComponent<ParticleSimulationSpaceChanger>().useLocal = true;
     }
     public void DisableSlashParticles()
-    {  
+    {
+       // swordSlashParticles.transform.GetChild(0).GetComponent<ParticleSimulationSpaceChanger>().useLocal = false;
+       // swordSlashParticles.transform.GetChild(1).GetComponent<ParticleSimulationSpaceChanger>().useLocal = false;
+       //tartCoroutine(disableGameObjectAfter(swordSlashParticles, false));
         swordSlashParticles.gameObject.SetActive(false);
+    }
+    public void SetAttackFalse()
+    {
+       player.isAttacking = false;
+    }
+
+    IEnumerator disableGameObjectAfter(GameObject _go, bool _enableDisable)
+    {
+        yield return new WaitForSeconds(.2f);
+        _go.SetActive(_enableDisable);
     }
 
     

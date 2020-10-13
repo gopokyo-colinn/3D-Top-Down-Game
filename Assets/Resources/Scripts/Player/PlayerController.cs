@@ -52,7 +52,6 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-
     void FixedUpdate()
     {
         if (GameController.Instance.inPlayMode)
@@ -160,10 +159,6 @@ public class PlayerController : MonoBehaviour
                     anim.SetTrigger("attack1");
                 }
             }
-            else
-            {
-                isAttacking = false;
-            }
         } 
     }
 
@@ -182,7 +177,6 @@ public class PlayerController : MonoBehaviour
                 rbody.AddForce(rbody.velocity.x, jumpForce, rbody.velocity.z, ForceMode.Impulse);
         }
     }
-
 
     public void CheckForNPC()
     {
@@ -224,6 +218,7 @@ public class PlayerController : MonoBehaviour
            // Debug.DrawRay(transform.position + new Vector3(0, HEAD_OFFSET, 0), transform.forward * NPC_DISTANCE_CHECK, Color.green);
         }
     }
+
     public void DisablePlayerMoveActions()
     {
         rbody.velocity = new Vector3(0, rbody.velocity.y, 0);
@@ -231,7 +226,6 @@ public class PlayerController : MonoBehaviour
         anim.SetFloat("moveVelocity", 0f);
         anim.SetBool("isShielding", false);
     }
-
 
     ///// Gizmos
     private void OnDrawGizmos()
