@@ -27,6 +27,7 @@ public class Weapon : MonoBehaviour, ICanDamage
     {
         if (player.isAttacking)
         {
+           // trialEffectAnimator.SetTrigger("slash_1");
             coli.enabled = true;
         }
         else

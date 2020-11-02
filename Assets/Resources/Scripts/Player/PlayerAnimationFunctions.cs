@@ -15,11 +15,19 @@ public class PlayerAnimationFunctions : MonoBehaviour
 
     public GameObject shield;
     public GameObject sword;
-    public GameObject swordSlashParticles;
+
+    public GameObject trialEffects;
+    Animator trialEffectAnimator;
+    GameObject swish1;
+
+    //public GameObject swordSlashParticles;
 
     private void Start()
     {
         player = GetComponentInParent<PlayerController>();
+        trialEffectAnimator = trialEffects.GetComponent<Animator>();
+        swish1 = trialEffects.transform.GetChild(0).gameObject;
+        swish1.SetActive(false);
     }
     public void ShieldActivate(BodyPartToAttachTo bodyPart)
     {
@@ -44,16 +52,11 @@ public class PlayerAnimationFunctions : MonoBehaviour
 
     public void EnableSlashParticles()
     {
-        swordSlashParticles.gameObject.SetActive(true);
-      //  swordSlashParticles.transform.GetChild(0).GetComponent<ParticleSimulationSpaceChanger>().useLocal = true;
-       // swordSlashParticles.transform.GetChild(1).GetComponent<ParticleSimulationSpaceChanger>().useLocal = true;
+        trialEffectAnimator.SetTrigger("slash_1");
     }
     public void DisableSlashParticles()
     {
-       // swordSlashParticles.transform.GetChild(0).GetComponent<ParticleSimulationSpaceChanger>().useLocal = false;
-       // swordSlashParticles.transform.GetChild(1).GetComponent<ParticleSimulationSpaceChanger>().useLocal = false;
-       //tartCoroutine(disableGameObjectAfter(swordSlashParticles, false));
-        swordSlashParticles.gameObject.SetActive(false);
+
     }
     public void SetAttackFalse()
     {
