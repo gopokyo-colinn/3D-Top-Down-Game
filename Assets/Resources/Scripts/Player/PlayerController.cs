@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public bool swordEquipped = false;
     public bool isAttacking = false;
+    public bool canAttack = true;
 
     private bool isInteracting = false;
     int attackCombo = -1;
@@ -153,11 +154,16 @@ public class PlayerController : MonoBehaviour
             if (Input.GetButtonDown("Attack"))
             {
                 attackCombo++;
-                if(attackCombo > 0)
+                if(attackCombo > 0 && canAttack)
                 {
                     isAttacking = true;
+                    canAttack = false;
                     anim.SetTrigger("attack1");
                 }
+            }
+            else
+            {
+                isAttacking = !canAttack;
             }
         } 
     }

@@ -52,15 +52,15 @@ public class PlayerAnimationFunctions : MonoBehaviour
 
     public void EnableSlashParticles()
     {
-        trialEffectAnimator.SetTrigger("slash_1");
+        trialEffectAnimator.SetBool("slash_1b", player.isAttacking);
     }
     public void DisableSlashParticles()
     {
-
+        trialEffectAnimator.SetBool("slash_1b", false);
     }
     public void SetAttackFalse()
     {
-       player.isAttacking = false;
+       player.canAttack = true;
     }
 
     IEnumerator disableGameObjectAfter(GameObject _go, bool _enableDisable)
