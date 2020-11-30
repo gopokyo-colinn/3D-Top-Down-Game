@@ -98,8 +98,8 @@ public class PlayerController : MonoBehaviour
             anim.SetFloat("moveVelocity", 0f);
             isSprinting = false;
         }
-
-        transform.forward = lastFacinDirection.normalized;
+        if(lastFacinDirection != Vector3.zero)
+            transform.forward = lastFacinDirection.normalized;
 
         Vector3 movementVector = new Vector3(horizontal, rbody.velocity.y, vertical);
 
@@ -196,7 +196,7 @@ public class PlayerController : MonoBehaviour
         {
             if (hit.transform.GetComponent<NPCEntity>() && !isInteracting)
             {
-                Debug.Log("in range");
+                //Debug.Log("in range");
                 if (Input.GetButtonDown("Interact"))
                 {
                     isInteracting = true;

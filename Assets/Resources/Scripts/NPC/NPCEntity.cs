@@ -35,7 +35,6 @@ public class NPCEntity : MonoBehaviour
 
     private Vector3 randomVector;
     private Vector3 lastDirection;
-    private Vector3 startPos;
     
     private bool isMovingRandomly = false;
     private bool canMove = true;
@@ -51,7 +50,6 @@ public class NPCEntity : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         rbody = GetComponent<Rigidbody>();
-        startPos = transform.position;
 
         rbody.isKinematic = true;
 
@@ -70,7 +68,7 @@ public class NPCEntity : MonoBehaviour
 
         if (!canMove)
         {
-            rbody.velocity = VectorZero();
+            //rbody.velocity = VectorZero();
         }
         switch (behaviour)
         {
@@ -158,9 +156,10 @@ public class NPCEntity : MonoBehaviour
                 }
                 else
                 {
-                    transform.forward = new Vector3(randomVector.normalized.x, transform.forward.y, randomVector.normalized.z);
+                    if (randomVector != Vector3.zero)
+                        transform.forward = new Vector3(randomVector.normalized.x, transform.forward.y, randomVector.normalized.z);
                     rbody.MovePosition(transform.position + randomVector.normalized * speed * Time.fixedDeltaTime);
-                }
+                } 
             }
         }
     }
@@ -202,9 +201,11 @@ public class NPCEntity : MonoBehaviour
                     _dirReverse = false;
                 }   
             }
-
-            transform.forward = new Vector3(lastDirection.x, transform.forward.y, lastDirection.z);        
-            rbody.MovePosition(transform.position + transform.forward * speed * Time.fixedDeltaTime);
+            if (!CheckAheadForColi())
+            {
+                transform.forward = new Vector3(lastDirection.x, transform.forward.y, lastDirection.z);
+                rbody.MovePosition(transform.position + transform.forward * speed * Time.fixedDeltaTime);
+            }
         }
     }
     //public void FindPathToLocation()
@@ -305,12 +306,14 @@ public class NPCEntity : MonoBehaviour
     }
     IEnumerator MoveRandom()
     {
-        randomVector = new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
+        randomVector = new Vector3(Random.Range(1, -1), 0, Random.Range(-1, 1));
+
         if (CheckAheadForColi())
         {
-            randomVector = new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
+            randomVector *= -1; //new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
         }
-        transform.forward = new Vector3(randomVector.normalized.x, transform.forward.y, randomVector.normalized.z);
+        if(randomVector != Vector3.zero)
+            transform.forward = new Vector3(randomVector.normalized.x, transform.forward.y, randomVector.normalized.z);
         //lastFacingDir = randomVector;
         canMove = true;
         isMovingRandomly = true;

@@ -6,6 +6,8 @@ public class GameController : MonoBehaviour
 {
     public bool inPlayMode;
 
+	public PlayerController player;
+
 	private static GameController instance;
 	public static GameController Instance
 	{
@@ -39,6 +41,13 @@ public class GameController : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
+		player = FindObjectOfType<PlayerController>();
         inPlayMode = true;
+		Debug.Log(QuestManager.Instance.activeQuest.sQuestTitle);
+		QuestManager.Instance.Initialize(player);
+    }
+    private void LateUpdate()
+    {
+		QuestManager.Instance.Refresh();
     }
 }
