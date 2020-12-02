@@ -33,15 +33,16 @@ public class QuestManager
 
 	public void Initialize(PlayerController _player)
     {
+		Debug.Log("Quest Initialized");
 		for (int i = 0; i < dictMainQuests.Count; i++)
 		{
 			dictMainQuests.ElementAt(i).Value.Initialize(_player);
 		}
-		for (int i = 0; i < dictSideQuests.Count; i++)
-		{
-			dictSideQuests.ElementAt(i).Value.Initialize(_player);
-		}
-	}
+        for (int i = 0; i < dictSideQuests.Count; i++)
+        {
+            dictSideQuests.ElementAt(i).Value.Initialize(_player);
+        }
+    }
 	public void Refresh()
     {
         for (int i = 0; i < dictMainQuests.Count; i++)

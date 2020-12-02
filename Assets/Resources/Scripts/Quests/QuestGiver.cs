@@ -7,9 +7,7 @@ public class QuestGiver : MonoBehaviour
     public bool isActive;
     public Quest quest;
 
-    PlayerController player;
-
-    public void Start()
+    public void Awake()
     {
         QuestManager.Instance.dictSideQuests.Add(quest.sQuestTitle, quest);
         QuestManager.Instance.activeQuest = quest;

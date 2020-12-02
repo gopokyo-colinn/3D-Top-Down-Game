@@ -43,11 +43,10 @@ public class GameController : MonoBehaviour
     {
 		player = FindObjectOfType<PlayerController>();
         inPlayMode = true;
-		Debug.Log(QuestManager.Instance.activeQuest.sQuestTitle);
 		QuestManager.Instance.Initialize(player);
     }
     private void LateUpdate()
     {
 		QuestManager.Instance.Refresh();
-    }
+	}
 }

@@ -7,19 +7,15 @@ public class PlayerController : MonoBehaviour
     const float HEAD_OFFSET = 1f;
     const float NPC_DISTANCE_CHECK = 0.8f;
     const float DISTANCE_TO_GROUND = 0.1f;
-
-    //CharacterController controller;
     Rigidbody rbody;
     Animator anim;
     public float speed;
     public float jumpForce;
     public float speedMultiplier = 1.5f;
     const float walkSpeedDivision = 0.5f;
-
     float horizontal;
     float vertical;
     Vector3 lastFacinDirection;
-
     [HideInInspector]
     public bool isShielding;
     bool isSprinting;
@@ -27,20 +23,15 @@ public class PlayerController : MonoBehaviour
     public bool swordEquipped = false;
     public bool isAttacking = false;
     public bool canAttack = true;
-
     private bool isInteracting = false;
     int attackCombo = -1;
 
-
-    // Start is called before the first frame update
     void Start()
     {
         // controller = GetComponent<CharacterController>();
         rbody = GetComponent<Rigidbody>();
         anim = GetComponentInChildren<Animator>();
     }
-
-    // Update is called once per frame
     void Update()
     {
         if (GameController.Instance.inPlayMode)
@@ -51,7 +42,6 @@ public class PlayerController : MonoBehaviour
             SwordAttacks();
             CheckForNPC();
         }
-
     }
     void FixedUpdate()
     {
@@ -67,7 +57,6 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
     void GetDirectionalInput()
     {
         horizontal = -Input.GetAxis("Horizontal");
@@ -113,7 +102,6 @@ public class PlayerController : MonoBehaviour
                 rbody.velocity = movementVector.normalized * speed * Time.fixedDeltaTime;
         }
     }
-
     void UseShield()
     {   
         if (Input.GetButton("Shield"))
@@ -124,7 +112,6 @@ public class PlayerController : MonoBehaviour
             isShielding = false;
         anim.SetBool("isShielding", isShielding);
     }
-
     void DrawSword()
     {
         if (!swordEquipped)
@@ -146,7 +133,6 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
     void SwordAttacks()
     {
         if (swordEquipped)
@@ -167,13 +153,11 @@ public class PlayerController : MonoBehaviour
             }
         } 
     }
-
     public bool Grounded()
     {
         // use a spherecast instead
         return Physics.Raycast(transform.position, Vector3.down, DISTANCE_TO_GROUND);
     }
-
     public void Jumping()
     {
         /// For Jumping
@@ -183,7 +167,6 @@ public class PlayerController : MonoBehaviour
                 rbody.AddForce(rbody.velocity.x, jumpForce, rbody.velocity.z, ForceMode.Impulse);
         }
     }
-
     public void CheckForNPC()
     {
        // Debug.DrawRay(transform.position + new Vector3(0.1f, HEAD_OFFSET, 0), transform.forward * NPC_DISTANCE_CHECK, Color.red);
@@ -224,7 +207,6 @@ public class PlayerController : MonoBehaviour
            // Debug.DrawRay(transform.position + new Vector3(0, HEAD_OFFSET, 0), transform.forward * NPC_DISTANCE_CHECK, Color.green);
         }
     }
-
     public void DisablePlayerMoveActions()
     {
         rbody.velocity = new Vector3(0, rbody.velocity.y, 0);
@@ -232,7 +214,6 @@ public class PlayerController : MonoBehaviour
         anim.SetFloat("moveVelocity", 0f);
         anim.SetBool("isShielding", false);
     }
-
     ///// Gizmos
     private void OnDrawGizmos()
     {

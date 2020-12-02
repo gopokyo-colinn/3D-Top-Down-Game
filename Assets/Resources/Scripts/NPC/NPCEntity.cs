@@ -1,49 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public enum NPCBehaviour { SIMPLE = 0, QUEST_GIVER = 1, MERCHANT = 2}
 public enum NPCActivities { IDLE = 0, MOVE_RANDOMLY = 1, PATROLLING = 2, FIGHTER = 3, SLEEPING = 4 }
 public class NPCEntity : MonoBehaviour
 {
     const float DISTANCE_TO_GROUND = 0.1f;
     const float DISTANCE_TO_COLIS = 1.2f;
-
     public static List<NPCEntity> npcList;
-
     [HideInInspector]
     public string npcID;
     public float speed;
-
     [TextArea(3, 5)]
     public string[] dialogLines;
     public NPCBehaviour behaviour;
     public NPCActivities activity;
-
     public Transform[] patrolPoints;
-
-    //if npc is quest giver
-    // public AddNewQuest [] questsToAdd;
-    //if npc want to sleep
-    //public Transform sleepLocation;
-
     private Animator anim;
     private Rigidbody rbody;
-
     public float walkTime;
     public float waitTime;
-
     private Vector3 randomVector;
     private Vector3 lastDirection;
-    
     private bool isMovingRandomly = false;
     private bool canMove = true;
     private bool isInteracting;
     private bool dialogCheck = false;
     private bool _dirReverse;
-
     public bool reveseDirection;
-
     private int patrolPos = 0;
 
     void Start()
@@ -60,16 +44,12 @@ public class NPCEntity : MonoBehaviour
         if (!npcList.Contains(this))
             npcList.Add(this);
     }
-
     void Update()
     {
+        
         SetRbodyAccToGroundCheck();
         CheckForDialogToFinish();
-
-        if (!canMove)
-        {
-            //rbody.velocity = VectorZero();
-        }
+        SetAnimations();
         switch (behaviour)
         {
             case NPCBehaviour.SIMPLE:
@@ -98,14 +78,10 @@ public class NPCEntity : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// Behaviours
-    /// </summary>
     public void StayStill()
     {
-        anim.SetTrigger("idle");
         rbody.velocity = VectorZero();
-        Debug.Log("I m idle");
     }
     public void DoActivity(NPCActivities _activity)
     {
@@ -135,11 +111,9 @@ public class NPCEntity : MonoBehaviour
         Debug.Log("I m a Merchant");
     }
 
-    /// <summary>
     /// Activities
-    /// </summary>
     public void MovingRandomly()
-    {       
+    {
         if (!isMovingRandomly)
         {
             StopAllCoroutines();
@@ -158,11 +132,14 @@ public class NPCEntity : MonoBehaviour
                 {
                     if (randomVector != Vector3.zero)
                         transform.forward = new Vector3(randomVector.normalized.x, transform.forward.y, randomVector.normalized.z);
-                    rbody.MovePosition(transform.position + randomVector.normalized * speed * Time.fixedDeltaTime);
+                    else
+                        transform.forward = new Vector3(0.1f, transform.forward.y, 0.1f); // Fixed bug for look rotation (and speedy or no movement)
+
+                    rbody.MovePosition(transform.position + (transform.forward * speed * Time.fixedDeltaTime));
                 } 
             }
         }
-    }
+    }// Add Moving Area
     public void Patrolling()
     {
         if (canMove)
@@ -205,10 +182,11 @@ public class NPCEntity : MonoBehaviour
             {
                 transform.forward = new Vector3(lastDirection.x, transform.forward.y, lastDirection.z);
                 rbody.MovePosition(transform.position + transform.forward * speed * Time.fixedDeltaTime);
+               // anim.SetFloat("m_speed", 1);
             }
         }
     }
-    //public void FindPathToLocation()
+    /*//public void FindPathToLocation()
     //{
     //    bool bf = Physics.Raycast(startPos, Vector3.forward, 5f);
     //    bool bb = Physics.Raycast(startPos, Vector3.forward * -1, 5f);
@@ -230,10 +208,9 @@ public class NPCEntity : MonoBehaviour
     //        Debug.DrawRay(startPos, Vector3.right * -1 * 5f, Color.red);
     //    }
     //}
+    */
 
-    /// <summary>
     // Setter Functions
-    /// </summary>
     public void SetDialog()
     {
         isInteracting = true;
@@ -256,10 +233,13 @@ public class NPCEntity : MonoBehaviour
         canMove = false;
         StartCoroutine(RotateTowardsTarget(_target));
     }
+    public void SetAnimations()
+    {
+        float _fWalking = (rbody.velocity == Vector3.zero) ? 0 : 1;
+        anim.SetFloat("m_speed", _fWalking);
+    }
 
-    /// <summary>
     /// Checker Functions
-    /// </summary>
     public bool Grounded()
     {
         // use a spherecast instead
@@ -288,9 +268,7 @@ public class NPCEntity : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// Enumerators
-    /// </summary>
     IEnumerator RotateTowardsTarget(Transform _target)
     {
         var targetRotation = Quaternion.LookRotation(_target.position - transform.position);
@@ -329,9 +307,7 @@ public class NPCEntity : MonoBehaviour
         StopAllCoroutines();
     }
 
-    /// <summary>
     /// Other Helper Functions
-    /// </summary>
     public Vector3 VectorZero()
     {
         return new Vector3(0, rbody.velocity.y, 0);
