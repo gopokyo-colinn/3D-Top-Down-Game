@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestructableObject : MonoBehaviour, IDamageAble
+public class DestructableObject : MonoBehaviour, IHittable
 {
     public int health = 1;
     public ParticleSystem destroyParticleEffect;

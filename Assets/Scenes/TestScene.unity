@@ -6522,6 +6522,36 @@ PrefabInstance:
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4031356624989233013, guid: 0bd176d84d9f3b3408d09de614fa79c5,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 151.07101
+      objectReference: {fileID: 0}
+    - target: {fileID: 4031356624989233013, guid: 0bd176d84d9f3b3408d09de614fa79c5,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 124.77324
+      objectReference: {fileID: 0}
+    - target: {fileID: 4031356624989233013, guid: 0bd176d84d9f3b3408d09de614fa79c5,
+        type: 3}
+      propertyPath: m_Center.x
+      value: 11.606211
+      objectReference: {fileID: 0}
+    - target: {fileID: 4031356624989233013, guid: 0bd176d84d9f3b3408d09de614fa79c5,
+        type: 3}
+      propertyPath: m_Center.y
+      value: -346.9684
+      objectReference: {fileID: 0}
+    - target: {fileID: 4031356624989233013, guid: 0bd176d84d9f3b3408d09de614fa79c5,
+        type: 3}
+      propertyPath: m_Center.z
+      value: -13.925675
+      objectReference: {fileID: 0}
+    - target: {fileID: 4031356624989233013, guid: 0bd176d84d9f3b3408d09de614fa79c5,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 911.29346
+      objectReference: {fileID: 0}
     - target: {fileID: 4076156595848636111, guid: 0bd176d84d9f3b3408d09de614fa79c5,
         type: 3}
       propertyPath: m_Layer
@@ -7536,6 +7566,7 @@ GameObject:
   - component: {fileID: 4105356696463871125}
   - component: {fileID: 4154825201236294975}
   - component: {fileID: 4154825201236294974}
+  - component: {fileID: 4154825201236294976}
   m_Layer: 0
   m_Name: Polygonal Metalon Purple
   m_TagString: Untagged
@@ -7572,6 +7603,23 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &4154825201236294976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4154825201236294973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17f92ba80447fcd4b9aa79944c3d4b89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fMaxHitPoints: 21
+  fSpeed: 2
+  iDamage: 2
+  fWalkTime: 2
+  fWaitTime: 1
 --- !u!1 &4154849934165707667
 GameObject:
   m_ObjectHideFlags: 0
@@ -8510,7 +8558,7 @@ PrefabInstance:
     - target: {fileID: 4185601837462471057, guid: a9f723d960da7414cb6e567593b126fa,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.05727262
+      value: -0.057272397
       objectReference: {fileID: 0}
     - target: {fileID: 4185601837462471057, guid: a9f723d960da7414cb6e567593b126fa,
         type: 3}
@@ -8670,7 +8718,7 @@ PrefabInstance:
     - target: {fileID: 7334448684759623403, guid: 0be8da676cf61a0419a90842f118efc4,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.05727262
+      value: -0.057272397
       objectReference: {fileID: 0}
     - target: {fileID: 7334448684759623403, guid: 0be8da676cf61a0419a90842f118efc4,
         type: 3}

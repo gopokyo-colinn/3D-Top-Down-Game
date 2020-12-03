@@ -123,7 +123,7 @@ public class NPCEntity : MonoBehaviour
         {
             if (canMove)
             {
-                if(CheckAheadForColi())
+                if(HelperFunctions.CheckAheadForColi(transform, DISTANCE_TO_COLIS))
                 {
                     canMove = false;
                     StartCoroutine(ChangeBoolAfter((bool b) =>{ isMovingRandomly = b; }, false, waitTime));
@@ -146,7 +146,7 @@ public class NPCEntity : MonoBehaviour
         {
             lastDirection = patrolPoints[patrolPos].position - transform.position;
 
-            if (CheckAheadForColi())
+            if (HelperFunctions.CheckAheadForColi(transform, DISTANCE_TO_COLIS))
             {
                 canMove = false;
                 StartCoroutine(ChangeBoolAfter((bool b) => { canMove = b; }, true, waitTime));
@@ -178,7 +178,7 @@ public class NPCEntity : MonoBehaviour
                     _dirReverse = false;
                 }   
             }
-            if (!CheckAheadForColi())
+            if (!HelperFunctions.CheckAheadForColi(transform, DISTANCE_TO_COLIS))
             {
                 transform.forward = new Vector3(lastDirection.x, transform.forward.y, lastDirection.z);
                 rbody.MovePosition(transform.position + transform.forward * speed * Time.fixedDeltaTime);
@@ -219,7 +219,7 @@ public class NPCEntity : MonoBehaviour
     }
     public void SetRbodyAccToGroundCheck()
     {
-        if (Grounded())
+        if (HelperFunctions.Grounded(transform, DISTANCE_TO_GROUND))
         {
             rbody.isKinematic = true;
         }
@@ -240,19 +240,6 @@ public class NPCEntity : MonoBehaviour
     }
 
     /// Checker Functions
-    public bool Grounded()
-    {
-        // use a spherecast instead
-        return Physics.Raycast(transform.position, Vector3.down, DISTANCE_TO_GROUND);
-    }
-    public bool CheckAheadForColi()
-    {
-        return Physics.Raycast(transform.position + new Vector3(0, 1, 0), transform.forward, DISTANCE_TO_COLIS);
-    }
-    public bool CheckAheadForColi(string _layerName)
-    {
-        return Physics.Raycast(transform.position + new Vector3(0, 1, 0), transform.forward, DISTANCE_TO_COLIS, LayerMask.GetMask(_layerName));
-    }
     public void CheckForDialogToFinish()
     {
         if (isInteracting)
@@ -286,7 +273,7 @@ public class NPCEntity : MonoBehaviour
     {
         randomVector = new Vector3(Random.Range(1, -1), 0, Random.Range(-1, 1));
 
-        if (CheckAheadForColi())
+        if (HelperFunctions.CheckAheadForColi(transform, DISTANCE_TO_COLIS))
         {
             randomVector *= -1; //new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
         }
