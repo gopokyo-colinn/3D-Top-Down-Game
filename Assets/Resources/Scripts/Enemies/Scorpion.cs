@@ -13,6 +13,9 @@ public class Scorpion : Enemy
     void Update()
     {
         base.Refresh();
-        MovingRandomly();
+        if(!bTargetFound)
+            MovingRandomly();
+        else
+            FollowTarget();
     }
 }

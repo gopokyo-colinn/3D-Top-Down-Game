@@ -15,8 +15,8 @@ public class NPCScriptEditor : Editor
     {
         targetObject = new SerializedObject(target);
         npc = (NPCEntity)target;
-        dialogLinesArray = targetObject.FindProperty("dialogLines");
-        patrolPointsArray = targetObject.FindProperty("patrolPoints");
+        dialogLinesArray = targetObject.FindProperty("sDialogLines");
+        patrolPointsArray = targetObject.FindProperty("tPatrolPoints");
     }
     public override void OnInspectorGUI()
     {
@@ -31,22 +31,22 @@ public class NPCScriptEditor : Editor
 
         if (npc.activity != NPCActivities.IDLE && npc.activity != NPCActivities.SLEEPING)
         {
-            npc.speed = EditorGUILayout.FloatField("Speed", npc.speed);
+            npc.fSpeed = EditorGUILayout.FloatField("Speed", npc.fSpeed);
             switch (npc.activity)
             {
                 case NPCActivities.MOVE_RANDOMLY:
                     EditorGUILayout.BeginHorizontal();
                     EditorGUIUtility.labelWidth = 65f;
-                    npc.walkTime = EditorGUILayout.FloatField("Walk Time", npc.walkTime);
+                    npc.fWalkTime = EditorGUILayout.FloatField("Walk Time", npc.fWalkTime);
                     EditorGUIUtility.labelWidth = 60f;
-                    npc.waitTime = EditorGUILayout.FloatField("Wait Time", npc.waitTime);
+                    npc.fWaitTime = EditorGUILayout.FloatField("Wait Time", npc.fWaitTime);
                     EditorGUILayout.EndHorizontal();
                     break;
                 case NPCActivities.PATROLLING:
-                    npc.waitTime = EditorGUILayout.FloatField("Wait Time", npc.waitTime);
+                    npc.fWaitTime = EditorGUILayout.FloatField("Wait Time", npc.fWaitTime);
                     EditorGUILayout.PropertyField(patrolPointsArray, true);
                     EditorGUIUtility.labelWidth = 150f;
-                    npc.reveseDirection = EditorGUILayout.Toggle("Reverse Direction At End", npc.reveseDirection);
+                    npc.bReveseDirection = EditorGUILayout.Toggle("Reverse Direction At End", npc.bReveseDirection);
                     break;
             }
         }

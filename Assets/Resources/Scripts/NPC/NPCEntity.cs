@@ -5,30 +5,30 @@ public enum NPCBehaviour { SIMPLE = 0, QUEST_GIVER = 1, MERCHANT = 2}
 public enum NPCActivities { IDLE = 0, MOVE_RANDOMLY = 1, PATROLLING = 2, FIGHTER = 3, SLEEPING = 4 }
 public class NPCEntity : MonoBehaviour
 {
-    const float DISTANCE_TO_GROUND = 0.1f;
-    const float DISTANCE_TO_COLIS = 1.2f;
+    const float fDISTANCE_TO_GROUND = 0.1f;
+    const float fDISTANCE_TO_COLIS = 1.2f;
     public static List<NPCEntity> npcList;
     [HideInInspector]
-    public string npcID;
-    public float speed;
+    public string sNpcID;
+    public float fSpeed;
     [TextArea(3, 5)]
-    public string[] dialogLines;
+    public string[] sDialogLines;
     public NPCBehaviour behaviour;
     public NPCActivities activity;
-    public Transform[] patrolPoints;
+    public Transform[] tPatrolPoints;
     private Animator anim;
     private Rigidbody rbody;
-    public float walkTime;
-    public float waitTime;
+    public float fWalkTime;
+    public float fWaitTime;
     private Vector3 randomVector;
     private Vector3 lastDirection;
     private bool isMovingRandomly = false;
-    private bool canMove = true;
-    private bool isInteracting;
-    private bool dialogCheck = false;
-    private bool _dirReverse;
-    public bool reveseDirection;
-    private int patrolPos = 0;
+    private bool bCanMove = true;
+    private bool bIsInteracting;
+    private bool bDialogCheck = false;
+    private bool bDirReverse;
+    public bool bReveseDirection;
+    private int iPatrolPos = 0;
 
     void Start()
     {
@@ -37,8 +37,8 @@ public class NPCEntity : MonoBehaviour
 
         rbody.isKinematic = true;
 
-        if (string.IsNullOrEmpty(npcID))
-            npcID = System.Guid.NewGuid().ToString();
+        if (string.IsNullOrEmpty(sNpcID))
+            sNpcID = System.Guid.NewGuid().ToString();
         if (npcList == null)
             npcList = new List<NPCEntity>();
         if (!npcList.Contains(this))
@@ -85,7 +85,7 @@ public class NPCEntity : MonoBehaviour
     }
     public void DoActivity(NPCActivities _activity)
     {
-        if (!isInteracting)
+        if (!bIsInteracting)
         {
             //Debug.Log("I m doing some activity");
             switch (activity)
@@ -121,12 +121,12 @@ public class NPCEntity : MonoBehaviour
         }
         else
         {
-            if (canMove)
+            if (bCanMove)
             {
-                if(HelperFunctions.CheckAheadForColi(transform, DISTANCE_TO_COLIS))
+                if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
                 {
-                    canMove = false;
-                    StartCoroutine(ChangeBoolAfter((bool b) =>{ isMovingRandomly = b; }, false, waitTime));
+                    bCanMove = false;
+                    StartCoroutine(ChangeBoolAfter((bool b) =>{ isMovingRandomly = b; }, false, fWaitTime));
                 }
                 else
                 {
@@ -134,56 +134,59 @@ public class NPCEntity : MonoBehaviour
                         transform.forward = new Vector3(randomVector.normalized.x, transform.forward.y, randomVector.normalized.z);
                     else
                         transform.forward = new Vector3(0.1f, transform.forward.y, 0.1f); // Fixed bug for look rotation (and speedy or no movement)
-
-                    rbody.MovePosition(transform.position + (transform.forward * speed * Time.fixedDeltaTime));
+                    
+                    rbody.MovePosition(transform.position + (transform.forward * fSpeed * Time.fixedDeltaTime));
                 } 
             }
         }
     }// Add Moving Area
     public void Patrolling()
     {
-        if (canMove)
+        if (bCanMove)
         {
-            lastDirection = patrolPoints[patrolPos].position - transform.position;
+            lastDirection = (tPatrolPoints[iPatrolPos].position - transform.position).normalized;
 
-            if (HelperFunctions.CheckAheadForColi(transform, DISTANCE_TO_COLIS))
+            //HelperFunctions.RotateTowardsTarget(transform, lastDirection);
+
+            if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
             {
-                canMove = false;
-                StartCoroutine(ChangeBoolAfter((bool b) => { canMove = b; }, true, waitTime));
+                bCanMove = false;
+                StartCoroutine(ChangeBoolAfter((bool b) => { bCanMove = b; }, true, fWaitTime));
             }
 
-            if ((transform.position - patrolPoints[patrolPos].position).sqrMagnitude <= 1f)
+            if ((transform.position - tPatrolPoints[iPatrolPos].position).sqrMagnitude <= 1f)
             {
-                canMove = false;
-                StartCoroutine(ChangeBoolAfter((bool b) => { canMove = b; }, true, waitTime));
-                if (_dirReverse)
-                    patrolPos--;
+                bCanMove = false;
+                StartCoroutine(ChangeBoolAfter((bool b) => { bCanMove = b; }, true, fWaitTime));
+
+                if (bDirReverse)
+                    iPatrolPos--;
                 else
-                    patrolPos++;
+                    iPatrolPos++;
             }
-            if(patrolPos >= patrolPoints.Length)
+            if(iPatrolPos >= tPatrolPoints.Length)
             {
-                if (reveseDirection)
+                if (bReveseDirection)
                 {
-                    patrolPos--;
-                    _dirReverse = true;
+                    iPatrolPos--;
+                    bDirReverse = true;
                 }
                 else
-                    patrolPos = 0;
+                    iPatrolPos = 0;
             }
-            else if(patrolPos == 0)
+            else if(iPatrolPos == 0)
             {
-                if (_dirReverse)
+                if (bDirReverse)
                 {
-                    _dirReverse = false;
-                }   
+                    bDirReverse = false;
+                }
             }
-            if (!HelperFunctions.CheckAheadForColi(transform, DISTANCE_TO_COLIS))
+            if (!HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
             {
                 transform.forward = new Vector3(lastDirection.x, transform.forward.y, lastDirection.z);
-                rbody.MovePosition(transform.position + transform.forward * speed * Time.fixedDeltaTime);
-               // anim.SetFloat("m_speed", 1);
+                rbody.MovePosition(transform.position + (transform.forward * fSpeed * Time.fixedDeltaTime));
             }
+           
         }
     }
     /*//public void FindPathToLocation()
@@ -213,13 +216,13 @@ public class NPCEntity : MonoBehaviour
     // Setter Functions
     public void SetDialog()
     {
-        isInteracting = true;
-        dialogCheck = true;
-        PopupUIManager.Instance.dialogBoxPopup.setDialogText(dialogLines);
+        bIsInteracting = true;
+        bDialogCheck = true;
+        PopupUIManager.Instance.dialogBoxPopup.setDialogText(sDialogLines);
     }
     public void SetRbodyAccToGroundCheck()
     {
-        if (HelperFunctions.Grounded(transform, DISTANCE_TO_GROUND))
+        if (HelperFunctions.Grounded(transform, fDISTANCE_TO_GROUND))
         {
             rbody.isKinematic = true;
         }
@@ -230,7 +233,7 @@ public class NPCEntity : MonoBehaviour
     {
         StopAllCoroutines();
         isMovingRandomly = false;
-        canMove = false;
+        bCanMove = false;
         StartCoroutine(RotateTowardsTarget(_target));
     }
     public void SetAnimations()
@@ -242,14 +245,14 @@ public class NPCEntity : MonoBehaviour
     /// Checker Functions
     public void CheckForDialogToFinish()
     {
-        if (isInteracting)
+        if (bIsInteracting)
         {
             if (!PopupUIManager.Instance.dialogBoxPopup.GetDialogInProgress())
             {
-                if (dialogCheck)
+                if (bDialogCheck)
                 {
-                    StartCoroutine(ChangeBoolAfter((bool b) => { isInteracting = b; canMove = true; }, false, 1f));
-                    dialogCheck = false;
+                    StartCoroutine(ChangeBoolAfter((bool b) => { bIsInteracting = b; bCanMove = true; }, false, 1f));
+                    bDialogCheck = false;
                 }
             }
         }
@@ -273,18 +276,16 @@ public class NPCEntity : MonoBehaviour
     {
         randomVector = new Vector3(Random.Range(1, -1), 0, Random.Range(-1, 1));
 
-        if (HelperFunctions.CheckAheadForColi(transform, DISTANCE_TO_COLIS))
+        if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
         {
             randomVector *= -1; //new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
         }
-        if(randomVector != Vector3.zero)
-            transform.forward = new Vector3(randomVector.normalized.x, transform.forward.y, randomVector.normalized.z);
-        //lastFacingDir = randomVector;
-        canMove = true;
+
+        bCanMove = true;
         isMovingRandomly = true;
-        yield return new WaitForSeconds(walkTime);
-        canMove = false;
-        yield return new WaitForSeconds(waitTime);
+        yield return new WaitForSeconds(fWalkTime);
+        bCanMove = false;
+        yield return new WaitForSeconds(fWaitTime);
         isMovingRandomly = false;
     }
     IEnumerator ChangeBoolAfter(System.Action<bool> _callBack,bool _setBool , float _time)

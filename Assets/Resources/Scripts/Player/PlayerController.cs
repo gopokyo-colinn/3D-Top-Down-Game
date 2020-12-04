@@ -173,7 +173,6 @@ public class PlayerController : MonoBehaviour
        // Debug.DrawRay(transform.position + new Vector3(-0.1f, HEAD_OFFSET, 0), transform.forward * NPC_DISTANCE_CHECK, Color.red);
 
         RaycastHit hit;
-       // if(Physics.Raycast(transform.position + new Vector3(-0.1f, HEAD_OFFSET,  0), transform.forward, out hit , NPC_DISTANCE_CHECK) || Physics.Raycast(transform.position + new Vector3(0.1f, HEAD_OFFSET, 0), transform.forward, out hit, NPC_DISTANCE_CHECK))
         if(Physics.CapsuleCast(transform.position, transform.position + new Vector3(0, HEAD_OFFSET * 2, 0), 0.8f/*radius*/, transform.forward, out hit, NPC_DISTANCE_CHECK/*distance*/)
             || Physics.Raycast(transform.position + new Vector3(0, HEAD_OFFSET, 0), transform.forward, out hit, NPC_DISTANCE_CHECK))
         {
