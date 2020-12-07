@@ -5,7 +5,7 @@ public enum NPCBehaviour { SIMPLE = 0, QUEST_GIVER = 1, MERCHANT = 2}
 public enum NPCActivities { IDLE = 0, MOVE_RANDOMLY = 1, PATROLLING = 2, FIGHTER = 3, SLEEPING = 4 }
 public class NPCEntity : MonoBehaviour
 {
-    const float fDISTANCE_TO_GROUND = 0.1f;
+    const float fDISTANCE_TO_GROUND = 0.2f;
     const float fDISTANCE_TO_COLIS = 1.2f;
     public static List<NPCEntity> npcList;
     [HideInInspector]
@@ -22,8 +22,8 @@ public class NPCEntity : MonoBehaviour
     public float fWaitTime;
     private Vector3 randomVector;
     private Vector3 lastDirection;
-    private bool isMovingRandomly = false;
-    private bool bCanMove = true;
+    private bool bCanMove = false;
+    private bool bIsMoving = true;
     private bool bIsInteracting;
     private bool bDialogCheck = false;
     private bool bDirReverse;
@@ -114,35 +114,28 @@ public class NPCEntity : MonoBehaviour
     /// Activities
     public void MovingRandomly()
     {
-        if (!isMovingRandomly)
+        if (!bCanMove)
         {
             StopAllCoroutines();
-            StartCoroutine(MoveRandom());
+            StartCoroutine(SetRandomDirection());
         }
         else
         {
-            if (bCanMove)
+            if (bIsMoving)
             {
                 if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
                 {
-                    bCanMove = false;
-                    StartCoroutine(ChangeBoolAfter((bool b) =>{ isMovingRandomly = b; }, false, fWaitTime));
+                    bIsMoving = false;
+                    StartCoroutine(ChangeBoolAfter((bool b) => { bCanMove = b; }, false, fWaitTime));
                 }
-                else
-                {
-                    if (randomVector != Vector3.zero)
-                        transform.forward = new Vector3(randomVector.normalized.x, transform.forward.y, randomVector.normalized.z);
-                    else
-                        transform.forward = new Vector3(0.1f, transform.forward.y, 0.1f); // Fixed bug for look rotation (and speedy or no movement)
-                    
-                    rbody.MovePosition(transform.position + (transform.forward * fSpeed * Time.fixedDeltaTime));
-                } 
+
+                rbody.MovePosition(transform.position + (transform.forward * fSpeed * Time.fixedDeltaTime));
             }
         }
     }// Add Moving Area
     public void Patrolling()
     {
-        if (bCanMove)
+        if (bIsMoving)
         {
             lastDirection = (tPatrolPoints[iPatrolPos].position - transform.position).normalized;
 
@@ -150,14 +143,14 @@ public class NPCEntity : MonoBehaviour
 
             if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
             {
-                bCanMove = false;
-                StartCoroutine(ChangeBoolAfter((bool b) => { bCanMove = b; }, true, fWaitTime));
+                bIsMoving = false;
+                StartCoroutine(ChangeBoolAfter((bool b) => { bIsMoving = b; }, true, fWaitTime));
             }
 
             if ((transform.position - tPatrolPoints[iPatrolPos].position).sqrMagnitude <= 1f)
             {
-                bCanMove = false;
-                StartCoroutine(ChangeBoolAfter((bool b) => { bCanMove = b; }, true, fWaitTime));
+                bIsMoving = false;
+                StartCoroutine(ChangeBoolAfter((bool b) => { bIsMoving = b; }, true, fWaitTime));
 
                 if (bDirReverse)
                     iPatrolPos--;
@@ -232,8 +225,8 @@ public class NPCEntity : MonoBehaviour
     public void LookAtTarget(Transform _target)
     {
         StopAllCoroutines();
-        isMovingRandomly = false;
         bCanMove = false;
+        bIsMoving = false;
         StartCoroutine(RotateTowardsTarget(_target));
     }
     public void SetAnimations()
@@ -251,7 +244,7 @@ public class NPCEntity : MonoBehaviour
             {
                 if (bDialogCheck)
                 {
-                    StartCoroutine(ChangeBoolAfter((bool b) => { bIsInteracting = b; bCanMove = true; }, false, 1f));
+                    StartCoroutine(ChangeBoolAfter((bool b) => { bIsInteracting = b; bIsMoving = true; }, false, 1f));
                     bDialogCheck = false;
                 }
             }
@@ -272,21 +265,28 @@ public class NPCEntity : MonoBehaviour
         yield return new WaitForSeconds(1f);
         Debug.Log("It Finished");
     }
-    IEnumerator MoveRandom()
+    IEnumerator SetRandomDirection()
     {
-        randomVector = new Vector3(Random.Range(1, -1), 0, Random.Range(-1, 1));
+        randomVector = new Vector3(Random.Range(1f, -1f), 0, Random.Range(1f, -1f)); // For transfom forward without rotation
 
         if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
         {
-            randomVector *= -1; //new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
+            transform.forward *= -1;
+        }
+        else
+        {
+            if (randomVector != Vector3.zero)
+                transform.forward = randomVector;
+            else
+                transform.forward = new Vector3(0.1f, randomVector.y, 0.1f); // Fixed bug for look rotation (and speedy or no movement)
         }
 
+        bIsMoving = true;
         bCanMove = true;
-        isMovingRandomly = true;
         yield return new WaitForSeconds(fWalkTime);
-        bCanMove = false;
+        bIsMoving = false;
         yield return new WaitForSeconds(fWaitTime);
-        isMovingRandomly = false;
+        bCanMove = false;
     }
     IEnumerator ChangeBoolAfter(System.Action<bool> _callBack,bool _setBool , float _time)
     {

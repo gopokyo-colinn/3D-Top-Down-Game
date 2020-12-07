@@ -16,7 +16,7 @@ public static class HelperFunctions
     }
     public static bool Grounded(Transform _transform, float _distanceToGround)
     {
-        return Physics.Raycast(_transform.position, Vector3.down, _distanceToGround);
+        return Physics.Raycast(_transform.position + new Vector3(0,0.2f,0), Vector3.down, _distanceToGround);
     }
     public static void RotateTowardsTarget(Transform _transform, Vector3 _target, float _rotationSpeed)
     {

@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum EnemyType { SCORPION = 0}
+public enum EnemyType { SCORPION = 0 }
 public class Enemy : MonoBehaviour, IHittable
 {
-   //const float fDISTANCE_TO_GROUND = 0.1f;
+    //const float fDISTANCE_TO_GROUND = 0.1f;
     const float fDISTANCE_TO_COLIS = 1.2f;
     const float fHIT_TIME = 0.7f;
     const float fVISION_RANGE = 5f;
     const float fTARGET_RANGE = 40f;
+    const float fROTATESPEED = 80f;
 
     public float fMaxHitPoints;
     protected float fCurrentHitPoints;
@@ -19,16 +20,17 @@ public class Enemy : MonoBehaviour, IHittable
     protected Animator anim;
     protected PlayerController targetPlayer;
 
-    private bool bIsMoving;
-    private bool bCanMove = true;
+    private bool bCanMove;
+    private bool bCanRotate;
+    private bool bIsMoving = true;
     private bool bIsHit;
     protected bool bTargetFound;
     public float fWalkTime;
     public float fWaitTime;
-    private float fRotationSpeed = 80f;
     private Vector3 randomVector;
     private Vector3 startPosition;
 
+    public GameObject tt;
     public void Initialize()
     {
         rbody = GetComponent<Rigidbody>();
@@ -41,14 +43,17 @@ public class Enemy : MonoBehaviour, IHittable
     public void Refresh()
     {
         CheckIfTargetOutOfRange();
-        Debug.Log(bTargetFound);
+    }
+    public void FixedRefresh()
+    {
+
     }
 
     public void TakeDamage(int _damage)
     {
         bIsHit = true;
         fCurrentHitPoints -= _damage;
-        StopAllCoroutines();
+       // StopAllCoroutines();
         StartCoroutine(ChangeBoolAfter((bool b) => { bIsHit = b; }, false, fHIT_TIME));
 
         if (fCurrentHitPoints <= 0)
@@ -68,7 +73,6 @@ public class Enemy : MonoBehaviour, IHittable
                 }
             }
         }
-       
     }
     public void Die()
     {
@@ -76,29 +80,27 @@ public class Enemy : MonoBehaviour, IHittable
     }
     public void MovingRandomly()
     {
-        FindingTarget();
-        if (!bIsMoving)
+        if (!bCanMove)
         {
-            StopAllCoroutines();
             StartCoroutine(MoveRandom());
         }
         else
         {
-            if (bCanMove)
+            if (bIsMoving)
             {
                 if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
                 {
-                    bCanMove = false;
-                    StartCoroutine(ChangeBoolAfter((bool b) => { bIsMoving = b; }, false, fWaitTime));
+                    bIsMoving = false;
+                    StartCoroutine(ChangeBoolAfter((bool b) => { bCanMove = b; }, false, fWaitTime));
                 }
-                else
-                {
-                    if (randomVector != Vector3.zero)
-                        transform.forward = new Vector3(randomVector.normalized.x, transform.forward.y, randomVector.normalized.z);
-                    else
-                        transform.forward = new Vector3(0.1f, transform.forward.y, 0.1f); // Fixed bug for look rotation (and speedy or no movement)
 
-                    rbody.MovePosition(transform.position + (transform.forward * fSpeed * Time.fixedDeltaTime));
+                rbody.MovePosition(transform.position + (transform.forward * fSpeed * Time.fixedDeltaTime));
+            }
+            else
+            {
+                if (bCanRotate)
+                {
+                    HelperFunctions.RotateTowardsTarget(transform, randomVector, fROTATESPEED);
                 }
             }
         }
@@ -106,8 +108,8 @@ public class Enemy : MonoBehaviour, IHittable
     public void FindingTarget()
     {
         RaycastHit hit;
-        //Debug.DrawRay(transform.position + new Vector3(0, 0.3f, 0), transform.forward * fVISION_RANGE, Color.red);
-        if(Physics.Raycast(transform.position + new Vector3(0, 0.3f, 0), transform.forward, out hit, fVISION_RANGE))
+        Debug.DrawRay(transform.position + new Vector3(0, 0.3f, 0), transform.forward * fVISION_RANGE, Color.red);
+        if (Physics.Raycast(transform.position + new Vector3(0, 0.3f, 0), transform.forward, out hit, fVISION_RANGE))
         {
             if (hit.transform.CompareTag("Player"))
             {
@@ -117,39 +119,42 @@ public class Enemy : MonoBehaviour, IHittable
     }
     public void FollowTarget()
     {
-        HelperFunctions.RotateTowardsTarget(transform, targetPlayer.transform.position, fRotationSpeed);
+        HelperFunctions.RotateTowardsTarget(transform, targetPlayer.transform.position, fROTATESPEED);
         rbody.MovePosition(transform.position + (transform.forward * fSpeed * Time.fixedDeltaTime));
     }
     public void CheckIfTargetOutOfRange()
     {
         if (bTargetFound)
         {
-            if((transform.position - targetPlayer.transform.position).sqrMagnitude >= fTARGET_RANGE)
+            if ((transform.position - targetPlayer.transform.position).sqrMagnitude >= fTARGET_RANGE)
             {
                 bTargetFound = false;
-                bIsMoving = true;
-                bCanMove = false;
-                StartCoroutine(ChangeBoolAfter((bool b) => { bCanMove = b; bIsMoving = !b; }, true, fWaitTime));
+                bCanMove = true;
+                bIsMoving = false;
+                StartCoroutine(ChangeBoolAfter((bool b) => { bIsMoving = b; bCanMove = !b; }, true, fWaitTime));
             }
         }
     }
     IEnumerator MoveRandom()
     {
-        randomVector = new Vector3(Random.Range(1, -1), 0, Random.Range(-1, 1));
+        randomVector = transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(1f, -1f)); // added transform position for rotating correctly
+        tt.transform.position = randomVector;
 
         if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
         {
-            randomVector *= -1; //new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
+            transform.forward *= -1;// transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(1f, -1f)); //new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
         }
-        if (randomVector != Vector3.zero)
-            transform.forward = new Vector3(randomVector.normalized.x, transform.forward.y, randomVector.normalized.z);
-        //lastFacingDir = randomVector;
-        bCanMove = true;
+
         bIsMoving = true;
+        bCanMove = true;
         yield return new WaitForSeconds(fWalkTime);
-        bCanMove = false;
-        yield return new WaitForSeconds(fWaitTime);
         bIsMoving = false;
+        yield return new WaitForSeconds(fWaitTime / 3);
+        bCanRotate = true;
+        yield return new WaitForSeconds(fWaitTime / 3);
+        bCanRotate = false;
+        yield return new WaitForSeconds(fWaitTime / 3);
+        bCanMove = false;
     }
     IEnumerator ChangeBoolAfter(System.Action<bool> _callBack, bool _setBool, float _time)
     {

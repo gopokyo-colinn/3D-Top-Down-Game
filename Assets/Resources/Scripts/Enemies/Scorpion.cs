@@ -10,12 +10,25 @@ public class Scorpion : Enemy
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         base.Refresh();
-        if(!bTargetFound)
+        if (!bTargetFound)
+        {
+            FindingTarget();
+        }
+    }
+    void FixedUpdate()
+    {
+        base.FixedRefresh();
+
+        if (!bTargetFound)
+        {
             MovingRandomly();
+        }
         else
+        {
             FollowTarget();
+        }
     }
 }
