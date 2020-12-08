@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour, ICanDamage
 {
-    public int damage;
+    public int iDamage;
     Collider coli;
     PlayerController player;
 
@@ -21,11 +21,11 @@ public class Weapon : MonoBehaviour, ICanDamage
     }
     public int Damage()
     {
-        return damage;
+        return iDamage;
     }
     public void CheckPlayerForAttack()
     {
-        if (player.isAttacking)
+        if (player.bIsAttacking)
         {
            // trialEffectAnimator.SetTrigger("slash_1");
             coli.enabled = true;
@@ -33,6 +33,17 @@ public class Weapon : MonoBehaviour, ICanDamage
         else
         {
             coli.enabled = false;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other)
+        {
+            if(other.gameObject.GetComponent<IHittable>() != null)
+            {
+                other.gameObject.GetComponent<IHittable>().TakeDamage(iDamage);
+            }
         }
     }
 }

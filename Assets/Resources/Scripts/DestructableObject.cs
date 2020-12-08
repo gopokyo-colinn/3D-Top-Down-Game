@@ -52,4 +52,9 @@ public class DestructableObject : MonoBehaviour, IHittable
             }
         }
     }
+
+    public void IsInvulnerable(bool _invulnerable)
+    {
+        //
+    }
 }

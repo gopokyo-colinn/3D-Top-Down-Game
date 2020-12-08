@@ -2,58 +2,76 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IHittable
 {
-    const float HEAD_OFFSET = 1f;
-    const float NPC_DISTANCE_CHECK = 0.8f;
-    const float DISTANCE_TO_GROUND = 0.1f;
+    const float fHEAD_OFFSET = 1f;
+    const float fNPC_DISTANCE_CHECK = 0.8f;
+    const float fDISTANCE_TO_GROUND = 0.1f;
+    const float fINVULNERABILITY_TIME = 0.7f;
+
     Rigidbody rbody;
     Animator anim;
-    public float speed;
-    public float jumpForce;
-    public float speedMultiplier = 1.5f;
-    const float walkSpeedDivision = 0.5f;
+
+    public int iMaxHitPoints;
+    public int iCurrentHitPoints;
+    public float fSpeed;
+    public float fJumpForce;
+    public float sSpeedMultiplier = 1.5f;
+    const float fSpeedDivision = 0.5f;
     float horizontal;
     float vertical;
     Vector3 lastFacinDirection;
+
+    public bool bIsAlive;
     [HideInInspector]
-    public bool isShielding;
-    bool isSprinting;
+    public bool bIsShielding;
+    bool bIsSprinting;
     [HideInInspector]
-    public bool swordEquipped = false;
-    public bool isAttacking = false;
-    public bool canAttack = true;
-    private bool isInteracting = false;
-    int attackCombo = -1;
+    public bool bSwordEquipped = false;
+    [HideInInspector]
+    public bool bCanAttack = true;
+    [HideInInspector]
+    public bool bIsAttacking = false;
+    private bool bIsInteracting = false;
+    private bool bIsInvulnerable;
+    int iAttackCombo = -1;
 
     void Start()
     {
         // controller = GetComponent<CharacterController>();
         rbody = GetComponent<Rigidbody>();
         anim = GetComponentInChildren<Animator>();
+        iCurrentHitPoints = iMaxHitPoints;
+        bIsAlive = true;
     }
     void Update()
     {
         if (GameController.Instance.inPlayMode)
         {
-            GetDirectionalInput();
-            UseShield();
-            DrawSword();
-            SwordAttacks();
-            CheckForNPC();
+            if (bIsAlive)
+            {
+                GetDirectionalInput();
+                UseShield();
+                DrawSword();
+                SwordAttacks();
+                CheckForNPC();
+            }
         }
     }
     void FixedUpdate()
     {
         if (GameController.Instance.inPlayMode)
         {
-            if (Grounded())
+            if (bIsAlive)
             {
-                DirectionalMovement();
-            }
-            else // for natural jumping, can't change direction in mid air
-            {
-                rbody.velocity = new Vector3(horizontal * speed * Time.fixedDeltaTime, rbody.velocity.y, vertical * speed * Time.fixedDeltaTime);
+                if (Grounded())
+                {
+                    DirectionalMovement();
+                }
+                else // for natural jumping, can't change direction in mid air
+                {
+                    rbody.velocity = new Vector3(horizontal * fSpeed * Time.fixedDeltaTime, rbody.velocity.y, vertical * fSpeed * Time.fixedDeltaTime);
+                }
             }
         }
     }
@@ -65,16 +83,16 @@ public class PlayerController : MonoBehaviour
     void DirectionalMovement()
     {
 
-        anim.SetBool("isSprinting", isSprinting);
+        anim.SetBool("isSprinting", bIsSprinting);
 
         if (horizontal != 0 || vertical != 0)
         {
             anim.SetFloat("moveVelocity", 1f);
 
-            if (Input.GetButton("Sprint") && !isShielding)
-                isSprinting = true;
+            if (Input.GetButton("Sprint") && !bIsShielding)
+                bIsSprinting = true;
             else
-                isSprinting = false;
+                bIsSprinting = false;
             lastFacinDirection = new Vector3(horizontal, 0f, vertical);
         
             // It is for keeping the direction while shielding
@@ -85,7 +103,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             anim.SetFloat("moveVelocity", 0f);
-            isSprinting = false;
+            bIsSprinting = false;
         }
         if(lastFacinDirection != Vector3.zero)
             transform.forward = lastFacinDirection.normalized;
@@ -94,32 +112,32 @@ public class PlayerController : MonoBehaviour
 
         if (movementVector.magnitude > 0.1f)
         { 
-            if (isSprinting)
-                rbody.velocity = movementVector.normalized * speed * speedMultiplier * Time.fixedDeltaTime;
-            else if (isShielding)
-                rbody.velocity = movementVector.normalized * walkSpeedDivision * speed * Time.fixedDeltaTime;
+            if (bIsSprinting)
+                rbody.velocity = movementVector.normalized * fSpeed * sSpeedMultiplier * Time.fixedDeltaTime;
+            else if (bIsShielding)
+                rbody.velocity = movementVector.normalized * fSpeedDivision * fSpeed * Time.fixedDeltaTime;
             else
-                rbody.velocity = movementVector.normalized * speed * Time.fixedDeltaTime;
+                rbody.velocity = movementVector.normalized * fSpeed * Time.fixedDeltaTime;
         }
     }
     void UseShield()
     {   
         if (Input.GetButton("Shield"))
         {
-            isShielding = true;
+            bIsShielding = true;
         }
         else
-            isShielding = false;
-        anim.SetBool("isShielding", isShielding);
+            bIsShielding = false;
+        anim.SetBool("isShielding", bIsShielding);
     }
     void DrawSword()
     {
-        if (!swordEquipped)
+        if (!bSwordEquipped)
         {
             if (Input.GetButton("Attack"))
             {
                 anim.SetBool("draw_Sword", true);
-                swordEquipped = true;
+                bSwordEquipped = true;
             }
         }
         else
@@ -127,36 +145,36 @@ public class PlayerController : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.T))
             {
                 anim.SetBool("draw_Sword", false);
-                swordEquipped = false;
-                isAttacking = false;
-                attackCombo = -1;
+                bSwordEquipped = false;
+                bIsAttacking = false;
+                iAttackCombo = -1;
             }
         }
     }
     void SwordAttacks()
     {
-        if (swordEquipped)
+        if (bSwordEquipped)
         {
             if (Input.GetButtonDown("Attack"))
             {
-                attackCombo++;
-                if(attackCombo > 0 && canAttack)
+                iAttackCombo++;
+                if(iAttackCombo > 0 && bCanAttack)
                 {
-                    isAttacking = true;
-                    canAttack = false;
+                    bIsAttacking = true;
+                    bCanAttack = false;
                     anim.SetTrigger("attack1");
                 }
             }
             else
             {
-                isAttacking = !canAttack;
+                bIsAttacking = !bCanAttack;
             }
         } 
     }
     public bool Grounded()
     {
         // use a spherecast instead
-        return Physics.Raycast(transform.position, Vector3.down, DISTANCE_TO_GROUND);
+        return Physics.Raycast(transform.position, Vector3.down, fDISTANCE_TO_GROUND);
     }
     public void Jumping()
     {
@@ -164,7 +182,7 @@ public class PlayerController : MonoBehaviour
         if (Grounded())
         {
             if (Input.GetKeyDown(KeyCode.Space))
-                rbody.AddForce(rbody.velocity.x, jumpForce, rbody.velocity.z, ForceMode.Impulse);
+                rbody.AddForce(rbody.velocity.x, fJumpForce, rbody.velocity.z, ForceMode.Impulse);
         }
     }
     public void CheckForNPC()
@@ -173,15 +191,15 @@ public class PlayerController : MonoBehaviour
        // Debug.DrawRay(transform.position + new Vector3(-0.1f, HEAD_OFFSET, 0), transform.forward * NPC_DISTANCE_CHECK, Color.red);
 
         RaycastHit hit;
-        if(Physics.CapsuleCast(transform.position, transform.position + new Vector3(0, HEAD_OFFSET * 2, 0), 0.8f/*radius*/, transform.forward, out hit, NPC_DISTANCE_CHECK/*distance*/)
-            || Physics.Raycast(transform.position + new Vector3(0, HEAD_OFFSET, 0), transform.forward, out hit, NPC_DISTANCE_CHECK))
+        if(Physics.CapsuleCast(transform.position, transform.position + new Vector3(0, fHEAD_OFFSET * 2, 0), 0.8f/*radius*/, transform.forward, out hit, fNPC_DISTANCE_CHECK/*distance*/)
+            || Physics.Raycast(transform.position + new Vector3(0, fHEAD_OFFSET, 0), transform.forward, out hit, fNPC_DISTANCE_CHECK))
         {
-            if (hit.transform.GetComponent<NPCEntity>() && !isInteracting)
+            if (hit.transform.GetComponent<NPCEntity>() && !bIsInteracting)
             {
                 //Debug.Log("in range");
                 if (Input.GetButtonDown("Interact"))
                 {
-                    isInteracting = true;
+                    bIsInteracting = true;
                     NPCEntity _collidedNPC = hit.transform.GetComponent<NPCEntity>();
                     //PopupUIManager.Instance.dialogBoxPopup.setDialogText(_collidedNPC.dialogLines);
 
@@ -197,9 +215,9 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                if (isInteracting)
+                if (bIsInteracting)
                 {
-                    isInteracting = false;
+                    bIsInteracting = false;
                 }
             }
                 
@@ -219,5 +237,36 @@ public class PlayerController : MonoBehaviour
         //Gizmos.color = Color.blue;
         //Gizmos.DrawSphere(transform.position + new Vector3(transform.forward.x / 2, HEAD_OFFSET, transform.forward.z / 2), 0.6f);
        // Gizmos.DrawWireCube(transform.position, Vector3.one / 2);
+    }
+
+    /// Health System
+    public void TakeDamage(int _damage)
+    {
+        if (!bIsInvulnerable)
+        {
+            IsInvulnerable(true);
+            iCurrentHitPoints -= _damage;
+            StartCoroutine(ChangeBoolAfter((bool b) => { IsInvulnerable(b);}, false, fINVULNERABILITY_TIME));
+        }
+        if(iCurrentHitPoints <= 0)
+        {
+            Die();
+        }
+    }
+    public void Die()
+    {
+        bIsAlive = false;
+        gameObject.SetActive(false);
+    }
+
+    public void IsInvulnerable(bool _invulnerable)
+    {
+        bIsInvulnerable = _invulnerable;
+    }
+    public IEnumerator ChangeBoolAfter(System.Action<bool> _callBack, bool _setBool, float _time)
+    {
+        yield return new WaitForSeconds(_time);
+        _callBack(_setBool);
+        //StopAllCoroutines();
     }
 }
