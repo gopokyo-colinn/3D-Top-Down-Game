@@ -37,11 +37,11 @@ public class GameController : MonoBehaviour
 		{ 
 			Destroy(gameObject);
 		}
+		player = FindObjectOfType<PlayerController>();
 	}
 	// Start is called before the first frame update
 	void Start()
     {
-		player = FindObjectOfType<PlayerController>();
         inPlayMode = true;
 		QuestManager.Instance.Initialize(player);
     }

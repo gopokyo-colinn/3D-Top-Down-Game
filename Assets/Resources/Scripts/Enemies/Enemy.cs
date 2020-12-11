@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum EnemyType { SCORPION = 0 }
-public class Enemy : MonoBehaviour, IHittable
+public class Enemy : MonoBehaviour
 {
+    float fRandomWalkCounter = 0;
+    float fRandomWaitCounter = 0;
+
+
     //const float fDISTANCE_TO_GROUND = 0.1f;
     const float fDISTANCE_TO_COLIS = 1.2f;
     const float fVISION_RANGE = 5f;
-    const float fTARGET_FOLLOW_RANGE = 40f;
-    const float fROTATE_SPEED = 200f;
+    protected const float fROTATE_SPEED = 140f;
 
-    protected float fINVULNERABILITY_TIME = 0.5f;
     protected float fAttackRange = 5f;
     public float fMaxHitPoints;
     protected float fCurrentHitPoints;
@@ -19,7 +21,7 @@ public class Enemy : MonoBehaviour, IHittable
     public int iDamage;
     protected Rigidbody rbody;
     protected Animator anim;
-    protected PlayerController targetPlayer;
+    protected static PlayerController targetPlayer;
 
     protected bool bIsAlive;
     protected bool bCanMove;
@@ -36,13 +38,14 @@ public class Enemy : MonoBehaviour, IHittable
     protected float fAttackWaitTimeCounter;
     private Vector3 randomVector;
     private Vector3 startPosition;
-
+    public GameObject tt;
     public void Initialize()
     {
         rbody = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
         fCurrentHitPoints = fMaxHitPoints;
-        targetPlayer = GameController.Instance.player;
+        if (!targetPlayer)
+            targetPlayer = GameController.Instance.player;
         startPosition = transform.position;
         fAttackWaitTimeCounter = 0;
         bIsAlive = true;
@@ -55,28 +58,14 @@ public class Enemy : MonoBehaviour, IHittable
     {
 
     }
-    public void TakeDamage(int _damage)
-    {
-        if (!bIsInvulnerable)
-        {
-            IsInvulnerable(true);
-            bIsHit = true;
-            bTargetFound = true;
-            fCurrentHitPoints -= _damage;
-
-            StartCoroutine(ChangeBoolAfter((bool b) => { IsInvulnerable(b); bIsHit = b; }, false, fINVULNERABILITY_TIME));
-        }
-        if (fCurrentHitPoints <= 0)
-        {
-            Die();
-        }
-    }
+  
     private void OnCollisionEnter(Collision _collision)
     {
         if (bIsAlive)
         {
+            if (_collision.collider)
             {
-                if (_collision.collider)
+                if (_collision.collider.gameObject.CompareTag("Player"))
                 {
                     if (_collision.collider.GetComponent<IHittable>() != null)
                     {
@@ -89,13 +78,19 @@ public class Enemy : MonoBehaviour, IHittable
     public void Die()
     {
         bIsAlive = false;
+        rbody.isKinematic = true;
         Destroy(gameObject, 4f);
+        Collider[] _colliders = GetComponents<Collider>();
+        for (int i = 0; i < _colliders.Length; i++)
+        {
+            _colliders[i].enabled = false;
+        }
     }
     public void MovingRandomly()
     {
         if (!bCanMove)
         {
-            StartCoroutine(MoveRandom());
+           StartCoroutine(SetRandomDirection());
         }
         else
         {
@@ -104,7 +99,7 @@ public class Enemy : MonoBehaviour, IHittable
                 if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
                 {
                     bIsMoving = false;
-                    StartCoroutine(ChangeBoolAfter((bool b) => { bCanMove = b; }, false, fWaitTime));
+                    StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b) => { bCanMove = b; }, false, fWaitTime));
                 }
 
                 rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
@@ -133,57 +128,15 @@ public class Enemy : MonoBehaviour, IHittable
     }
     public void FollowTarget()
     {
-        if (bCanFollow)
+        if (bCanFollow && !bIsInvulnerable)
         {
             HelperFunctions.RotateTowardsTarget(transform, targetPlayer.transform.position, fROTATE_SPEED);
             rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
         }
     }
-    public void CheckTargetInRange()
-    {
-        fAttackWaitTimeCounter -= Time.deltaTime;
-        // Out of Range
-        if ((transform.position - targetPlayer.transform.position).sqrMagnitude >= fTARGET_FOLLOW_RANGE)
-        {
-            bCanAttack = false;
-            bCanFollow = false;
-            bTargetFound = false;
-            bIsMoving = false;
-            bCanRotate = false;
-            bCanMove = true;
-            StopAllCoroutines();
-            StartCoroutine(ChangeBoolAfter((bool b) => { bIsMoving = b; bCanMove = !b; }, true, fWaitTime));
-        }
-        // In Attack Range
-        else if ((transform.position - targetPlayer.transform.position).sqrMagnitude <= fAttackRange)
-        {
-            rbody.velocity = Vector3.zero;// HelperFunctions.VectorZero(rbody);
-            if (fAttackWaitTimeCounter <= 0 && !bIsInvulnerable)
-            {
-                Vector3 dir = (targetPlayer.transform.position - transform.position).normalized;
-                float dot = Vector3.Dot(dir, transform.forward);
-                if(dot > 0.95f)
-                {
-                    bCanAttack = true;
-                }
-                else
-                {
-                    bCanAttack = false;
-                    HelperFunctions.RotateTowardsTarget(transform, targetPlayer.transform.position, fROTATE_SPEED / 3f);
-                }
-            }
-        }
-        // In Non Attack Range
-        else
-        {
-            bCanAttack = false;
-        }
-    }
-    
-    IEnumerator MoveRandom()
+    IEnumerator SetRandomDirection()
     {
         randomVector = transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(1f, -1f)); // added transform position for rotating correctly
-
         if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
         {
             transform.forward *= -1;// transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(1f, -1f)); //new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
@@ -200,15 +153,49 @@ public class Enemy : MonoBehaviour, IHittable
         yield return new WaitForSeconds(fWaitTime / 3);
         bCanMove = false;
     }
-    public IEnumerator ChangeBoolAfter(System.Action<bool> _callBack, bool _setBool, float _time)
+   /* public void SetRandomDirection()
     {
-        yield return new WaitForSeconds(_time);
-        _callBack(_setBool);
-        //StopAllCoroutines();
-    }
+        
+        randomVector = transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(1f, -1f)); // added transform position for rotating correctly
+        if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
+        {
+            transform.forward *= -1;// transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(1f, -1f)); //new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
+        }
+        bIsMoving = true;
+        bCanMove = true;
 
-    public void IsInvulnerable(bool _invulnerable)
+    }
+    public void RandomMovementCounter()
     {
-        bIsInvulnerable = _invulnerable;
+        fRandomWaitCounter += Time.deltaTime;
+        fRandomWalkCounter += Time.deltaTime;
+
+        if (bIsMoving && fRandomWalkCounter >= fWalkTime)
+        {
+            bIsMoving = false;
+            fRandomWalkCounter = 0;
+        }
+
+        if (!bIsMoving)
+        {
+            if (fRandomWaitCounter >= fWaitTime / 3 && !bCanRotate)
+                bCanRotate = true;
+            else if (fRandomWaitCounter >= 2 * (fWaitTime / 3) && bCanRotate)
+                bCanRotate = false;
+            else if (fRandomWaitCounter >= 3 * (fWaitTime / 3) && bCanMove)
+            {
+                bCanMove = false;
+                fRandomWaitCounter = 0;
+            }
+        }
+
+    }*/
+
+    public void Knockback(Vector3 _sourcePosition, float _pushForce)
+    {
+        Vector3 pushForce = transform.position - _sourcePosition;
+        pushForce.y = 0;
+        //transform.forward = -pushForce.normalized;
+        rbody.AddForce(pushForce.normalized * _pushForce - Physics.gravity * 15f, ForceMode.Impulse);
     }
 }

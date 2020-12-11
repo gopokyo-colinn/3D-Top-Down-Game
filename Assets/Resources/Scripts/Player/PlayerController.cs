@@ -55,6 +55,7 @@ public class PlayerController : MonoBehaviour, IHittable
                 DrawSword();
                 SwordAttacks();
                 CheckForNPC();
+                Jumping();
             }
         }
     }
@@ -70,7 +71,7 @@ public class PlayerController : MonoBehaviour, IHittable
                 }
                 else // for natural jumping, can't change direction in mid air
                 {
-                    rbody.velocity = new Vector3(horizontal * fSpeed * Time.fixedDeltaTime, rbody.velocity.y, vertical * fSpeed * Time.fixedDeltaTime);
+                    JumpControlling();
                 }
             }
         }
@@ -105,8 +106,11 @@ public class PlayerController : MonoBehaviour, IHittable
             anim.SetFloat("moveVelocity", 0f);
             bIsSprinting = false;
         }
-        if(lastFacinDirection != Vector3.zero)
-            transform.forward = lastFacinDirection.normalized;
+        if (!bIsAttacking)
+        {
+            if(lastFacinDirection != Vector3.zero)
+                transform.forward = lastFacinDirection.normalized;
+        }
 
         Vector3 movementVector = new Vector3(horizontal, rbody.velocity.y, vertical);
 
@@ -185,6 +189,13 @@ public class PlayerController : MonoBehaviour, IHittable
                 rbody.AddForce(rbody.velocity.x, fJumpForce, rbody.velocity.z, ForceMode.Impulse);
         }
     }
+    void JumpControlling()
+    {
+        if (bIsSprinting)
+            rbody.velocity = new Vector3(horizontal * fSpeed * (sSpeedMultiplier / 1.5f) * Time.fixedDeltaTime, rbody.velocity.y, vertical * fSpeed * (sSpeedMultiplier / 1.5f) * Time.fixedDeltaTime);
+        else
+            rbody.velocity = new Vector3(horizontal * fSpeed * Time.fixedDeltaTime, rbody.velocity.y, vertical * fSpeed * Time.fixedDeltaTime);
+    }
     public void CheckForNPC()
     {
        // Debug.DrawRay(transform.position + new Vector3(0.1f, HEAD_OFFSET, 0), transform.forward * NPC_DISTANCE_CHECK, Color.red);
@@ -258,7 +269,6 @@ public class PlayerController : MonoBehaviour, IHittable
         bIsAlive = false;
         gameObject.SetActive(false);
     }
-
     public void IsInvulnerable(bool _invulnerable)
     {
         bIsInvulnerable = _invulnerable;

@@ -15,9 +15,12 @@ public class DamageTarget : MonoBehaviour, ICanDamage
     {
         if (other)
         {
-            if(other.gameObject.GetComponent<IHittable>() != null)
+            if (other.gameObject.CompareTag("Player"))
             {
-                other.gameObject.GetComponent<IHittable>().TakeDamage(Damage());
+                if(other.gameObject.GetComponent<IHittable>() != null)
+                {
+                    other.gameObject.GetComponent<IHittable>().TakeDamage(Damage());
+                }
             }
         }
     }

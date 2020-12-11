@@ -28,4 +28,14 @@ public static class HelperFunctions
     {
         return new Vector3(0, _rb.velocity.y, 0);
     }
+    public static IEnumerator ChangeBoolAfter(System.Action<bool> _callBack, bool _setBool, float _time)
+    {
+        yield return new WaitForSeconds(_time);
+        _callBack(_setBool);
+        //StopAllCoroutines();
+    }
+    public static IEnumerator WaitForSeconds(float _time)
+    {
+        yield return new WaitForSeconds(_time);
+    }
 }
