@@ -51,7 +51,7 @@ public class DialogBoxPopup : Popup
             base.close();
             dialogLineNumber = -1;
             dialogInProgress = false;
-            GameController.Instance.inPlayMode = true;
+            GameController.inPlayMode = true;
         }
         else
         {

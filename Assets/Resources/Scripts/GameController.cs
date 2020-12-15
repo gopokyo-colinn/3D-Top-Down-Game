@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    public bool inPlayMode;
+    public static bool inPlayMode;
+
+	public static bool bGamePaused;
 
 	public PlayerController player;
 
@@ -44,6 +46,10 @@ public class GameController : MonoBehaviour
     {
         inPlayMode = true;
 		QuestManager.Instance.Initialize(player);
+    }
+    private void Update()
+    {
+        
     }
     private void LateUpdate()
     {

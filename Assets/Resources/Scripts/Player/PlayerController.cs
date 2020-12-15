@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour, IHittable
 {
@@ -36,7 +37,9 @@ public class PlayerController : MonoBehaviour, IHittable
     private bool bIsInvulnerable;
     int iAttackCombo = -1;
 
-    void Start()
+    public UnityEvent OnReciveDamage;
+
+    void Awake()
     {
         // controller = GetComponent<CharacterController>();
         rbody = GetComponent<Rigidbody>();
@@ -46,7 +49,7 @@ public class PlayerController : MonoBehaviour, IHittable
     }
     void Update()
     {
-        if (GameController.Instance.inPlayMode)
+        if (GameController.inPlayMode)
         {
             if (bIsAlive)
             {
@@ -61,7 +64,7 @@ public class PlayerController : MonoBehaviour, IHittable
     }
     void FixedUpdate()
     {
-        if (GameController.Instance.inPlayMode)
+        if (GameController.inPlayMode)
         {
             if (bIsAlive)
             {
@@ -221,7 +224,7 @@ public class PlayerController : MonoBehaviour, IHittable
                     _collidedNPC.SetDialog();
                     _collidedNPC.LookAtTarget(transform);
                     DisablePlayerMoveActions();
-                    GameController.Instance.inPlayMode = false;
+                    GameController.inPlayMode = false;
                 }
             }
             else
@@ -257,6 +260,7 @@ public class PlayerController : MonoBehaviour, IHittable
         {
             IsInvulnerable(true);
             iCurrentHitPoints -= _damage;
+            OnReciveDamage.Invoke();
             StartCoroutine(ChangeBoolAfter((bool b) => { IsInvulnerable(b);}, false, fINVULNERABILITY_TIME));
         }
         if(iCurrentHitPoints <= 0)

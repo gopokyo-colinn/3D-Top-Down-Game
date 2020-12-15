@@ -317,6 +317,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogBoxPopup: {fileID: 8964488335523210444}
+  pauseMenuPopup: {fileID: 0}
 --- !u!1 &8964488335523210442
 GameObject:
   m_ObjectHideFlags: 0
