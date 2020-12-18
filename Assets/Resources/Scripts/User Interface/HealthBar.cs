@@ -12,6 +12,7 @@ public class HealthBar : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        /// Right now the health fill amount only works for 100 health, do it for any health value.
         player = GameController.Instance.player;
         healthFillAmount.fillAmount = player.iCurrentHitPoints / 100f;
     }

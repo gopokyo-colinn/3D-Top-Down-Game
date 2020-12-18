@@ -18,7 +18,7 @@ public class Enemy : MonoBehaviour
     public float fMaxHitPoints;
     protected float fCurrentHitPoints;
     public float fSpeed;
-    public int iDamage;
+    public int iCollisionDamage;
     protected Rigidbody rbody;
     protected Animator anim;
     protected static PlayerController targetPlayer;
@@ -38,7 +38,6 @@ public class Enemy : MonoBehaviour
     protected float fAttackWaitTimeCounter;
     private Vector3 randomVector;
     private Vector3 startPosition;
-    public GameObject tt;
     public void Initialize()
     {
         rbody = GetComponent<Rigidbody>();
@@ -69,7 +68,7 @@ public class Enemy : MonoBehaviour
                 {
                     if (_collision.collider.GetComponent<IHittable>() != null)
                     {
-                        _collision.collider.GetComponent<IHittable>().TakeDamage(iDamage);
+                        _collision.collider.GetComponent<IHittable>().TakeDamage(iCollisionDamage);
                     }
                 }
             }

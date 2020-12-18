@@ -6,6 +6,10 @@ public class PopupUIManager : MonoBehaviour
 {
     public DialogBoxPopup dialogBoxPopup;
 	public PauseMenuPopup pauseMenuPopup;
+	public InventoryPopup inventoryPopup;
+	public SubMenuPopup subMenuPopup;
+
+	bool bInventoryIsOpen;
 
 	private static PopupUIManager instance;
 	public static PopupUIManager Instance
@@ -42,13 +46,43 @@ public class PopupUIManager : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
-			PauseGame();
+            if (bInventoryIsOpen)
+            {
+				CloseInventory();
+            }
+            else
+            {
+				PauseGame();
+            }
 		}
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (!bInventoryIsOpen)
+            {
+				OpenInventory();
+            }
+            else
+            {
+				CloseInventory();
+            }
+        }
 	}
+	void OpenInventory()
+    {
+		GameController.inPlayMode = false;
+		bInventoryIsOpen = true;
+		inventoryPopup.open();
+    }
+	void CloseInventory()
+    {
+		GameController.inPlayMode = true;
+		bInventoryIsOpen = false;
+		inventoryPopup.close();
+		subMenuPopup.close();
+    }
 
 	void PauseGame()
     {
-
         if (!GameController.bGamePaused)
         {
             GameController.bGamePaused = true;

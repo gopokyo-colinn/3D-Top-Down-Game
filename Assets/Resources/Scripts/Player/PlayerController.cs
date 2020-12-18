@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour, IHittable
     int iAttackCombo = -1;
 
     public UnityEvent OnReciveDamage;
+    public Inventory myInventory;
 
     void Awake()
     {
@@ -46,6 +47,7 @@ public class PlayerController : MonoBehaviour, IHittable
         anim = GetComponentInChildren<Animator>();
         iCurrentHitPoints = iMaxHitPoints;
         bIsAlive = true;
+        myInventory = new Inventory();
     }
     void Update()
     {
@@ -58,6 +60,7 @@ public class PlayerController : MonoBehaviour, IHittable
                 DrawSword();
                 SwordAttacks();
                 CheckForNPC();
+                CheckForItems();
                 Jumping();
             }
         }
@@ -238,6 +241,25 @@ public class PlayerController : MonoBehaviour, IHittable
            // Debug.DrawRay(transform.position + new Vector3(0, HEAD_OFFSET, 0), transform.forward * NPC_DISTANCE_CHECK, Color.green);
         }
     }
+    void CheckForItems()
+    {
+        //// Use Some Other type of cast this is tooo bugggy, also for npc's.
+        RaycastHit hit;
+        if (Physics.CapsuleCast(transform.position, transform.position + new Vector3(0, fHEAD_OFFSET, 0), 2f/*radius*/, transform.forward, out hit, 2f/*distance*/))
+        {
+            Debug.Log(hit.transform.name);
+            ItemContainer _itemContainer = hit.transform.GetComponent<ItemContainer>();
+            if (_itemContainer)
+            {
+                if (Input.GetButtonDown("Interact"))
+                {
+                    myInventory.AddItem(_itemContainer.item);
+                    _itemContainer.DestroySelf();
+                    PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(myInventory);
+                }
+            }
+        }
+    }
     public void DisablePlayerMoveActions()
     {
         rbody.velocity = new Vector3(0, rbody.velocity.y, 0);
@@ -245,14 +267,6 @@ public class PlayerController : MonoBehaviour, IHittable
         anim.SetFloat("moveVelocity", 0f);
         anim.SetBool("isShielding", false);
     }
-    ///// Gizmos
-    private void OnDrawGizmos()
-    {
-        //Gizmos.color = Color.blue;
-        //Gizmos.DrawSphere(transform.position + new Vector3(transform.forward.x / 2, HEAD_OFFSET, transform.forward.z / 2), 0.6f);
-       // Gizmos.DrawWireCube(transform.position, Vector3.one / 2);
-    }
-
     /// Health System
     public void TakeDamage(int _damage)
     {
@@ -261,7 +275,7 @@ public class PlayerController : MonoBehaviour, IHittable
             IsInvulnerable(true);
             iCurrentHitPoints -= _damage;
             OnReciveDamage.Invoke();
-            StartCoroutine(ChangeBoolAfter((bool b) => { IsInvulnerable(b);}, false, fINVULNERABILITY_TIME));
+            StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b) => { IsInvulnerable(b);}, false, fINVULNERABILITY_TIME));
         }
         if(iCurrentHitPoints <= 0)
         {
@@ -277,10 +291,48 @@ public class PlayerController : MonoBehaviour, IHittable
     {
         bIsInvulnerable = _invulnerable;
     }
-    public IEnumerator ChangeBoolAfter(System.Action<bool> _callBack, bool _setBool, float _time)
+
+    public void HealthCheck()
     {
-        yield return new WaitForSeconds(_time);
-        _callBack(_setBool);
-        //StopAllCoroutines();
+        if (iCurrentHitPoints > iMaxHitPoints)
+            iCurrentHitPoints = iMaxHitPoints;
+
     }
+    // Inventory
+    public void UpdateInventory(Inventory _inventory)
+    {
+        myInventory = _inventory;
+        PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(myInventory);
+    }
+    public Inventory GetInventory()
+    {
+        return myInventory;
+    }
+
+    /// Triggers
+
+    private void OnTriggerEnter(Collider other)
+    {
+        //ItemContainer _itemContainer = other.gameObject.GetComponent<ItemContainer>();
+        //if (_itemContainer)
+        //{
+        //    //if (Input.GetButtonDown("Interact"))
+        //    {
+        //        myInventory.AddItem(_itemContainer.item);
+        //        _itemContainer.DestroySelf();
+        //        PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(myInventory);
+        //    }
+        //}
+    }
+
+    ///// Gizmos
+    private void OnDrawGizmos()
+    {
+        //Gizmos.color = Color.blue;
+        //Gizmos.DrawSphere(transform.position + new Vector3(transform.forward.x / 2, HEAD_OFFSET, transform.forward.z / 2), 0.6f);
+        // Gizmos.DrawWireCube(transform.position, Vector3.one / 2);
+    }
+
+    
+
 }
