@@ -248,8 +248,7 @@ GameObject:
   - component: {fileID: 4734643464722905270}
   - component: {fileID: 346321885943012266}
   - component: {fileID: 4656454389564655835}
-  - component: {fileID: 346321885943012269}
-  - component: {fileID: 5385706377144434491}
+  - component: {fileID: 1416301246188114130}
   m_Layer: 0
   m_Name: HealthPotion
   m_TagString: Untagged
@@ -288,12 +287,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item:
-    sItemName: HealthPotion
-    sItemDescription: It Restores health by 20 points.
+    sItemName: MajorHealthPotion
+    sItemDescription: It Restores health by &value points.
     eType: 0
     fEffectValue: 20
     fPrice: 5
     itemIcon: {fileID: 21300000, guid: dd29ecb199426084ebe85c57d31aa18c, type: 3}
+    isStackable: 1
+    iAmount: 1
+    iStackLimit: 5
 --- !u!54 &4656454389564655835
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -310,21 +312,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!65 &346321885943012269
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8642281231212874405}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.3927313, y: 0.4656639, z: 0.45941257}
-  m_Center: {x: 0.003857553, y: 0.18752015, z: -0.008562565}
---- !u!65 &5385706377144434491
-BoxCollider:
+--- !u!136 &1416301246188114130
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -333,9 +322,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.3281386, y: 0.36568385, z: 0.20537376}
-  m_Center: {x: -0.008063555, y: 0.14153454, z: -0.007209778}
+  m_Radius: 0.23443699
+  m_Height: 0.49011874
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.18, z: 0}
 --- !u!1 &9071643656615455337
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,15 +18,19 @@ public class DialogBoxPopup : Popup
     {
         if (container.gameObject.activeSelf)
         {
-            if (Input.GetButtonDown("Interact"))
+            if(Input.GetButtonDown("Interact"))
             {
+                Debug.Log("i AM rUNNING");
                 if(!isTyping)
                     NextLine();
                 else
                 {
-                    StopAllCoroutines();
-                    dialogText.text = dialogLines[dialogLineNumber];
-                    isTyping = false;
+                    if(dialogLineNumber > 0) // jgad laya first line skip nhi hone, try adding double tap interact for the forst line only
+                    {
+                        StopAllCoroutines();
+                        dialogText.text = dialogLines[dialogLineNumber];
+                        isTyping = false;
+                    }
                 }
             }
         }

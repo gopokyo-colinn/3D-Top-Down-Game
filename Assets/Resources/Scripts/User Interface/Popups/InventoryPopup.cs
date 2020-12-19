@@ -13,18 +13,12 @@ public class InventoryPopup : Popup
         inventorySlots = GetComponentsInChildren<InventorySlot>();
         close();
         player = GameController.Instance.player;
-        inventory = new Inventory();
+        inventory = new Inventory(player.iInventorySize);
 
         inventory = player.GetInventory();
         InitializeInventoryUI();
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            
-        }
-    }
+    
     public void UpdateInventoryUI(Inventory _updatedInventory)
     {
         inventory = _updatedInventory;

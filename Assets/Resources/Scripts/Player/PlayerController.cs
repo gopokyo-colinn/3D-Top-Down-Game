@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour, IHittable
 
     public UnityEvent OnReciveDamage;
     public Inventory myInventory;
+    public int iInventorySize;
 
     void Awake()
     {
@@ -47,10 +48,11 @@ public class PlayerController : MonoBehaviour, IHittable
         anim = GetComponentInChildren<Animator>();
         iCurrentHitPoints = iMaxHitPoints;
         bIsAlive = true;
-        myInventory = new Inventory();
+        myInventory = new Inventory(iInventorySize);
     }
     void Update()
     {
+        Debug.Log(myInventory.lstItems.Count);
         if (GameController.inPlayMode)
         {
             if (bIsAlive)
@@ -59,8 +61,7 @@ public class PlayerController : MonoBehaviour, IHittable
                 UseShield();
                 DrawSword();
                 SwordAttacks();
-                CheckForNPC();
-                CheckForItems();
+                CheckAheadForColliders();
                 Jumping();
             }
         }
@@ -202,63 +203,100 @@ public class PlayerController : MonoBehaviour, IHittable
         else
             rbody.velocity = new Vector3(horizontal * fSpeed * Time.fixedDeltaTime, rbody.velocity.y, vertical * fSpeed * Time.fixedDeltaTime);
     }
-    public void CheckForNPC()
+    public void CheckAheadForColliders()
     {
-       // Debug.DrawRay(transform.position + new Vector3(0.1f, HEAD_OFFSET, 0), transform.forward * NPC_DISTANCE_CHECK, Color.red);
-       // Debug.DrawRay(transform.position + new Vector3(-0.1f, HEAD_OFFSET, 0), transform.forward * NPC_DISTANCE_CHECK, Color.red);
-
         RaycastHit hit;
-        if(Physics.CapsuleCast(transform.position, transform.position + new Vector3(0, fHEAD_OFFSET * 2, 0), 0.8f/*radius*/, transform.forward, out hit, fNPC_DISTANCE_CHECK/*distance*/)
-            || Physics.Raycast(transform.position + new Vector3(0, fHEAD_OFFSET, 0), transform.forward, out hit, fNPC_DISTANCE_CHECK))
+        // now the boxcast is as same as in the gizmos below
+        if(Physics.BoxCast(transform.position + (transform.forward * -1f), transform.localScale, transform.forward, out hit, transform.rotation, 1f))
+        //|| Physics.Raycast(transform.position + new Vector3(0, fHEAD_OFFSET, 0), transform.forward, out hit, fNPC_DISTANCE_CHECK))
         {
-            if (hit.transform.GetComponent<NPCEntity>() && !bIsInteracting)
+            if (hit.collider)
             {
-                //Debug.Log("in range");
+                ItemContainer _itemContainer = hit.transform.GetComponent<ItemContainer>();
+                NPCEntity _npc = hit.transform.GetComponent<NPCEntity>();
+
                 if (Input.GetButtonDown("Interact"))
                 {
-                    bIsInteracting = true;
-                    NPCEntity _collidedNPC = hit.transform.GetComponent<NPCEntity>();
-                    //PopupUIManager.Instance.dialogBoxPopup.setDialogText(_collidedNPC.dialogLines);
-
-                    // can make it bit more good
-                    var targetRotation = Quaternion.LookRotation(_collidedNPC.transform.position - transform.position);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
-
-                    _collidedNPC.SetDialog();
-                    _collidedNPC.LookAtTarget(transform);
-                    DisablePlayerMoveActions();
-                    GameController.inPlayMode = false;
+                    if (_npc)
+                    {
+                        CheckForNPC(_npc);
+                    }
+                    if (_itemContainer)
+                    {
+                        CheckForItems(_itemContainer);
+                    }
                 }
+            }
+        }
+    }
+    public void CheckForNPC(NPCEntity _collidedNPC)
+    {
+        if (!bIsInteracting)
+        {
+            bIsInteracting = true;
+            // can make it bit more good
+            var targetRotation = Quaternion.LookRotation(_collidedNPC.transform.position - transform.position);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
+
+            _collidedNPC.SetDialog();
+            _collidedNPC.LookAtTarget(transform);
+            DisablePlayerMoveActions();
+            GameController.inPlayMode = false;
+        }
+        else
+        {
+            if (bIsInteracting)
+            {
+                bIsInteracting = false;
+            }
+        }
+    }
+    private void CheckForItems(ItemContainer _collidedItemContainer)
+    {
+        if (_collidedItemContainer.item.isStackable)
+        {
+            bool _bItemAlreadyInventory = false;
+            for (int i = 0; i < myInventory.lstItems.Count; i++)
+            {
+                if (myInventory.lstItems[i].sItemName == _collidedItemContainer.item.sItemName)
+                {
+                    if (myInventory.lstItems[i].iAmount < myInventory.lstItems[i].iStackLimit)
+                    {
+                        myInventory.lstItems[i].iAmount++;
+                        _bItemAlreadyInventory = true;
+                        _collidedItemContainer.DestroySelf();
+                        break;
+                    }
+                }
+            }
+            if (!_bItemAlreadyInventory)
+            {
+                if (myInventory.lstItems.Count < myInventory.iInventoryLimit)
+                {
+                    Item _newItem = new Item(_collidedItemContainer.item);
+                    myInventory.AddItem(_newItem);
+                    _collidedItemContainer.DestroySelf();
+                }
+                else
+                {
+                    Debug.Log("Inventory is Full");
+                }
+            }
+        }
+        else
+        {
+            if (myInventory.lstItems.Count < myInventory.iInventoryLimit)
+            {
+                Item _newItem = new Item(_collidedItemContainer.item);
+                myInventory.AddItem(_newItem);
+                _collidedItemContainer.DestroySelf();
             }
             else
             {
-                if (bIsInteracting)
-                {
-                    bIsInteracting = false;
-                }
-            }
-                
-           // Debug.DrawRay(transform.position + new Vector3(0, HEAD_OFFSET, 0), transform.forward * NPC_DISTANCE_CHECK, Color.green);
-        }
-    }
-    void CheckForItems()
-    {
-        //// Use Some Other type of cast this is tooo bugggy, also for npc's.
-        RaycastHit hit;
-        if (Physics.CapsuleCast(transform.position, transform.position + new Vector3(0, fHEAD_OFFSET, 0), 2f/*radius*/, transform.forward, out hit, 2f/*distance*/))
-        {
-            Debug.Log(hit.transform.name);
-            ItemContainer _itemContainer = hit.transform.GetComponent<ItemContainer>();
-            if (_itemContainer)
-            {
-                if (Input.GetButtonDown("Interact"))
-                {
-                    myInventory.AddItem(_itemContainer.item);
-                    _itemContainer.DestroySelf();
-                    PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(myInventory);
-                }
+                Debug.Log("Inventory is Full");
             }
         }
+        PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(myInventory);
     }
     public void DisablePlayerMoveActions()
     {
@@ -328,11 +366,8 @@ public class PlayerController : MonoBehaviour, IHittable
     ///// Gizmos
     private void OnDrawGizmos()
     {
-        //Gizmos.color = Color.blue;
-        //Gizmos.DrawSphere(transform.position + new Vector3(transform.forward.x / 2, HEAD_OFFSET, transform.forward.z / 2), 0.6f);
-        // Gizmos.DrawWireCube(transform.position, Vector3.one / 2);
+        //Gizmos.color = Color.red;
+        //Gizmos.DrawWireCube(transform.position + transform.forward * 0.5f, transform.localScale);
     }
-
-    
-
 }
+

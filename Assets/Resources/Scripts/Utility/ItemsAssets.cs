@@ -29,7 +29,6 @@ public class ItemsAssets : MonoBehaviour
         switch (_item.eType)
         {
 			case ItemType.HealthPotion:
-				healthPotion.item = _item;
 				return healthPotion;
 			default:
 				return null;
