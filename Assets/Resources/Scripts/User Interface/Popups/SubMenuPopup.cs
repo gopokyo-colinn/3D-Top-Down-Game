@@ -20,12 +20,24 @@ public class SubMenuPopup : Popup
 
     private RectTransform rtTransform;
 
+    public Transform containerAll;
+
     void Start()
     {
         lstPopupButtonElement = new List<PopupButtonElement>();
         rtTransform = GetComponent<RectTransform>();
+        containerAll.gameObject.SetActive(false);
     }
-
+    public override void open()
+    {
+        base.open();
+        containerAll.gameObject.SetActive(true);
+    }
+    public override void close()
+    {
+        base.close();
+        containerAll.gameObject.SetActive(false);
+    }
     public void openMenu(List<structSubMenu> _lstSubMenu)
     {
         open();
@@ -64,6 +76,5 @@ public class SubMenuPopup : Popup
 
             lstPopupButtonElement.Add(_buttonElement);
         }
-
     }
 }

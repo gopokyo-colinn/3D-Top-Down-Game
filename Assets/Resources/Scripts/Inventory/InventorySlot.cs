@@ -37,19 +37,16 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
             ClickItem();
         }
     }
-
     public void OnPointerEnter(PointerEventData eventData)
     {
         outline.enabled = true;
        // icon.color = new Color(icon.color.r, icon.color.g, icon.color.b, 1);
     }
-
     public void OnPointerExit(PointerEventData eventData)
     {
         outline.enabled = false;
         //icon.color = new Color(icon.color.r, icon.color.g, icon.color.b, 0.92f);
     }
-
     public void ClickItem()
     {
         List<structSubMenu> _lstSubMenu = new List<structSubMenu>();
@@ -131,7 +128,6 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     {
         Debug.Log(item.sItemDescription);
     }
-
     public void RemoveItem(Item _item)
     {
         if (item.isStackable)

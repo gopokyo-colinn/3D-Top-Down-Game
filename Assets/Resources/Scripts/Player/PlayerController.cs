@@ -255,6 +255,7 @@ public class PlayerController : MonoBehaviour, IHittable
     {
         if (_collidedItemContainer.item.isStackable)
         {
+
             bool _bItemAlreadyInventory = false;
             for (int i = 0; i < myInventory.lstItems.Count; i++)
             {
