@@ -24,6 +24,7 @@ public class HealthBar : MonoBehaviour
     {
         while (healthFillAmount.fillAmount != player.iCurrentHitPoints / 100f)
         {
+            Debug.Log("I m running in while");
             healthFillAmount.fillAmount = Mathf.Lerp(healthFillAmount.fillAmount, player.iCurrentHitPoints / 100f, fLerpSpeed * Time.deltaTime);
             yield return null;
         }

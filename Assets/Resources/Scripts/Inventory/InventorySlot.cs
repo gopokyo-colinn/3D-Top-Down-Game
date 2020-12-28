@@ -40,6 +40,18 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     public void OnPointerEnter(PointerEventData eventData)
     {
         outline.enabled = true;
+        InventoryPopup _invPopup = PopupUIManager.Instance.inventoryPopup;
+        //_invPopup.detailsContainer.gameObject.SetActive(true);
+        if(item != null)
+        {
+            _invPopup.txtDetailItemName.text = item.sItemName;
+            _invPopup.txtDetailItemDescription.text = item.sItemDescription;
+        }
+        else
+        {
+            _invPopup.txtDetailItemName.text = "No Item Selected";
+            _invPopup.txtDetailItemDescription.text = "";
+        }
        // icon.color = new Color(icon.color.r, icon.color.g, icon.color.b, 1);
     }
     public void OnPointerExit(PointerEventData eventData)
@@ -82,14 +94,14 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         Debug.Log(item.sItemName + " used");
         if (item.UseItem(GameController.Instance.player))
         {
-            if(item.isStackable)
+            if (item.isStackable)
                 item.iAmount--;
 
             RemoveItem(item);
         }
         else
         {
-            Debug.Log("Can't use this item right now");
+            PopupUIManager.Instance.msgBoxPopup.SendTextMessage("Can't use this item right now..... ");
         }
     }
     public void ClickDiscard()

@@ -33,7 +33,6 @@ public class QuestManager
 
 	public void Initialize(PlayerController _player)
     {
-		Debug.Log("Quest Initialized");
 		for (int i = 0; i < dictMainQuests.Count; i++)
 		{
 			dictMainQuests.ElementAt(i).Value.Initialize(_player);

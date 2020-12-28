@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum EnemyType { SCORPION = 0 }
+public enum EnemyType { METALON = 0, PLANT = 1 }
 public class Enemy : MonoBehaviour
 {
     float fInvulnerableCounter;
@@ -257,5 +257,13 @@ public class Enemy : MonoBehaviour
         pushForce.y = 0;
         //transform.forward = -pushForce.normalized;
         rbody.AddForce(pushForce.normalized * _pushForce - Physics.gravity * 0.2f, ForceMode.Impulse);
+    }
+    public float GetCurrentHealth()
+    {
+        return fCurrentHitPoints;
+    }
+    public bool EnemyDied()
+    {
+        return !bIsAlive;
     }
 }

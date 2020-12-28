@@ -1,22 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class InventoryPopup : Popup
 {
+    public Transform detailsContainer;
+    public TextMeshProUGUI txtDetailItemName;
+    public TextMeshProUGUI txtDetailItemDescription;
+
+    public Sprite lockImage;
+
     PlayerController player;
     Inventory inventory;
     InventorySlot[] inventorySlots;
     private void Start()
     {
         open();
-        inventorySlots = GetComponentsInChildren<InventorySlot>();
-        close();
         player = GameController.Instance.player;
-        inventory = new Inventory(player.iInventorySize);
 
         inventory = player.GetInventory();
+
+        inventorySlots = GetComponentsInChildren<InventorySlot>();
+
         InitializeInventoryUI();
+        close();
     }
     
     public void UpdateInventoryUI(Inventory _updatedInventory)
@@ -32,6 +40,8 @@ public class InventoryPopup : Popup
             inventorySlots[i].EmptySlot();
         }
 
+        LockSlots();
+
         if (inventory.lstItems.Count <= inventory.iInventoryLimit)
         {
             for (int i = 0; i < inventory.lstItems.Count; i++)
@@ -43,5 +53,14 @@ public class InventoryPopup : Popup
     public Inventory GetInventory()
     {
         return inventory;
+    }
+
+    public void LockSlots()
+    {
+        for (int i = inventory.iInventoryLimit; i < inventorySlots.Length; i++)
+        {
+            inventorySlots[i].icon.gameObject.SetActive(true);
+            inventorySlots[i].icon.sprite = lockImage;
+        }
     }
 }

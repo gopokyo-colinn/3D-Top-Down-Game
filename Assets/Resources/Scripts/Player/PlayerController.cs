@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour, IHittable
     public float fSpeed;
     public float fJumpForce;
     public float sSpeedMultiplier = 1.5f;
-    const float fSpeedDivision = 0.5f;
+    const float fSpeedDivision = 0.7f;
     float horizontal;
     float vertical;
     Vector3 lastFacinDirection;
@@ -52,7 +52,6 @@ public class PlayerController : MonoBehaviour, IHittable
     }
     void Update()
     {
-        Debug.Log(myInventory.lstItems.Count);
         if (GameController.inPlayMode)
         {
             if (bIsAlive)
@@ -101,6 +100,7 @@ public class PlayerController : MonoBehaviour, IHittable
                 bIsSprinting = true;
             else
                 bIsSprinting = false;
+
             lastFacinDirection = new Vector3(horizontal, 0f, vertical);
         
             // It is for keeping the direction while shielding
@@ -124,8 +124,13 @@ public class PlayerController : MonoBehaviour, IHittable
         if (movementVector.magnitude > 0.1f)
         { 
             if (bIsSprinting)
-                rbody.velocity = movementVector.normalized * fSpeed * sSpeedMultiplier * Time.fixedDeltaTime;
-            else if (bIsShielding)
+            {
+                if (bIsAttacking)
+                    bIsSprinting = false;
+                else
+                    rbody.velocity = movementVector.normalized * fSpeed * sSpeedMultiplier * Time.fixedDeltaTime;
+            }
+            else if (bIsShielding || bIsAttacking)
                 rbody.velocity = movementVector.normalized * fSpeedDivision * fSpeed * Time.fixedDeltaTime;
             else
                 rbody.velocity = movementVector.normalized * fSpeed * Time.fixedDeltaTime;

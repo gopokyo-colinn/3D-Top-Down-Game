@@ -8,16 +8,25 @@ public enum QuestType { MAINQUEST = 0, SIDEQUEST = 1 }
 public class Quest
 {
     public string sQuestTitle;
+    [TextArea(2,4)]
     public string sQuestDescription;
     public QuestType eQuestType;
-    public int iQuestNumber;
+    public string sQuestID;
     public QuestGoal qGoal;
     PlayerController player;
+
+    EnemySpawner killQuest;
 
     public void Initialize(PlayerController _player)
     {
         //qGoal = new QuestGoal();
         player = _player;// FindObjectOfType<PlayerController>();
+        if (qGoal.eGoalType == QuestGoalType.KILL)
+        {
+            killQuest = KillQuestsManager.Instance.GetCurrentQuestSpawner(sQuestID);
+            KillQuestsManager.Instance.InitializeQuestEnemies(sQuestID, qGoal.enemiesToKill);
+        }
+
         Debug.Log("Quest Initialized");
     }
 
@@ -52,10 +61,13 @@ public class Quest
         switch (qGoal.eGoalType)
         {
             case QuestGoalType.DELIVER:
+                DeliverQuest();
                 break;
             case QuestGoalType.GATHER:
+                GatherQuest();
                 break;
             case QuestGoalType.KILL:
+                KillQuest();
                 break;
             case QuestGoalType.GOTOLOCATION:
                 GoToLocationQuest();
@@ -83,7 +95,11 @@ public class Quest
 
     public void KillQuest()
     {
-
+        if(killQuest.enemiesLst.Count <= 0)
+        {
+            qGoal.isFinished = true;
+            killQuest.gameObject.SetActive(false);
+        }
     }
     public void GoToLocationQuest()
     {
@@ -91,5 +107,13 @@ public class Quest
         {
             qGoal.isFinished = true;
         }
+    }
+    public void GatherQuest()
+    {
+
+    }
+    public void DeliverQuest()
+    {
+
     }
 }

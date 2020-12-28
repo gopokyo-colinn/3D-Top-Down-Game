@@ -8,6 +8,7 @@ public class PopupUIManager : MonoBehaviour
 	public PauseMenuPopup pauseMenuPopup;
 	public InventoryPopup inventoryPopup;
 	public SubMenuPopup subMenuPopup;
+	public MessageBoxPopup msgBoxPopup;
 
 	bool bInventoryIsOpen;
 
