@@ -82,8 +82,8 @@ public class SpittyPlant : Enemy, IHittable
     {
         if (!bIsInvulnerable)
         {
-            Knockback(targetPlayer.transform.position, fPUSHBACKFORCE);
-            IsInvulnerable(true);
+            //Knockback(targetPlayer.transform.position, fPUSHBACKFORCE);
+            bIsInvulnerable = true;
             bIsHit = true;
             bTargetFound = true;
             bCanFollow = false;

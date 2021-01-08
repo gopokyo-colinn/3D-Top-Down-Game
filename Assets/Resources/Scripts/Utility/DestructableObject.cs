@@ -53,7 +53,12 @@ public class DestructableObject : MonoBehaviour, IHittable
         }
     }
 
-    public void IsInvulnerable(bool _invulnerable)
+    public bool IsInvulnerable()
+    {
+        return false;
+    }
+
+    public void Knockback(Vector3 _sourcePosition, float _pushForce)
     {
         //
     }

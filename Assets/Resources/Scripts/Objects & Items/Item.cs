@@ -37,10 +37,11 @@ public class Item
         switch (eType)
         {
             case ItemType.HealthPotion:
-                if(_player.iCurrentHitPoints < _player.iMaxHitPoints)
+                if(_player.fCurrentHitPoints < _player.fMaxHitPoints)
                 {
-                    _player.iCurrentHitPoints += (int)fEffectValue;
+                    _player.fCurrentHitPoints += (int)fEffectValue;
                     _player.HealthCheck();
+                    _player.OnReciveDamageUI.Invoke();
                     return true;
                 }
                 return false;

@@ -10,9 +10,11 @@ public class Enemy : MonoBehaviour
     //const float fDISTANCE_TO_GROUND = 0.1f;
     const float fDISTANCE_TO_COLIS = 1.2f;
     const float fVISION_RANGE = 5f;
-    protected const float fROTATE_SPEED = 140f;
 
+    protected const float fROTATE_SPEED = 140f;
     protected float fAttackRange = 5f;
+    protected float fFollowRange = 100f;
+
     public float fMaxHitPoints;
     protected float fCurrentHitPoints;
     public float fSpeed;
@@ -149,16 +151,17 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(fWaitTime / 3);
         bCanMove = false;
     }
-    public void CalculateInvulnerability(float _fInvulnerableTime)
+    public void CalculateInvulnerability(float _fStunTime)
     {
         if (bIsInvulnerable)
         {
             fInvulnerableCounter += Time.deltaTime;
-            if (fInvulnerableCounter >= anim.GetCurrentAnimatorStateInfo(0).length + _fInvulnerableTime)
+            if (fInvulnerableCounter >= anim.GetCurrentAnimatorStateInfo(0).length + _fStunTime)
             {
-                IsInvulnerable(false);
+                bIsInvulnerable = false;
                 bIsHit = false;
                 bCanFollow = true;
+                bCanAttack = false;
                 fInvulnerableCounter = 0;
             }
         }
@@ -184,14 +187,14 @@ public class Enemy : MonoBehaviour
         // In Attack Range
         else if ((transform.position - targetPlayer.transform.position).sqrMagnitude <= _fAttackRange)
         {
+            //rbody.velocity = Vector3.zero;// HelperFunctions.VectorZero(rbody);
             if (!bIsInvulnerable)
             {
-                rbody.velocity = Vector3.zero;// HelperFunctions.VectorZero(rbody);
                 if (fAttackWaitTimeCounter <= 0)
                 {
                     Vector3 dir = (targetPlayer.transform.position - transform.position).normalized;
-                    float dot = Vector3.Dot(dir, transform.forward);
-                    if (dot > 0.95f)
+                    float dot = Vector3.Dot(dir, transform.forward); 
+                    if (dot > 0.98f)  // if the enemy is facing the target
                     {
                         bCanAttack = true;
                     }
@@ -209,9 +212,9 @@ public class Enemy : MonoBehaviour
             bCanAttack = false;
         }
     }
-    public void IsInvulnerable(bool _invulnerable)
+    public bool IsInvulnerable()
     {
-        bIsInvulnerable = _invulnerable;
+        return bIsInvulnerable;
     }
     /* public void SetRandomDirection()
      {
@@ -253,10 +256,13 @@ public class Enemy : MonoBehaviour
 
     public void Knockback(Vector3 _sourcePosition, float _pushForce)
     {
-        Vector3 pushForce = transform.position - _sourcePosition;
-        pushForce.y = 0;
-        //transform.forward = -pushForce.normalized;
-        rbody.AddForce(pushForce.normalized * _pushForce - Physics.gravity * 0.2f, ForceMode.Impulse);
+        if (!bIsInvulnerable)
+        {
+            Vector3 pushForce = transform.position - _sourcePosition;
+            pushForce.y = 0;
+            //transform.forward = -pushForce.normalized;
+            rbody.AddForce(pushForce.normalized * _pushForce - Physics.gravity * 0.2f, ForceMode.Impulse);
+        }
     }
     public float GetCurrentHealth()
     {

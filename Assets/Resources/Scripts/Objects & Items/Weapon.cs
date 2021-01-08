@@ -5,8 +5,10 @@ using UnityEngine;
 public class Weapon : MonoBehaviour, ICanDamage
 {
     public int iDamage;
+    public float fKnockBackForce;
     Collider coli;
     PlayerController player;
+
 
     public void Start()
     {
@@ -42,7 +44,9 @@ public class Weapon : MonoBehaviour, ICanDamage
         {
             if(other.gameObject.GetComponent<IHittable>() != null)
             {
-                other.gameObject.GetComponent<IHittable>().TakeDamage(iDamage);
+                IHittable _hitTarget = other.gameObject.GetComponent<IHittable>();
+                _hitTarget.Knockback(transform.position, fKnockBackForce);
+                _hitTarget.TakeDamage(iDamage);
             }
         }
     }

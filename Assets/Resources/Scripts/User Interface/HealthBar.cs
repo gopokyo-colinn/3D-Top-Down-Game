@@ -14,18 +14,18 @@ public class HealthBar : MonoBehaviour
     {
         /// Right now the health fill amount only works for 100 health, do it for any health value.
         player = GameController.Instance.player;
-        healthFillAmount.fillAmount = player.iCurrentHitPoints / 100f;
+        healthFillAmount.fillAmount = player.fCurrentHitPoints / player.fMaxHitPoints;
     }
     public void ChangeHealthUI()
     {
-            StartCoroutine(HealthLerp());
+        StartCoroutine(HealthLerp());
     }
     IEnumerator HealthLerp()
     {
-        while (healthFillAmount.fillAmount != player.iCurrentHitPoints / 100f)
+        while (!Mathf.Approximately(healthFillAmount.fillAmount, player.fCurrentHitPoints / player.fMaxHitPoints))//healthFillAmount.fillAmount != player.fCurrentHitPoints / player.fMaxHitPoints)
         {
             Debug.Log("I m running in while");
-            healthFillAmount.fillAmount = Mathf.Lerp(healthFillAmount.fillAmount, player.iCurrentHitPoints / 100f, fLerpSpeed * Time.deltaTime);
+            healthFillAmount.fillAmount = Mathf.Lerp(healthFillAmount.fillAmount, player.fCurrentHitPoints / player.fMaxHitPoints, fLerpSpeed * Time.deltaTime);
             yield return null;
         }
     }

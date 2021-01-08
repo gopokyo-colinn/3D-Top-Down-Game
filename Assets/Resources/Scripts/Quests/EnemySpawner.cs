@@ -24,7 +24,6 @@ public class EnemySpawner : MonoBehaviour
                     enemiesLst.Remove(enemiesLst[i]);
                 }
             }
-            Debug.Log("I m runnung");
         }
     }
 

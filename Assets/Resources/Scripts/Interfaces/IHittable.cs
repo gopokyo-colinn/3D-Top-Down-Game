@@ -5,5 +5,7 @@ using UnityEngine;
 public interface IHittable
 {
     void TakeDamage(int _damage);
-    void IsInvulnerable(bool _invulnerable);
+    bool IsInvulnerable();
+
+    void Knockback(Vector3 _sourcePosition, float _pushForce);
 }

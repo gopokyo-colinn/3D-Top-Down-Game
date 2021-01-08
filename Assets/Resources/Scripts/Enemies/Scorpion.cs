@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class Scorpion : Enemy, IHittable
 {
-    const float fTARGET_FOLLOW_RANGE = 60f;
     const float fPUSHBACKFORCE = 3f;
     private bool bRotateAnims = true;
-    float fINVULNERABILITY_TIME = 0.1f; // this is extra time after the animation
+    float fSTUN_TIME = 0.02f; // this is extra time after the animation
 
     void Start()
     {
         base.Initialize();
         fAttackRange = 2.5f;
+        fFollowRange = 80f;
     }
 
     // Update is called once per frame
@@ -32,10 +32,10 @@ public class Scorpion : Enemy, IHittable
                 }
                 else
                 {
-                    CheckTargetInRange(fAttackRange, fTARGET_FOLLOW_RANGE);
+                    CheckTargetInRange(fAttackRange, fFollowRange);
                 }
             }
-            CalculateInvulnerability(fINVULNERABILITY_TIME);
+            CalculateInvulnerability(fSTUN_TIME);
         }
     }
     private void FixedUpdate()
@@ -69,7 +69,7 @@ public class Scorpion : Enemy, IHittable
         {
             bCanFollow = false;
             anim.SetTrigger("StabAttack");
-            StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b) => { fAttackWaitTimeCounter = fAttackWaitTime; bCanFollow = true; bCanRotate = true; }, false, anim.GetCurrentAnimatorStateInfo(0).length));
+            StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b) => { fAttackWaitTimeCounter = fAttackWaitTime; bCanFollow = true; bCanRotate = true; }, false, anim.GetCurrentAnimatorStateInfo(0).length + 0.5f));
             fAttackWaitTimeCounter = fAttackWaitTime;
             bCanRotate = true;
         }
@@ -113,8 +113,8 @@ public class Scorpion : Enemy, IHittable
     {
         if (!bIsInvulnerable)
         {
-            Knockback(targetPlayer.transform.position, fPUSHBACKFORCE);
-            IsInvulnerable(true);
+           // Knockback(targetPlayer.transform.position, fPUSHBACKFORCE);
+            bIsInvulnerable = true;
             bIsHit = true;
             bTargetFound = true;
             bCanFollow = false;

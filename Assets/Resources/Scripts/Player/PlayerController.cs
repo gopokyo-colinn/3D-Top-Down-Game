@@ -9,12 +9,23 @@ public class PlayerController : MonoBehaviour, IHittable
     const float fNPC_DISTANCE_CHECK = 0.8f;
     const float fDISTANCE_TO_GROUND = 0.1f;
     const float fINVULNERABILITY_TIME = 0.7f;
+    const float fSTUN_TIME = 0.5f;
+    const float fSPRINT_STAMINA_COST = 10f; // is multipleid by deltaTime
+    const float fATTACK_STAMINA_COST = 10f;
+    const float fSTAMINA_RECOVER_START_TIME = 1f;
+    const float fSTAMINA_RECOVERY_RATE = 20f; // is multipleid by deltaTime
 
     Rigidbody rbody;
     Animator anim;
 
-    public int iMaxHitPoints;
-    public int iCurrentHitPoints;
+    public float fMaxHitPoints;
+    public float fCurrentHitPoints;
+
+    public float fMaxStamina;
+    public float fCurrentStamina;
+    float fStaminaTimeCounter = 0;
+    bool bStaminaUsed;
+
     public float fSpeed;
     public float fJumpForce;
     public float sSpeedMultiplier = 1.5f;
@@ -27,6 +38,7 @@ public class PlayerController : MonoBehaviour, IHittable
     [HideInInspector]
     public bool bIsShielding;
     bool bIsSprinting;
+    bool bCanSprint = true;
     [HideInInspector]
     public bool bSwordEquipped = false;
     [HideInInspector]
@@ -37,7 +49,10 @@ public class PlayerController : MonoBehaviour, IHittable
     private bool bIsInvulnerable;
     int iAttackCombo = -1;
 
-    public UnityEvent OnReciveDamage;
+    bool isStun;
+    public UnityEvent OnReciveDamageUI;
+    public UnityEvent OnStaminaChangeUI;
+
     public Inventory myInventory;
     public int iInventorySize;
 
@@ -46,7 +61,8 @@ public class PlayerController : MonoBehaviour, IHittable
         // controller = GetComponent<CharacterController>();
         rbody = GetComponent<Rigidbody>();
         anim = GetComponentInChildren<Animator>();
-        iCurrentHitPoints = iMaxHitPoints;
+        fCurrentHitPoints = fMaxHitPoints;
+        fCurrentStamina = fMaxStamina;
         bIsAlive = true;
         myInventory = new Inventory(iInventorySize);
     }
@@ -54,8 +70,9 @@ public class PlayerController : MonoBehaviour, IHittable
     {
         if (GameController.inPlayMode)
         {
-            if (bIsAlive)
+            if (bIsAlive && !isStun)
             {
+                StaminaCheck();
                 GetDirectionalInput();
                 UseShield();
                 DrawSword();
@@ -69,7 +86,7 @@ public class PlayerController : MonoBehaviour, IHittable
     {
         if (GameController.inPlayMode)
         {
-            if (bIsAlive)
+            if (bIsAlive && !isStun)
             {
                 if (Grounded())
                 {
@@ -89,17 +106,36 @@ public class PlayerController : MonoBehaviour, IHittable
     }
     void DirectionalMovement()
     {
-
         anim.SetBool("isSprinting", bIsSprinting);
 
         if (horizontal != 0 || vertical != 0)
         {
             anim.SetFloat("moveVelocity", 1f);
 
-            if (Input.GetButton("Sprint") && !bIsShielding)
-                bIsSprinting = true;
+            if (Input.GetButton("Sprint"))
+            {
+                if (!bIsShielding && bCanSprint)
+                {
+                    if(fCurrentStamina > fSPRINT_STAMINA_COST)
+                    {
+                        fCurrentStamina -= fSPRINT_STAMINA_COST * Time.deltaTime;
+                        bIsSprinting = true;
+                    }
+                    else
+                    {
+                        bIsSprinting = false;
+                        bCanSprint = false;
+                    }
+                }
+            }
+            else if (Input.GetButtonUp("Sprint"))
+            {
+                bCanSprint = true;
+            }
             else
+            {
                 bIsSprinting = false;
+            }
 
             lastFacinDirection = new Vector3(horizontal, 0f, vertical);
         
@@ -141,6 +177,7 @@ public class PlayerController : MonoBehaviour, IHittable
         if (Input.GetButton("Shield"))
         {
             bIsShielding = true;
+            bIsSprinting = false;
         }
         else
             bIsShielding = false;
@@ -174,8 +211,9 @@ public class PlayerController : MonoBehaviour, IHittable
             if (Input.GetButtonDown("Attack"))
             {
                 iAttackCombo++;
-                if(iAttackCombo > 0 && bCanAttack)
+                if(iAttackCombo > 0 && bCanAttack && fCurrentStamina > fATTACK_STAMINA_COST)
                 {
+                    fCurrentStamina -= fATTACK_STAMINA_COST;
                     bIsAttacking = true;
                     bCanAttack = false;
                     anim.SetTrigger("attack1");
@@ -316,12 +354,12 @@ public class PlayerController : MonoBehaviour, IHittable
     {
         if (!bIsInvulnerable)
         {
-            IsInvulnerable(true);
-            iCurrentHitPoints -= _damage;
-            OnReciveDamage.Invoke();
-            StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b) => { IsInvulnerable(b);}, false, fINVULNERABILITY_TIME));
+            bIsInvulnerable = true;
+            fCurrentHitPoints -= _damage;
+            OnReciveDamageUI.Invoke();
+            StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b) => { bIsInvulnerable = b;}, false, fINVULNERABILITY_TIME));
         }
-        if(iCurrentHitPoints <= 0)
+        if(fCurrentHitPoints <= 0)
         {
             Die();
         }
@@ -331,17 +369,84 @@ public class PlayerController : MonoBehaviour, IHittable
         bIsAlive = false;
         gameObject.SetActive(false);
     }
-    public void IsInvulnerable(bool _invulnerable)
+    public bool IsInvulnerable()
     {
-        bIsInvulnerable = _invulnerable;
+        return bIsInvulnerable;
     }
 
     public void HealthCheck()
     {
-        if (iCurrentHitPoints > iMaxHitPoints)
-            iCurrentHitPoints = iMaxHitPoints;
+        if (fCurrentHitPoints > fMaxHitPoints)
+            fCurrentHitPoints = fMaxHitPoints;
 
     }
+
+    public void StaminaCheck()
+    {
+        if(bIsShielding || bIsSprinting || bIsAttacking)
+        {
+            OnStaminaChangeUI.Invoke();
+            bStaminaUsed = true;
+        }
+        if (!bCanSprint)
+        {
+            if((fCurrentStamina >= fMaxStamina / 2f))
+            {
+                bCanSprint = true;
+            }
+        }
+
+        if(!bIsSprinting && !bIsAttacking && !bIsShielding)
+        {
+            if((int)fCurrentStamina <= (int)fMaxStamina + 10)
+            {
+                OnStaminaChangeUI.Invoke();
+                if (bStaminaUsed)
+                {
+                    fStaminaTimeCounter += Time.deltaTime;
+                    if(fStaminaTimeCounter >= fSTAMINA_RECOVER_START_TIME)
+                    {
+                        bStaminaUsed = false;
+                        fStaminaTimeCounter = 0;
+                    }
+                }
+                if(fStaminaTimeCounter <= 0)
+                {
+                    fCurrentStamina += fSTAMINA_RECOVERY_RATE * Time.deltaTime;
+                    if(fCurrentStamina > fMaxStamina)
+                    {
+                        fCurrentStamina = fMaxStamina;
+                    }
+                }
+            }
+        }
+    }
+    public void Knockback(Vector3 _sourcePosition, float _pushForce)
+    {
+        // Stops for a hit time to play the hit animation and then move
+
+        Stun();
+
+        if (!bIsInvulnerable)
+        {
+            fCurrentStamina -= _pushForce * 2f;
+            Vector3 pushForce = transform.position - _sourcePosition;
+            pushForce.y = 0;
+            //transform.forward = -pushForce.normalized;
+            rbody.AddForce(pushForce.normalized * _pushForce, ForceMode.Impulse);
+        }
+    }
+    public void Stun()
+    {
+        rbody.velocity = HelperFunctions.VectorZero(rbody);
+        anim.SetFloat("moveVelocity", 0f);
+        isStun = true;
+        if (isStun)
+        {
+           StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b)=> { isStun = b; }, false, fSTUN_TIME)); // Replace stun time with stun animation
+        }
+    }
+
     // Inventory
     public void UpdateInventory(Inventory _inventory)
     {
@@ -354,7 +459,6 @@ public class PlayerController : MonoBehaviour, IHittable
     }
 
     /// Triggers
-
     private void OnTriggerEnter(Collider other)
     {
         //ItemContainer _itemContainer = other.gameObject.GetComponent<ItemContainer>();
