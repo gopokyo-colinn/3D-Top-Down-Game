@@ -137,6 +137,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iDamage: 5
-  dmgColi: {fileID: 0}
-  isProjectileAttack: 1
+  bIsProjectileAttack: 1
+  bIsTypeOfEnemy: 1
   fKnockForce: 3

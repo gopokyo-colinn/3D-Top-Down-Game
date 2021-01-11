@@ -7,14 +7,29 @@ public class NPCEntity : MonoBehaviour
 {
     const float fDISTANCE_TO_GROUND = 0.2f;
     const float fDISTANCE_TO_COLIS = 1.2f;
-    public static List<NPCEntity> npcList;
+    //public static List<NPCEntity> npcList;
     [HideInInspector]
     public string sNpcID;
     public float fSpeed;
-    [TextArea(3, 5)]
-    public string[] sDialogLines;
-    public NPCBehaviour behaviour;
-    public NPCActivities activity;
+    [TextArea(2, 3)]
+    public string[] sDefaultDialogLines;
+    [TextArea(2, 3)]
+    [Tooltip("Use '&response' for adding user response for accepting or declining the quest." +
+        "\n Use '&questAdded' to show quest added popup message. \n Use '&questCompleted' to show quest completed popup message")]
+    public string[] sQuestStartDialogLines;
+    [TextArea(2, 3)]
+    [Tooltip("Use '&response' for adding user response for accepting or declining the quest." +
+        "\n Use '&questAdded' to show quest added popup message. \n Use '&questCompleted' to show quest completed popup message")]
+    public string[] sQuestInProgressDialogLines;
+    [TextArea(2, 3)]
+    [Tooltip("Use '&response' for adding user response for accepting or declining the quest." +
+        "\n Use '&questAdded' to show quest added popup message. \n Use '&questCompleted' to show quest completed popup message")]
+    public string[] sQuestEndDialogLines;
+
+    string[] sDialogToUse;
+
+    public NPCBehaviour npcBehaviour;
+    public NPCActivities npcActivity;
     public Transform[] tPatrolPoints;
     private Animator anim;
     private Rigidbody rbody;
@@ -30,50 +45,41 @@ public class NPCEntity : MonoBehaviour
     public bool bReveseDirection;
     private int iPatrolPos = 0;
 
+    private Quest myQuest;
+
     void Start()
     {
         anim = GetComponent<Animator>();
         rbody = GetComponent<Rigidbody>();
 
         rbody.isKinematic = true;
+        SetNPCBehaviour();
 
         if (string.IsNullOrEmpty(sNpcID))
             sNpcID = System.Guid.NewGuid().ToString();
-        if (npcList == null)
-            npcList = new List<NPCEntity>();
-        if (!npcList.Contains(this))
-            npcList.Add(this);
+        //if (npcList == null)
+        //    npcList = new List<NPCEntity>();
+        //if (!npcList.Contains(this))
+        //    npcList.Add(this);
     }
     void Update()
     {
-        
         SetRbodyAccToGroundCheck();
         CheckForDialogToFinish();
         SetAnimations();
-        switch (behaviour)
-        {
-            case NPCBehaviour.SIMPLE:
-                break;
-            case NPCBehaviour.QUEST_GIVER:
-                AddQuest();
-                break;
-            case NPCBehaviour.MERCHANT:
-                MerchantShop();
-                break;
-        }
     }
     private void FixedUpdate()
     {
-        switch (behaviour)
+        switch (npcBehaviour)
         {
             case NPCBehaviour.SIMPLE:
-                DoActivity(activity);
+                DoActivity(npcActivity);
                 break;
             case NPCBehaviour.QUEST_GIVER:
-                DoActivity(activity);
+                DoActivity(npcActivity);
                 break;
             case NPCBehaviour.MERCHANT:
-                DoActivity(activity);
+                DoActivity(npcActivity);
                 break;
         }
     }
@@ -88,7 +94,7 @@ public class NPCEntity : MonoBehaviour
         if (!bIsInteracting)
         {
             //Debug.Log("I m doing some activity");
-            switch (activity)
+            switch (npcActivity)
             {
                 case NPCActivities.IDLE:
                     StayStill();
@@ -102,10 +108,73 @@ public class NPCEntity : MonoBehaviour
             }
         }      
     }
+
+    /// NPC QUESTING SYSTEM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
     public void AddQuest()
     {
-        Debug.Log("I will give you a quest");
+        myQuest = GetComponent<QuestGiver>().quest;
+
+        if (myQuest.eQuestType == QuestType.MAINQUEST)
+        {
+            foreach (var item in QuestManager.Instance.dictMainQuests)
+            {
+                if(item.Value.sQuestID == myQuest.sQuestID)
+                {
+                    myQuest = item.Value;
+                    break;
+                }
+            }
+        }
+        else if (myQuest.eQuestType == QuestType.SIDEQUEST)
+        {
+            foreach (var item in QuestManager.Instance.dictMainQuests)
+            {
+                if (item.Value.sQuestID == myQuest.sQuestID)
+                {
+                    myQuest = item.Value;
+                    break;
+                }
+            }
+        }
+
+        foreach (var item in QuestManager.Instance.dictCompletedQuests)
+        {
+            if (item.Value.sQuestID == myQuest.sQuestID)
+            {
+                myQuest = null;
+                break;
+            }
+        }
     }
+    public string[] QuestStartDialog()
+    {
+        if(myQuest.eQuestType == QuestType.MAINQUEST)
+        {
+            if (!QuestManager.Instance.dictMainQuests.ContainsValue(myQuest))
+            {
+                myQuest.bIsActive = true;
+                myQuest.Initialize(GameController.Instance.player);
+            }
+        }
+        // else is its a side quest it asks for user response below
+        return sQuestStartDialogLines;
+    }
+    public string[] QuestInProgressDialog()
+    {
+        return sQuestInProgressDialogLines;
+    }
+    public string[] QuestFinishedDialog()
+    {
+        myQuest.GiveReward();
+        myQuest.qGoal = null;
+        return sQuestEndDialogLines;
+    }
+    public void ActivateQuest()
+    {
+        myQuest.bIsActive = true;
+        myQuest.Initialize(GameController.Instance.player);
+    }
+    // NPC SHOP SYSTEM
     public void MerchantShop()
     {
         Debug.Log("I m a Merchant");
@@ -207,11 +276,51 @@ public class NPCEntity : MonoBehaviour
     */
 
     // Setter Functions
+    public void SetNPCBehaviour()
+    {
+        switch (npcBehaviour)
+        {
+            case NPCBehaviour.SIMPLE:
+                break;
+            case NPCBehaviour.QUEST_GIVER:
+                AddQuest();
+                break;
+            case NPCBehaviour.MERCHANT:
+                MerchantShop();
+                break;
+        }
+    }
     public void SetDialog()
     {
         bIsInteracting = true;
         bDialogCheck = true;
-        PopupUIManager.Instance.dialogBoxPopup.setDialogText(sDialogLines);
+
+        if (myQuest == null || myQuest.bIsCompleted)
+        {
+            sDialogToUse = sDefaultDialogLines;
+        }
+        else if (myQuest != null)
+        {
+            if (!myQuest.bIsActive)
+            {
+                sDialogToUse = QuestStartDialog();
+            }
+            else
+            {
+                if (myQuest.qGoal.bIsFinished)
+                {
+                    sDialogToUse = QuestFinishedDialog();
+                }
+                else
+                {
+                    sDialogToUse = QuestInProgressDialog();
+                }
+            }
+        }
+        
+        PopupUIManager.Instance.dialogBoxPopup.SetQuestNPC(this);
+
+        PopupUIManager.Instance.dialogBoxPopup.setDialogText(sDialogToUse);
     }
     public void SetRbodyAccToGroundCheck()
     {
@@ -299,5 +408,9 @@ public class NPCEntity : MonoBehaviour
     public Vector3 VectorZero()
     {
         return new Vector3(0, rbody.velocity.y, 0);
+    }
+    public Quest GetQuest()
+    {
+        return myQuest;
     }
 }

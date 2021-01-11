@@ -8,20 +8,23 @@ public class PlayerController : MonoBehaviour, IHittable
     const float fHEAD_OFFSET = 1f;
     const float fNPC_DISTANCE_CHECK = 0.8f;
     const float fDISTANCE_TO_GROUND = 0.1f;
-    const float fINVULNERABILITY_TIME = 0.7f;
+    const float fINVULNERABILITY_TIME = 0.5f;
     const float fSTUN_TIME = 0.5f;
     const float fSPRINT_STAMINA_COST = 10f; // is multipleid by deltaTime
     const float fATTACK_STAMINA_COST = 10f;
-    const float fSTAMINA_RECOVER_START_TIME = 1f;
-    const float fSTAMINA_RECOVERY_RATE = 20f; // is multipleid by deltaTime
+    const float fSHIELD_STAMINA_COST = 10f;
+    const float fSTAMINA_RECOVER_START_TIME = 0.1f;
+    const float fSTAMINA_RECOVERY_RATE = 25f; // is multipleid by deltaTime
 
     Rigidbody rbody;
     Animator anim;
 
     public float fMaxHitPoints;
+    [HideInInspector]
     public float fCurrentHitPoints;
 
     public float fMaxStamina;
+    [HideInInspector]
     public float fCurrentStamina;
     float fStaminaTimeCounter = 0;
     bool bStaminaUsed;
@@ -48,8 +51,8 @@ public class PlayerController : MonoBehaviour, IHittable
     private bool bIsInteracting = false;
     private bool bIsInvulnerable;
     int iAttackCombo = -1;
+    bool bIsStun;
 
-    bool isStun;
     public UnityEvent OnReciveDamageUI;
     public UnityEvent OnStaminaChangeUI;
 
@@ -70,7 +73,7 @@ public class PlayerController : MonoBehaviour, IHittable
     {
         if (GameController.inPlayMode)
         {
-            if (bIsAlive && !isStun)
+            if (bIsAlive && !bIsStun)
             {
                 StaminaCheck();
                 GetDirectionalInput();
@@ -86,7 +89,7 @@ public class PlayerController : MonoBehaviour, IHittable
     {
         if (GameController.inPlayMode)
         {
-            if (bIsAlive && !isStun)
+            if (bIsAlive && !bIsStun)
             {
                 if (Grounded())
                 {
@@ -116,7 +119,7 @@ public class PlayerController : MonoBehaviour, IHittable
             {
                 if (!bIsShielding && bCanSprint)
                 {
-                    if(fCurrentStamina > fSPRINT_STAMINA_COST)
+                    if(fCurrentStamina > fSPRINT_STAMINA_COST * Time.deltaTime)
                     {
                         fCurrentStamina -= fSPRINT_STAMINA_COST * Time.deltaTime;
                         bIsSprinting = true;
@@ -128,12 +131,13 @@ public class PlayerController : MonoBehaviour, IHittable
                     }
                 }
             }
-            else if (Input.GetButtonUp("Sprint"))
-            {
-                bCanSprint = true;
-            }
+            
             else
             {
+                if (fCurrentStamina > 5f)
+                {
+                    bCanSprint = true;
+                }
                 bIsSprinting = false;
             }
 
@@ -176,8 +180,15 @@ public class PlayerController : MonoBehaviour, IHittable
     {   
         if (Input.GetButton("Shield"))
         {
-            bIsShielding = true;
-            bIsSprinting = false;
+            if(fCurrentStamina > fSHIELD_STAMINA_COST)
+            {
+                bIsShielding = true;
+                bIsSprinting = false;
+            }
+            else
+            {
+                bIsShielding = false;
+            }
         }
         else
             bIsShielding = false;
@@ -349,6 +360,11 @@ public class PlayerController : MonoBehaviour, IHittable
         anim.SetFloat("moveVelocity", 0f);
         anim.SetBool("isShielding", false);
     }
+
+    public bool IsInteracting()
+    {
+        return bIsInteracting;
+    }
     /// Health System
     public void TakeDamage(int _damage)
     {
@@ -440,10 +456,10 @@ public class PlayerController : MonoBehaviour, IHittable
     {
         rbody.velocity = HelperFunctions.VectorZero(rbody);
         anim.SetFloat("moveVelocity", 0f);
-        isStun = true;
-        if (isStun)
+        bIsStun = true;
+        if (bIsStun)
         {
-           StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b)=> { isStun = b; }, false, fSTUN_TIME)); // Replace stun time with stun animation
+           StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b)=> { bIsStun = b; }, false, fSTUN_TIME)); // Replace stun time with stun animation
         }
     }
 

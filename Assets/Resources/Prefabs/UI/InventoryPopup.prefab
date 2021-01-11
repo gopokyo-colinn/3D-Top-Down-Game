@@ -3545,6 +3545,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   container: {fileID: 5162691165739845574}
   bgImage: {fileID: 0}
+  detailsContainer: {fileID: 0}
+  txtDetailItemName: {fileID: 0}
+  txtDetailItemDescription: {fileID: 0}
+  lockImage: {fileID: 0}
 --- !u!1 &5162691165607486374
 GameObject:
   m_ObjectHideFlags: 0
@@ -3867,7 +3871,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.7488586, b: 0.33490568, a: 0.78039217}
+  m_Color: {r: 0.99215686, g: 0.7921569, b: 0.4627451, a: 0.78039217}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:

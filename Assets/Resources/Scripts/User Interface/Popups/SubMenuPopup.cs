@@ -41,7 +41,6 @@ public class SubMenuPopup : Popup
     public void openMenu(List<structSubMenu> _lstSubMenu)
     {
         open();
-
         Vector2 _v2Position = Input.mousePosition;
         if (_v2Position.x > Screen.width / 2f)
             _v2Position.x -= (rtTransform.sizeDelta.x) + 10f;
@@ -70,6 +69,37 @@ public class SubMenuPopup : Popup
         {
             _buttonElement = Instantiate<PopupButtonElement>(prefabButtonElement, tFieldContainer);
             
+            _buttonElement.btnMain.onClick.AddListener(_lstSubMenu[i].action);
+            _buttonElement.btnMain.onClick.AddListener(delegate () { close(); });
+            _buttonElement.SetButtonName(_lstSubMenu[i].sName);
+
+            lstPopupButtonElement.Add(_buttonElement);
+        }
+    }
+    public void openMenu(List<structSubMenu> _lstSubMenu, Vector2 _position)
+    {
+        open();
+
+        containerAll.gameObject.SetActive(false);
+
+        Debug.Log(_position);
+        rtTransform.position = _position;
+
+        PopupButtonElement[] _buttonElements = tFieldContainer.GetComponentsInChildren<PopupButtonElement>();
+
+        for (int i = 0; i < lstPopupButtonElement.Count; i++)
+        {
+            Destroy(lstPopupButtonElement[i].gameObject);
+        }
+
+        lstPopupButtonElement = new List<PopupButtonElement>();
+
+        PopupButtonElement _buttonElement;
+        lstSubMenu = _lstSubMenu;
+        for (int i = 0; i < _lstSubMenu.Count; i++)
+        {
+            _buttonElement = Instantiate<PopupButtonElement>(prefabButtonElement, tFieldContainer);
+
             _buttonElement.btnMain.onClick.AddListener(_lstSubMenu[i].action);
             _buttonElement.btnMain.onClick.AddListener(delegate () { close(); });
             _buttonElement.SetButtonName(_lstSubMenu[i].sName);

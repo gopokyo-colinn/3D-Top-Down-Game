@@ -7,7 +7,12 @@ using UnityEditor;
 public class NPCScriptEditor : Editor
 {
     SerializedObject targetObject;
-    SerializedProperty dialogLinesArray;
+    SerializedProperty npcBehaviour;
+    SerializedProperty npcActivity;
+    SerializedProperty defaultDialogLinesArray;
+    SerializedProperty questStartDialogLinesArray;
+    SerializedProperty questInProgressDialogLinesArray;
+    SerializedProperty questEndDialogLinesArray;
     SerializedProperty patrolPointsArray;
     NPCEntity npc;
 
@@ -15,24 +20,30 @@ public class NPCScriptEditor : Editor
     {
         targetObject = new SerializedObject(target);
         npc = (NPCEntity)target;
-        dialogLinesArray = targetObject.FindProperty("sDialogLines");
+        npcBehaviour = targetObject.FindProperty("npcBehaviour");
+        npcActivity = targetObject.FindProperty("npcActivity");
+        defaultDialogLinesArray = targetObject.FindProperty("sDefaultDialogLines");
+        questStartDialogLinesArray = targetObject.FindProperty("sQuestStartDialogLines");
+        questInProgressDialogLinesArray = targetObject.FindProperty("sQuestInProgressDialogLines");
+        questEndDialogLinesArray = targetObject.FindProperty("sQuestEndDialogLines");
         patrolPointsArray = targetObject.FindProperty("tPatrolPoints");
     }
     public override void OnInspectorGUI()
     {
         //base.OnInspectorGUI();
+        serializedObject.Update();
 
         GUI.enabled = false;
         EditorGUILayout.ObjectField("Script", MonoScript.FromMonoBehaviour((NPCEntity)target), typeof(NPCEntity), false);
         GUI.enabled = true;
 
-        npc.behaviour = (NPCBehaviour)EditorGUILayout.EnumPopup("Behaviour of NPC", npc.behaviour);
-        npc.activity = (NPCActivities)EditorGUILayout.EnumPopup("Activity", npc.activity);
+        EditorGUILayout.PropertyField(npcBehaviour);
+        EditorGUILayout.PropertyField(npcActivity);        
 
-        if (npc.activity != NPCActivities.IDLE && npc.activity != NPCActivities.SLEEPING)
+        if (npc.npcActivity != NPCActivities.IDLE && npc.npcActivity != NPCActivities.SLEEPING)
         {
             npc.fSpeed = EditorGUILayout.FloatField("Speed", npc.fSpeed);
-            switch (npc.activity)
+            switch (npc.npcActivity)
             {
                 case NPCActivities.MOVE_RANDOMLY:
                     EditorGUILayout.BeginHorizontal();
@@ -51,7 +62,15 @@ public class NPCScriptEditor : Editor
             }
         }
 
-        EditorGUILayout.PropertyField(dialogLinesArray, true);
+        EditorGUILayout.PropertyField(defaultDialogLinesArray, true);
+
+        if(npc.npcBehaviour == NPCBehaviour.QUEST_GIVER)
+        {
+            EditorGUILayout.PropertyField(questStartDialogLinesArray, true);
+            EditorGUILayout.PropertyField(questInProgressDialogLinesArray, true);
+            EditorGUILayout.PropertyField(questEndDialogLinesArray, true);
+        }
+
         targetObject.ApplyModifiedProperties();
     }
 }

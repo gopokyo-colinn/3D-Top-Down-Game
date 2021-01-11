@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Weapon : MonoBehaviour, ICanDamage
+public class Weapon : MonoBehaviour
 {
-    public int iDamage;
-    public float fKnockBackForce;
+   // public int iDamage;
+  //  public float fKnockBackForce;
     Collider coli;
     PlayerController player;
 
@@ -21,10 +21,10 @@ public class Weapon : MonoBehaviour, ICanDamage
     {
         CheckPlayerForAttack();
     }
-    public int Damage()
-    {
-        return iDamage;
-    }
+    //public int Damage()
+    //{
+    //    return iDamage;
+    //}
     public void CheckPlayerForAttack()
     {
         if (player.bIsAttacking)
@@ -38,16 +38,16 @@ public class Weapon : MonoBehaviour, ICanDamage
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other)
-        {
-            if(other.gameObject.GetComponent<IHittable>() != null)
-            {
-                IHittable _hitTarget = other.gameObject.GetComponent<IHittable>();
-                _hitTarget.Knockback(transform.position, fKnockBackForce);
-                _hitTarget.TakeDamage(iDamage);
-            }
-        }
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other)
+    //    {
+    //        if(other.gameObject.GetComponent<IHittable>() != null)
+    //        {
+    //            IHittable _hitTarget = other.gameObject.GetComponent<IHittable>();
+    //            _hitTarget.Knockback(transform.position, fKnockBackForce);
+    //            _hitTarget.TakeDamage(iDamage);
+    //        }
+    //    }
+    //}
 }

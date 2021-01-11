@@ -49,10 +49,6 @@ public class GameController : MonoBehaviour
     }
     private void Update()
     {
-        
-    }
-    private void LateUpdate()
-    {
 		QuestManager.Instance.Refresh();
 	}
 }

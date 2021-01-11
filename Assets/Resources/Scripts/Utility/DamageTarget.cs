@@ -5,18 +5,18 @@ using UnityEngine;
 public class DamageTarget : MonoBehaviour, ICanDamage
 {
     public int iDamage;
-    public Collider dmgColi;
-    public bool isProjectileAttack;
+    //public Collider dmgColi;
+    public bool bIsProjectileAttack;
+    public bool bIsTypeOfEnemy = true;
     public float fKnockForce = 4f;
 
     Vector3 startPos;
 
     public void Start()
     {
-        if (isProjectileAttack)
+        if (bIsProjectileAttack)
         {
             startPos = transform.position;
-            Debug.Log("I am projectile");
         }
     }
     public int Damage()
@@ -28,12 +28,14 @@ public class DamageTarget : MonoBehaviour, ICanDamage
     {
         if (other)
         {
-            if (other.gameObject.CompareTag("Player"))
+            //if (other.gameObject.CompareTag("Player"))
+
+            if (bIsTypeOfEnemy)
             {
-                if(other.gameObject.GetComponent<IHittable>() != null)
+                if (other.gameObject.CompareTag("Player"))
                 {
                     IHittable _hitTarget = other.gameObject.GetComponent<IHittable>();
-                    if (isProjectileAttack)
+                    if (bIsProjectileAttack)
                     {
                         _hitTarget.Knockback(startPos, fKnockForce);
                     }
@@ -43,14 +45,52 @@ public class DamageTarget : MonoBehaviour, ICanDamage
                     }
                     _hitTarget.TakeDamage(Damage());
                 }
+                if (other.gameObject.CompareTag("Shield"))
+                {
+                    IHittable _hitTarget = other.gameObject.GetComponentInParent<IHittable>();
+                    if (bIsProjectileAttack)
+                    {
+                        _hitTarget.Knockback(startPos, fKnockForce / 2f);
+                    }
+                    else
+                    {
+                        _hitTarget.Knockback(transform.position, fKnockForce / 2f);
+                    }
+                    _hitTarget.TakeDamage(0);
+                }
             }
-            else
+            else 
             {
                 if (other.gameObject.CompareTag("Shield"))
                 {
-                    Debug.Log("Attack Blocked");
-                    if(dmgColi != null)
-                        dmgColi.gameObject.SetActive(false);
+                    IHittable _hitTarget = other.gameObject.GetComponentInParent<IHittable>();
+                    if (bIsProjectileAttack)
+                    {
+                        _hitTarget.Knockback(startPos, fKnockForce / 2f);
+                    }
+                    else
+                    {
+                        _hitTarget.Knockback(transform.position, fKnockForce / 2f);
+                    }
+                    _hitTarget.TakeDamage(0);
+                }
+                else
+                {
+                    IHittable _hitTarget = other.gameObject.GetComponent<IHittable>();
+
+                    if(_hitTarget != null)
+                    {
+                        if (bIsProjectileAttack)
+                        {
+                            _hitTarget.Knockback(startPos, fKnockForce);
+                        }
+                        else
+                        {
+                            _hitTarget.Knockback(transform.position, fKnockForce);
+                        }
+                        _hitTarget.TakeDamage(Damage());
+                    }
+                   
                 }
             }
         }

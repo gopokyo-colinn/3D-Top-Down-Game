@@ -8,11 +8,15 @@ public class DialogBoxPopup : Popup
 {
     const float TEXT_SPEED = 0.01f;
     public TextMeshProUGUI dialogText;
-    private string[] dialogLines;
-    private int dialogLineNumber = 0;
-    private bool isTyping = false;
+    private string[] sDialogLines;
+    private int iDialogLineNumber = 0;
+    private bool bIsTyping = false;
+    private bool bResponseSelecting;
+
+    public RectTransform responsePopupPosition;
 
     private static bool dialogInProgress;
+    NPCEntity questNPC;
 
     private void Update()
     {
@@ -20,16 +24,18 @@ public class DialogBoxPopup : Popup
         {
             if(Input.GetButtonDown("Interact"))
             {
-                Debug.Log("i AM rUNNING");
-                if(!isTyping)
-                    NextLine();
-                else
+                if (!bResponseSelecting)
                 {
-                    if(dialogLineNumber > 0) // jgad laya first line skip nhi hone, try adding double tap interact for the forst line only
+                    if (!bIsTyping)
+                        NextLine();
+                    else
                     {
-                        StopAllCoroutines();
-                        dialogText.text = dialogLines[dialogLineNumber];
-                        isTyping = false;
+                        if (iDialogLineNumber > 0) // TODO: jgad laya first line skip nhi honi, try adding double tap interact for the forst line only
+                        {
+                            StopAllCoroutines();
+                            dialogText.text = sDialogLines[iDialogLineNumber];
+                            bIsTyping = false;
+                        }
                     }
                 }
             }
@@ -38,34 +44,70 @@ public class DialogBoxPopup : Popup
     public void setDialogText(string[] _dialogLines)
     {
         base.open();
-        dialogLineNumber = -1;
-        dialogLines = _dialogLines;
+        iDialogLineNumber = -1;
+        sDialogLines = _dialogLines;
         NextLine();
         //dialogText.text = dialogLines[dialogLineNumber];
     }
 
     public void NextLine()
     {
-        dialogLineNumber++;
+        iDialogLineNumber++;
         if (!dialogInProgress)
             dialogInProgress = true;
 
-        if (dialogLineNumber > dialogLines.Length - 1)
+        if (iDialogLineNumber > sDialogLines.Length - 1)
         {
             base.close();
-            dialogLineNumber = -1;
+            iDialogLineNumber = -1;
             dialogInProgress = false;
             GameController.inPlayMode = true;
         }
         else
         {
             StopAllCoroutines();
-            StartCoroutine(TypeSentence(dialogLines[dialogLineNumber]));
+            StartCoroutine(TypeSentence(sDialogLines[iDialogLineNumber]));
         }
     }
     IEnumerator TypeSentence(string _sentence)
     {
-        isTyping = true;
+        if(questNPC.GetQuest().eQuestType == QuestType.MAINQUEST)
+        {
+            if (_sentence.Contains("&response"))
+            {
+                _sentence = _sentence.Replace("&response", "");
+            }
+            else if (_sentence.Contains("&questAdded"))
+            {
+                string _message = "New Main Quest Added...!!";
+                _sentence = _sentence.Replace("&questAdded", MsgBoxPopup(_message));
+            }
+            else if (_sentence.Contains("&questComplete"))
+            {
+                string _message = "Quest Completed !! \n You Got 10 XP....";
+                _sentence = _sentence.Replace("&questCompleted", MsgBoxPopup(_message));
+            }
+        }
+        else
+        {
+            if (_sentence.Contains("&response"))
+            {
+                _sentence = _sentence.Replace("&response", ShowResponsePopup());
+            }
+            else if (_sentence.Contains("&questAdded"))
+            {
+                string _message = "New Side Quest Added...!!";
+                _sentence = _sentence.Replace("&questAdded", MsgBoxPopup(_message));
+            }
+            else if (_sentence.Contains("&questCompleted"))
+            {
+                string _message = "Quest Completed !! \n You Got 10 XP....";
+                _sentence = _sentence.Replace("&questCompleted", MsgBoxPopup(_message));
+            }
+        }
+
+        bIsTyping = true;
+
         char[] _dialogChars = _sentence.ToCharArray();
         dialogText.text = "";
         for (int i = 0; i < _dialogChars.Length; i++)
@@ -73,9 +115,54 @@ public class DialogBoxPopup : Popup
             dialogText.text += _dialogChars[i];
             yield return new WaitForSeconds(TEXT_SPEED);
         }
-        isTyping = false;
+        bIsTyping = false;
     }
+    public string MsgBoxPopup(string _sMessage)
+    {
+        // TODO: here select reward text from npc's quest
+        PopupUIManager.Instance.msgBoxPopup.SendTextMessage(_sMessage);
+        return "";
+    }
+    public string ShowResponsePopup()
+    {
+        List<structSubMenu> _lstSubMenu = new List<structSubMenu>();
+        structSubMenu _subMenu = new structSubMenu();
+        _subMenu.sName = "Yes";
+        _subMenu.action = delegate () { ResponseYES(); };
+        _lstSubMenu.Add(_subMenu);
 
+        _subMenu = new structSubMenu();
+        _subMenu.sName = "No";
+        _subMenu.action = delegate () { ResponseNO(); };
+        _lstSubMenu.Add(_subMenu);
+
+        bResponseSelecting = true;
+
+        PopupUIManager.Instance.subMenuPopup.openMenu(_lstSubMenu, responsePopupPosition.position);// new Vector2(556, 126));
+
+        return "";
+    }
+    void ResponseYES()
+    {
+        questNPC.ActivateQuest();
+        NextLine();
+        PopupUIManager.Instance.msgBoxPopup.SendTextMessage("New Side Quest Added !!", 1, 1.5f);
+        bResponseSelecting = false;
+    }
+    void ResponseNO()
+    {
+        sDialogLines = new string[1];
+        sDialogLines[0] = "Come back if you change your mind...";
+        iDialogLineNumber = -1;
+        StopAllCoroutines();
+        NextLine();
+
+        bResponseSelecting = false;
+    }
+    public void SetQuestNPC(NPCEntity _npc)
+    {
+        questNPC = _npc;
+    }
     public bool GetDialogInProgress()
     {
         return dialogInProgress;

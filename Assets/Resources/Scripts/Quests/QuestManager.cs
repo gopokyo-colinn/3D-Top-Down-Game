@@ -7,6 +7,7 @@ public class QuestManager
 {
 	public Dictionary<string, Quest> dictMainQuests;
 	public Dictionary<string, Quest> dictSideQuests;
+	public Dictionary<string, Quest> dictCompletedQuests;
 	public Quest activeQuest;
 	public QuestGoal activeGoal;
 
@@ -17,6 +18,7 @@ public class QuestManager
 	{
 		dictMainQuests = new Dictionary<string, Quest>();
 		dictSideQuests = new Dictionary<string, Quest>();
+		dictCompletedQuests = new Dictionary<string, Quest>();
 	}
 	public static QuestManager Instance
 	{
@@ -33,14 +35,14 @@ public class QuestManager
 
 	public void Initialize(PlayerController _player)
     {
-		for (int i = 0; i < dictMainQuests.Count; i++)
-		{
-			dictMainQuests.ElementAt(i).Value.Initialize(_player);
-		}
-        for (int i = 0; i < dictSideQuests.Count; i++)
-        {
-            dictSideQuests.ElementAt(i).Value.Initialize(_player);
-        }
+		//for (int i = 0; i < dictMainQuests.Count; i++)
+		//{
+		//	dictMainQuests.ElementAt(i).Value.Initialize(_player);
+		//}
+  //      for (int i = 0; i < dictSideQuests.Count; i++)
+  //      {
+  //          dictSideQuests.ElementAt(i).Value.Initialize(_player);
+  //      }
     }
 	public void Refresh()
     {
