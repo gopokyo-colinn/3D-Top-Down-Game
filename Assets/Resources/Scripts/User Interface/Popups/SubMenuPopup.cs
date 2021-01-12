@@ -82,7 +82,6 @@ public class SubMenuPopup : Popup
 
         containerAll.gameObject.SetActive(false);
 
-        Debug.Log(_position);
         rtTransform.position = _position;
 
         PopupButtonElement[] _buttonElements = tFieldContainer.GetComponentsInChildren<PopupButtonElement>();

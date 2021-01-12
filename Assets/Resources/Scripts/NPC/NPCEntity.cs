@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 public enum NPCBehaviour { SIMPLE = 0, QUEST_GIVER = 1, MERCHANT = 2}
 public enum NPCActivities { IDLE = 0, MOVE_RANDOMLY = 1, PATROLLING = 2, FIGHTER = 3, SLEEPING = 4 }
 public class NPCEntity : MonoBehaviour
@@ -26,7 +27,7 @@ public class NPCEntity : MonoBehaviour
         "\n Use '&questAdded' to show quest added popup message. \n Use '&questCompleted' to show quest completed popup message")]
     public string[] sQuestEndDialogLines;
 
-    string[] sDialogToUse;
+    string[] sDialogsToUse;
 
     public NPCBehaviour npcBehaviour;
     public NPCActivities npcActivity;
@@ -166,7 +167,7 @@ public class NPCEntity : MonoBehaviour
     public string[] QuestFinishedDialog()
     {
         myQuest.GiveReward();
-        myQuest.qGoal = null;
+        myQuest.qGoals = null;
         return sQuestEndDialogLines;
     }
     public void ActivateQuest()
@@ -297,30 +298,38 @@ public class NPCEntity : MonoBehaviour
 
         if (myQuest == null || myQuest.bIsCompleted)
         {
-            sDialogToUse = sDefaultDialogLines;
+            sDialogsToUse = sDefaultDialogLines.ToArray();
         }
         else if (myQuest != null)
         {
             if (!myQuest.bIsActive)
             {
-                sDialogToUse = QuestStartDialog();
+                sDialogsToUse = QuestStartDialog().ToArray();
             }
             else
             {
-                if (myQuest.qGoal.bIsFinished)
+                if (myQuest.bAllGoalsCompleted)
                 {
-                    sDialogToUse = QuestFinishedDialog();
+                    sDialogsToUse = QuestFinishedDialog().ToArray();
                 }
                 else
                 {
-                    sDialogToUse = QuestInProgressDialog();
+                    if (myQuest.CheckQuestProgress())
+                    {
+                        sDialogsToUse = QuestFinishedDialog().ToArray();
+                    }
+                    else
+                    {
+                        sDialogsToUse = QuestInProgressDialog().ToArray();
+                    }
                 }
             }
         }
         
         PopupUIManager.Instance.dialogBoxPopup.SetQuestNPC(this);
 
-        PopupUIManager.Instance.dialogBoxPopup.setDialogText(sDialogToUse);
+        
+        PopupUIManager.Instance.dialogBoxPopup.setDialogText(sDialogsToUse);
     }
     public void SetRbodyAccToGroundCheck()
     {

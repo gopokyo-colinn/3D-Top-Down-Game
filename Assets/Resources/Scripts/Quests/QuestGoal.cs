@@ -11,6 +11,6 @@ public class QuestGoal
     public QuestGoalType eGoalType;
     public Transform tLocationToReach;
     [Tooltip("Set Spawn Location for these Enemies in KillQuestManager")]
-    public EnemyType[] enemiesToKill;
+    public EnemySpawner enemiesSpawner;
     public bool bIsFinished;
 }

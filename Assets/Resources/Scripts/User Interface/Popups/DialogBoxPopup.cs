@@ -45,6 +45,7 @@ public class DialogBoxPopup : Popup
     {
         base.open();
         iDialogLineNumber = -1;
+        sDialogLines = new string[_dialogLines.Length];
         sDialogLines = _dialogLines;
         NextLine();
         //dialogText.text = dialogLines[dialogLineNumber];
@@ -66,49 +67,49 @@ public class DialogBoxPopup : Popup
         else
         {
             StopAllCoroutines();
-            StartCoroutine(TypeSentence(sDialogLines[iDialogLineNumber]));
+            StartCoroutine(TypeSentence());
         }
     }
-    IEnumerator TypeSentence(string _sentence)
+    IEnumerator TypeSentence()
     {
         if(questNPC.GetQuest().eQuestType == QuestType.MAINQUEST)
         {
-            if (_sentence.Contains("&response"))
+            if (sDialogLines[iDialogLineNumber].Contains("&response"))
             {
-                _sentence = _sentence.Replace("&response", "");
+                sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&response", "");
             }
-            else if (_sentence.Contains("&questAdded"))
+            else if (sDialogLines[iDialogLineNumber].Contains("&questAdded"))
             {
                 string _message = "New Main Quest Added...!!";
-                _sentence = _sentence.Replace("&questAdded", MsgBoxPopup(_message));
+                sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questAdded", MsgBoxPopup(_message));
             }
-            else if (_sentence.Contains("&questComplete"))
+            else if (sDialogLines[iDialogLineNumber].Contains("&questComplete"))
             {
                 string _message = "Quest Completed !! \n You Got 10 XP....";
-                _sentence = _sentence.Replace("&questCompleted", MsgBoxPopup(_message));
+                sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questCompleted", MsgBoxPopup(_message));
             }
         }
         else
         {
-            if (_sentence.Contains("&response"))
+            if (sDialogLines[iDialogLineNumber].Contains("&response"))
             {
-                _sentence = _sentence.Replace("&response", ShowResponsePopup());
+                sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&response", ShowResponsePopup());
             }
-            else if (_sentence.Contains("&questAdded"))
+            else if (sDialogLines[iDialogLineNumber].Contains("&questAdded"))
             {
                 string _message = "New Side Quest Added...!!";
-                _sentence = _sentence.Replace("&questAdded", MsgBoxPopup(_message));
+                sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questAdded", MsgBoxPopup(_message));
             }
-            else if (_sentence.Contains("&questCompleted"))
+            else if (sDialogLines[iDialogLineNumber].Contains("&questCompleted"))
             {
                 string _message = "Quest Completed !! \n You Got 10 XP....";
-                _sentence = _sentence.Replace("&questCompleted", MsgBoxPopup(_message));
+                sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questCompleted", MsgBoxPopup(_message));
             }
         }
 
         bIsTyping = true;
 
-        char[] _dialogChars = _sentence.ToCharArray();
+        char[] _dialogChars = sDialogLines[iDialogLineNumber].ToCharArray();
         dialogText.text = "";
         for (int i = 0; i < _dialogChars.Length; i++)
         {

@@ -1347,6 +1347,36 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.49353188, y: 0.33818367, z: 1.1350074}
   m_Center: {x: 0.10390701, y: -0.33090845, z: 0.06750365}
+--- !u!1 &216242839
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 216242840}
+  m_Layer: 0
+  m_Name: location (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &216242840
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 216242839}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -13.18, y: 0, z: 16.9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1333581328}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &217122250
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1548,6 +1578,36 @@ Transform:
   m_Father: {fileID: 1340097743}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 67.839905, y: -170.46362, z: -58.86322}
+--- !u!1 &227973798
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 227973799}
+  m_Layer: 0
+  m_Name: KQ1 Location
+  m_TagString: Untagged
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &227973799
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 227973798}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.34, y: 0, z: 6.16}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 963876909}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &246462375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1563,12 +1623,17 @@ MonoBehaviour:
   quest:
     sQuestTitle: Kill Quest
     sQuestDescription: Kill all the metalons in that area.
-    eQuestType: 0
+    eQuestType: 1
     sQuestID: KQ-1
-    qGoal:
-      eGoalType: 3
-      tLocationToReach: {fileID: 963876909}
-      enemiesToKill: 0100000001000000
+    bAllGoalsCompleted: 0
+    qGoals:
+    - eGoalType: 3
+      tLocationToReach: {fileID: 227973799}
+      enemiesSpawner: {fileID: 990422101}
+      bIsFinished: 0
+    - eGoalType: 0
+      tLocationToReach: {fileID: 710368288}
+      enemiesSpawner: {fileID: 1333581329}
       bIsFinished: 0
     bIsActive: 0
     bIsCompleted: 0
@@ -1600,7 +1665,6 @@ MonoBehaviour:
   sQuestEndDialogLines:
   - Thanks a lot for killing those bastards for me.
   - Here is you Reward !!!!! &questCompleted
-  sDialogToUse: []
   npcBehaviour: 1
   npcActivity: 0
   tPatrolPoints:
@@ -2422,7 +2486,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 426904028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.75, y: 0, z: -20}
+  m_LocalPosition: {x: -23.8, y: 0, z: 16.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 990422100}
@@ -2718,6 +2782,36 @@ Transform:
   m_Father: {fileID: 1397382855}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &459957936
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 459957937}
+  m_Layer: 0
+  m_Name: location (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &459957937
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 459957936}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -11.7, y: 0, z: 16.9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1333581328}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &466892397
 GameObject:
   m_ObjectHideFlags: 0
@@ -2896,6 +2990,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 990422100}
+  - {fileID: 1333581328}
   m_Father: {fileID: 1597530219}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4616,6 +4711,36 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &710368287
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 710368288}
+  m_Layer: 0
+  m_Name: KQ1 Location (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &710368288
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710368287}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -23.1, y: 0, z: 6.16}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 963876909}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &717424529 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5162691165607486374, guid: 7b724be35637f6e4fa85988d95f6ccd6,
@@ -6997,9 +7122,9 @@ GameObject:
   m_Component:
   - component: {fileID: 963876909}
   m_Layer: 0
-  m_Name: Quest1Location
+  m_Name: Quest Locations
   m_TagString: Untagged
-  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -7011,9 +7136,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963876908}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.558, y: 0.15, z: 6.036}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 227973799}
+  - {fileID: 710368288}
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7506,12 +7633,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: daafbeb5d6534eb40afc40066517c6ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sQuestID: KQ-1
   spawnLoactions:
   - {fileID: 1801007377}
   - {fileID: 426904029}
-  enemiesLst: []
-  enemyPrefab: {fileID: 6009726511435969608, guid: 82985cfe36759c945b8432b194a28987,
+  enemiesToSpawnList: 0100000001000000
+  plantEnemyPrefab: {fileID: 6009726511435969608, guid: 82985cfe36759c945b8432b194a28987,
     type: 3}
 --- !u!1 &991644310
 GameObject:
@@ -8465,7 +8591,6 @@ MonoBehaviour:
   sQuestStartDialogLines: []
   sQuestInProgressDialogLines: []
   sQuestEndDialogLines: []
-  sDialogToUse: []
   npcBehaviour: 0
   npcActivity: 0
   tPatrolPoints: []
@@ -8489,11 +8614,8 @@ MonoBehaviour:
     sQuestDescription: Go to that location.
     eQuestType: 1
     sQuestID: 
-    qGoal:
-      eGoalType: 3
-      tLocationToReach: {fileID: 963876909}
-      enemiesToKill: 
-      bIsFinished: 0
+    bAllGoalsCompleted: 0
+    qGoals: []
     bIsActive: 0
     bIsCompleted: 0
 --- !u!65 &1251556110
@@ -8809,6 +8931,56 @@ Transform:
   m_Father: {fileID: 988213113}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -63.996784, y: -172.4205, z: -136.13742}
+--- !u!1 &1333581327
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1333581328}
+  - component: {fileID: 1333581329}
+  m_Layer: 0
+  m_Name: KillQuest2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1333581328
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1333581327}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 459957937}
+  - {fileID: 216242840}
+  m_Father: {fileID: 522588929}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1333581329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1333581327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: daafbeb5d6534eb40afc40066517c6ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnLoactions:
+  - {fileID: 459957937}
+  - {fileID: 216242840}
+  enemiesToSpawnList: 0000000000000000
+  plantEnemyPrefab: {fileID: 1840673334}
 --- !u!1 &1339060128
 GameObject:
   m_ObjectHideFlags: 0
@@ -10338,7 +10510,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1597530219}
-  - component: {fileID: 1597530220}
   m_Layer: 0
   m_Name: Kill Quest Manager
   m_TagString: Untagged
@@ -10361,18 +10532,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1597530220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1597530218}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b80022e1987b2ac4280539854b51a015, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1617351988
 GameObject:
   m_ObjectHideFlags: 0
@@ -11559,7 +11718,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1801007376}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.6, y: 0, z: -19.5}
+  m_LocalPosition: {x: -21.3, y: 0, z: 16.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 990422100}

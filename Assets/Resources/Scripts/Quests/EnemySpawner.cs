@@ -4,14 +4,21 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public string sQuestID = "KQ-";
+    string sID = "KQ-";
     public Transform[] spawnLoactions;
 
-    public List<Enemy> enemiesLst;
+    public List<EnemyType> enemiesToSpawnList;
+    List<Enemy> enemiesLst;
 
-    public Enemy enemyPrefab;
+    public Enemy plantEnemyPrefab;
 
     bool isActive = false;
+
+    private void Start()
+    {
+        enemiesLst = new List<Enemy>();
+        SetActive(false);
+    }
 
     public void Update()
     {
@@ -19,7 +26,7 @@ public class EnemySpawner : MonoBehaviour
         {
             for (int i = 0; i < enemiesLst.Count; i++)
             {
-                if(enemiesLst[i].EnemyDied())
+                if (enemiesLst[i].EnemyDied())
                 {
                     enemiesLst.Remove(enemiesLst[i]);
                 }
@@ -27,22 +34,32 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    public void SpawnEnemies(EnemyType[] _enemiesList)
+    public void SpawnEnemies()
     {
-        isActive = true;
+        for (int i = 0; i < enemiesToSpawnList.Count; i++)
+        {
+            SpawnEnemy(enemiesToSpawnList[i], spawnLoactions[i].position);
+        }
 
-        for (int i = 0; i < _enemiesList.Length; i++)
-        {
-            SpawnEnemy(spawnLoactions[i].position);
-        }
+        isActive = true;
     }
-    public void SpawnEnemy(Vector3 _position)
+    public void SpawnEnemy(EnemyType _eType, Vector3 _position)
     {
-        Enemy _newEnemy = Instantiate(enemyPrefab, _position, Quaternion.identity);
-        if(enemiesLst == null)
-        {
-            enemiesLst = new List<Enemy>();
-        }
+        // TODO: Add prefabs according to enemy etype (right now only plant enemiesprefab)
+        Enemy _newEnemy = Instantiate(plantEnemyPrefab, _position, Quaternion.identity);
+        
         enemiesLst.Add(_newEnemy);
+    }
+    public bool CheckIfAllEnemiesDead()
+    {
+        return (enemiesLst.Count <= 0);
+    }
+    public void SetActive(bool _b)
+    {
+        gameObject.SetActive(_b);
+    }
+    public void SetID(string _ID)
+    {
+        sID = _ID;
     }
 }

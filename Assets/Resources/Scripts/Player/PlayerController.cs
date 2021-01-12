@@ -288,7 +288,7 @@ public class PlayerController : MonoBehaviour, IHittable
         if (!bIsInteracting)
         {
             bIsInteracting = true;
-            // can make it bit more good
+            // TODO: can make it bit more good
             var targetRotation = Quaternion.LookRotation(_collidedNPC.transform.position - transform.position);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
 

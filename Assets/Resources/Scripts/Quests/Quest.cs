@@ -8,11 +8,13 @@ public enum QuestType { MAINQUEST = 0, SIDEQUEST = 1 }
 public class Quest
 {
     public string sQuestTitle;
-    [TextArea(2,4)]
+    [TextArea(2, 4)]
     public string sQuestDescription;
     public QuestType eQuestType;
     public string sQuestID;
-    public QuestGoal qGoal;
+    // public QuestGoal qGoal;
+    public bool bAllGoalsCompleted = false;
+    public QuestGoal[] qGoals;
 
     [HideInInspector]
     public bool bIsActive;
@@ -20,17 +22,21 @@ public class Quest
     public bool bIsCompleted;
 
     PlayerController player;
-    EnemySpawner killQuestEnemySpawner;
 
     public void Initialize(PlayerController _player)
     {
-        player = _player;// FindObjectOfType<PlayerController>();
-        if (qGoal.eGoalType == QuestGoalType.KILL)
+        player = _player;
+        for (int i = 0; i < qGoals.Length; i++)
         {
-            killQuestEnemySpawner = KillQuestsManager.Instance.GetCurrentQuestSpawner(sQuestID);
-            KillQuestsManager.Instance.InitializeQuestEnemies(sQuestID, qGoal.enemiesToKill);
+            if (qGoals[i].eGoalType == QuestGoalType.KILL)
+            {
+                qGoals[i].enemiesSpawner.SetID(sQuestID);
+                qGoals[i].enemiesSpawner.SetActive(true);
+                qGoals[i].enemiesSpawner.SpawnEnemies();
+            }
         }
-        if(eQuestType == QuestType.MAINQUEST)
+
+        if (eQuestType == QuestType.MAINQUEST)
         {
             if (!QuestManager.Instance.dictMainQuests.ContainsKey(sQuestTitle))
             {
@@ -48,7 +54,7 @@ public class Quest
 
     public void Refresh()
     {
-        if(!bIsCompleted)
+        if (!bIsCompleted)
             CheckGoalProgress();
     }
 
@@ -62,9 +68,10 @@ public class Quest
 
     }
 
+   
     public void GiveReward()
     {
-        if (qGoal.bIsFinished)
+        if (bAllGoalsCompleted)
         {
             Debug.Log("Got 10 XP.");
             RemoveQuest();
@@ -73,31 +80,48 @@ public class Quest
 
     public void CheckGoalProgress()
     {
-        switch (qGoal.eGoalType)
+        foreach (var qGoal in qGoals)
         {
-            case QuestGoalType.DELIVER:
-                DeliverQuest();
-                break;
-            case QuestGoalType.GATHER:
-                GatherQuest();
-                break;
-            case QuestGoalType.KILL:
-                KillQuest();
-                break;
-            case QuestGoalType.GOTOLOCATION:
-                GoToLocationQuest();
-                break;
+            switch (qGoal.eGoalType)
+            {
+                case QuestGoalType.DELIVER:
+                    DeliverQuest(qGoal);
+                    break;
+                case QuestGoalType.GATHER:
+                    GatherQuest(qGoal);
+                    break;
+                case QuestGoalType.KILL:
+                    KillQuest(qGoal);
+                    break;
+                case QuestGoalType.GOTOLOCATION:
+                    GoToLocationQuest(qGoal);
+                    break;
+            }
         }
+    }
+    public bool CheckQuestProgress()
+    {
+        for (int i = 0; i < qGoals.Length; i++)
+        {
+            if (!qGoals[i].bIsFinished)
+            {
+                bAllGoalsCompleted = false;
+                return bAllGoalsCompleted;
+            }
+        }
+        bAllGoalsCompleted = true;
+        return bAllGoalsCompleted;
     }
 
     public void RemoveQuest()
     {
         bIsCompleted = true;
+
         if (!QuestManager.Instance.dictCompletedQuests.ContainsKey(sQuestTitle))
         {
             QuestManager.Instance.dictCompletedQuests.Add(sQuestTitle, this);
         }
-        
+
         if (eQuestType == QuestType.MAINQUEST)
         {
             if (QuestManager.Instance.dictMainQuests.ContainsKey(sQuestTitle))
@@ -114,26 +138,28 @@ public class Quest
         }
     }
 
-    public void KillQuest()
+    public void KillQuest(QuestGoal _qGoal)
     {
-        if(killQuestEnemySpawner.enemiesLst.Count <= 0)
+
+        if (_qGoal.enemiesSpawner.CheckIfAllEnemiesDead())
         {
-            qGoal.bIsFinished = true;
-            killQuestEnemySpawner.gameObject.SetActive(false);
+            _qGoal.enemiesSpawner.SetActive(false);
+            _qGoal.bIsFinished = true;
         }
     }
-    public void GoToLocationQuest()
+    public void GoToLocationQuest(QuestGoal _qGoal)
     {
-        if ((player.transform.position - qGoal.tLocationToReach.position).sqrMagnitude <= 1f)
+        if ((player.transform.position - _qGoal.tLocationToReach.position).sqrMagnitude <= 1f)
         {
-            qGoal.bIsFinished = true;
+            _qGoal.bIsFinished = true;
         }
+
     }
-    public void GatherQuest()
+    public void GatherQuest(QuestGoal _qGoal)
     {
 
     }
-    public void DeliverQuest()
+    public void DeliverQuest(QuestGoal _qGoal)
     {
 
     }
