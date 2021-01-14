@@ -21,6 +21,8 @@ public class Quest
     [HideInInspector]
     public bool bIsCompleted;
 
+    public string sRewards; /// TODO: Replace this with type of reward such as GOLD, EXP, ITEMS. Make it a array to choose a number of rewards.
+
     PlayerController player;
 
     public void Initialize(PlayerController _player)
@@ -73,7 +75,7 @@ public class Quest
     {
         if (bAllGoalsCompleted)
         {
-            Debug.Log("Got 10 XP.");
+            Debug.Log(sRewards);
             RemoveQuest();
         }
     }
