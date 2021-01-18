@@ -6,7 +6,7 @@ public class Scorpion : Enemy, IHittable
 {
     const float fPUSHBACKFORCE = 3f;
     private bool bRotateAnims = true;
-    float fSTUN_TIME = 0.02f; // this is extra time after the animation
+    float fSTUN_TIME = 0f; // this is extra time after the animation
 
     void Start()
     {

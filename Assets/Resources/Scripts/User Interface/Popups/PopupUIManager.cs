@@ -9,10 +9,9 @@ public class PopupUIManager : MonoBehaviour
 	public InventoryPopup inventoryPopup;
 	public SubMenuPopup subMenuPopup;
 	public MessageBoxPopup msgBoxPopup;
+	public QuestPopupUI questPopupUI;
+	public MenuBarPopup menuBarPopup;
 
-	PlayerController player;
-
-	bool bInventoryIsOpen;
 
 	private static PopupUIManager instance;
 	public static PopupUIManager Instance
@@ -44,71 +43,54 @@ public class PopupUIManager : MonoBehaviour
 			Destroy(gameObject);
 		}
 	}
-    private void Start()
-    {
-		player = GameController.Instance.player;
-	}
 
     private void Update()
 	{
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (bInventoryIsOpen)
+		EscapeButtonFunction();
+		InventoryInput();
+		QuestUIInput();
+    }
+	void EscapeButtonFunction()
+    {
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+            if (GameController.inPlayMode)
             {
-                CloseInventory();
+                menuBarPopup.OpenPauseMenuUI();
             }
             else
             {
-                if (GameController.inPlayMode)
-                {
-					PauseGame();
-                }
-                else
-                {
-					pauseMenuPopup.ResumeButton();
-				}
+                menuBarPopup.CloseAllPopups();
             }
         }
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            if (!bInventoryIsOpen)
-            {
-				if(GameController.inPlayMode)
-					OpenInventory();
-            }
-            else
-            {
-                CloseInventory();
-            }
-        }
-    }
-	void OpenInventory()
+	} // Escape for Closing any open popup and opening pause menu
+	void InventoryInput() // I for Inventory
     {
-		GameController.inPlayMode = false;
-		bInventoryIsOpen = true;
-		inventoryPopup.open();
-    }
-	void CloseInventory()
+		if (Input.GetKeyDown(KeyCode.I))
+		{
+			if (!inventoryPopup.IsActive())
+			{
+				menuBarPopup.OpenInventoryUI();
+			}
+			else
+			{
+				menuBarPopup.CloseAllPopups();
+			}
+		}
+	}
+	void QuestUIInput() // Tab for opening quest manager UI
     {
-		GameController.inPlayMode = true;
-		bInventoryIsOpen = false;
-		inventoryPopup.close();
-		subMenuPopup.close();
-    }
-
-	void PauseGame()
-    {
-        if (!GameController.bGamePaused)
-        {
-            GameController.bGamePaused = true;
-            GameController.inPlayMode = false;
-            Time.timeScale = 0f;
-            pauseMenuPopup.open();
-        }
-        else
-        {
-            pauseMenuPopup.ResumeButton();
-        }
-    }
+		if (Input.GetKeyDown(KeyCode.Tab))
+		{
+			if (!questPopupUI.IsActive())
+			{
+				menuBarPopup.OpenQuestUI();
+			}
+			else
+			{
+				menuBarPopup.CloseAllPopups();
+			}
+		}
+	}
 	
 }

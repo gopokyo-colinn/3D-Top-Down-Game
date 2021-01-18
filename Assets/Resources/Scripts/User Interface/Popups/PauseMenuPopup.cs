@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class PauseMenuPopup : Popup
 {
+    public override void open()
+    {
+        base.open();
+        PopupUIManager.Instance.menuBarPopup.open();
+    }
+    public override void close()
+    {
+        base.close();
+        PopupUIManager.Instance.menuBarPopup.close();
+    }
     public void ResumeButton()
     {
         if (GameController.bGamePaused)

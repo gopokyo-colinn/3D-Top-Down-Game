@@ -72,41 +72,7 @@ public class DialogBoxPopup : Popup
     }
     IEnumerator TypeSentence()
     {
-        if(questNPC.GetQuest().eQuestType == QuestType.MAINQUEST)
-        {
-            if (sDialogLines[iDialogLineNumber].Contains("&response"))
-            {
-                sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&response", "");
-            }
-            else if (sDialogLines[iDialogLineNumber].Contains("&questAdded"))
-            {
-                string _message = "New Main Quest Added...!!";
-                sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questAdded", MsgBoxPopup(_message));
-            }
-            else if (sDialogLines[iDialogLineNumber].Contains("&questComplete"))
-            {
-                string _message = "Quest Completed !! \n You Got 10 XP....";
-                sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questCompleted", MsgBoxPopup(_message));
-            }
-        }
-        else
-        {
-            if (sDialogLines[iDialogLineNumber].Contains("&response"))
-            {
-                sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&response", ShowResponsePopup());
-            }
-            else if (sDialogLines[iDialogLineNumber].Contains("&questAdded"))
-            {
-                string _message = "New Side Quest Added...!!";
-                sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questAdded", MsgBoxPopup(_message));
-            }
-            else if (sDialogLines[iDialogLineNumber].Contains("&questCompleted"))
-            {
-                string _message = "Quest Completed !! \n You Got 10 XP....";
-                sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questCompleted", MsgBoxPopup(_message));
-            }
-        }
-
+        CheckForSpecialFunction();
         bIsTyping = true;
 
         char[] _dialogChars = sDialogLines[iDialogLineNumber].ToCharArray();
@@ -117,6 +83,48 @@ public class DialogBoxPopup : Popup
             yield return new WaitForSeconds(TEXT_SPEED);
         }
         bIsTyping = false;
+    }
+
+    public void CheckForSpecialFunction()
+    {
+        if(questNPC.GetQuest() != null)
+        {
+            if(questNPC.GetQuest().eQuestType == QuestType.MAINQUEST)
+            {
+                if (sDialogLines[iDialogLineNumber].Contains("&response"))
+                {
+                    sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&response", "");
+                }
+                else if (sDialogLines[iDialogLineNumber].Contains("&questAdded"))
+                {
+                    string _message = "New Main Quest Added...!!";
+                    sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questAdded", MsgBoxPopup(_message));
+                }
+                else if (sDialogLines[iDialogLineNumber].Contains("&questComplete"))
+                {
+                    string _message = "Quest Completed !! \n You Got 10 XP....";
+                    sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questCompleted", MsgBoxPopup(_message));
+                }
+            }
+            else
+            {
+                if (sDialogLines[iDialogLineNumber].Contains("&response"))
+                {
+                    sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&response", ShowResponsePopup());
+                }
+                else if (sDialogLines[iDialogLineNumber].Contains("&questAdded"))
+                {
+                    string _message = "New Side Quest Added...!!";
+                    sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questAdded", MsgBoxPopup(_message));
+                }
+                else if (sDialogLines[iDialogLineNumber].Contains("&questCompleted"))
+                {
+                    string _message = "Quest Completed !! \n You Got 10 XP....";
+                    sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questCompleted", MsgBoxPopup(_message));
+                }
+            }
+
+        }
     }
     public string MsgBoxPopup(string _sMessage)
     {
@@ -147,7 +155,7 @@ public class DialogBoxPopup : Popup
     {
         questNPC.ActivateQuest();
         NextLine();
-        PopupUIManager.Instance.msgBoxPopup.SendTextMessage("New Side Quest Added !!", 1, 1.5f);
+        PopupUIManager.Instance.msgBoxPopup.SendTextMessage("New Side Quest Added !!", 1.5f,1);
         bResponseSelecting = false;
     }
     void ResponseNO()

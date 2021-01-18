@@ -24,18 +24,24 @@ public class QuestElement : MonoBehaviour, IPointerClickHandler
 
         rectTransform.sizeDelta = new Vector2(_width, _height);
     }
-    public void SetElement(string _text, float _width = 590, float _height = 58, bool _bNonClickable = true)
+    public void SetElement(string _text, bool _bResizeable = false, float _fontSize = 22, float _width = 590, float _height = 58, bool _bNonClickable = true)
     {
         bNonClickable = _bNonClickable;
-        questTitleTxt.fontSize = 22f;
         questTitleTxt.text = _text;
-        rectTransform.sizeDelta = new Vector2(_width, _height);
+        if (_bResizeable)
+        {
+            questTitleTxt.fontSize = _fontSize;
+            rectTransform.sizeDelta = new Vector2(_width, _height);
+        }
     }
     public void SetSelectedElement(bool _bSelected)
     {
         bSelected = _bSelected;
         imgSelected.gameObject.SetActive(bSelected);
-
+    }
+    public void SetFontStrikethrough() 
+    {
+        questTitleTxt.fontStyle = FontStyles.Strikethrough;
     }
 
     public void OnPointerClick(PointerEventData eventData)

@@ -26,7 +26,18 @@ public class InventoryPopup : Popup
         InitializeInventoryUI();
         close();
     }
-    
+
+    public override void open()
+    {
+        base.open();
+        PopupUIManager.Instance.menuBarPopup.open();
+    }
+    public override void close()
+    {
+        base.close();
+        PopupUIManager.Instance.menuBarPopup.close();
+    }
+
     public void UpdateInventoryUI(Inventory _updatedInventory)
     {
         inventory = _updatedInventory;

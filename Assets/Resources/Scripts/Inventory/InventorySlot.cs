@@ -91,9 +91,9 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     }
     public void ClickUse()
     {
-        Debug.Log(item.sItemName + " used");
         if (item.UseItem(GameController.Instance.player))
         {
+            Debug.Log(item.sItemName + " used");
             if (item.isStackable)
                 item.iAmount--;
 

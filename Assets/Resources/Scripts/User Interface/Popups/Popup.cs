@@ -21,4 +21,8 @@ public class Popup : MonoBehaviour
     {
         container.gameObject.SetActive(false);
     }
+    public bool IsActive()
+    {
+        return container.gameObject.activeSelf;
+    }
 }

@@ -8,11 +8,10 @@ public class NPCScriptEditor : Editor
 {
     SerializedObject targetObject;
     SerializedProperty npcBehaviour;
+    SerializedProperty npcName;
     SerializedProperty npcActivity;
-    SerializedProperty defaultDialogLinesArray;
-    SerializedProperty questStartDialogLinesArray;
-    SerializedProperty questInProgressDialogLinesArray;
-    SerializedProperty questEndDialogLinesArray;
+    SerializedProperty firstDialogLinesArray;   
+    SerializedProperty sRandomDialogLinesArray;   
     SerializedProperty patrolPointsArray;
     NPCEntity npc;
 
@@ -21,11 +20,10 @@ public class NPCScriptEditor : Editor
         targetObject = new SerializedObject(target);
         npc = (NPCEntity)target;
         npcBehaviour = targetObject.FindProperty("npcBehaviour");
+        npcName = targetObject.FindProperty("sNpcName");
         npcActivity = targetObject.FindProperty("npcActivity");
-        defaultDialogLinesArray = targetObject.FindProperty("sDefaultDialogLines");
-        questStartDialogLinesArray = targetObject.FindProperty("sQuestStartDialogLines");
-        questInProgressDialogLinesArray = targetObject.FindProperty("sQuestInProgressDialogLines");
-        questEndDialogLinesArray = targetObject.FindProperty("sQuestEndDialogLines");
+        firstDialogLinesArray = targetObject.FindProperty("sFirstDialogLines");
+        sRandomDialogLinesArray = targetObject.FindProperty("sRandomDialogs");
         patrolPointsArray = targetObject.FindProperty("tPatrolPoints");
     }
     public override void OnInspectorGUI()
@@ -37,6 +35,7 @@ public class NPCScriptEditor : Editor
         EditorGUILayout.ObjectField("Script", MonoScript.FromMonoBehaviour((NPCEntity)target), typeof(NPCEntity), false);
         GUI.enabled = true;
 
+        EditorGUILayout.PropertyField(npcName);
         EditorGUILayout.PropertyField(npcBehaviour);
         EditorGUILayout.PropertyField(npcActivity);        
 
@@ -62,14 +61,8 @@ public class NPCScriptEditor : Editor
             }
         }
 
-        EditorGUILayout.PropertyField(defaultDialogLinesArray, true);
-
-        if(npc.npcBehaviour == NPCBehaviour.QUEST_GIVER)
-        {
-            EditorGUILayout.PropertyField(questStartDialogLinesArray, true);
-            EditorGUILayout.PropertyField(questInProgressDialogLinesArray, true);
-            EditorGUILayout.PropertyField(questEndDialogLinesArray, true);
-        }
+        EditorGUILayout.PropertyField(firstDialogLinesArray, true);
+        EditorGUILayout.PropertyField(sRandomDialogLinesArray);
 
         targetObject.ApplyModifiedProperties();
     }

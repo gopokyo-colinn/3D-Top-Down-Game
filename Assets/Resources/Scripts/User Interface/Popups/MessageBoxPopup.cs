@@ -6,17 +6,16 @@ public class MessageBoxPopup : Popup
 {
     public TMPro.TextMeshProUGUI txtMessage;
     public float fTimeToShow;
-    public void SendTextMessage(string _message, float _bgScale = 1f, float _fTimeToShow = 2)
+    public void SendTextMessage(string _message,  float _fTimeToShow = 2, float _bgScale = 1f)
     {
         open();
         bgImage.transform.localScale = new Vector3(1, _bgScale, 1);
         txtMessage.text = _message;
-        StartCoroutine(DisableItemAfter(_fTimeToShow));
+        StartCoroutine(DisablePopupAfter(_fTimeToShow));
     }
-
-    IEnumerator DisableItemAfter(float _fWaitTime)
+    IEnumerator DisablePopupAfter(float _fWaitTime)
     {
-        yield return new WaitForSeconds(_fWaitTime);
+        yield return new WaitForSecondsRealtime(_fWaitTime);
         close();
         StopAllCoroutines();
     }

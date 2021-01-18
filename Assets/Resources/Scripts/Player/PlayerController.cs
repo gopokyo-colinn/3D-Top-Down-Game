@@ -9,9 +9,9 @@ public class PlayerController : MonoBehaviour, IHittable
     const float fNPC_DISTANCE_CHECK = 0.8f;
     const float fDISTANCE_TO_GROUND = 0.1f;
     const float fINVULNERABILITY_TIME = 0.5f;
-    const float fSTUN_TIME = 0.5f;
+    const float fSTUN_TIME = 0.4f;
     const float fSPRINT_STAMINA_COST = 10f; // is multipleid by deltaTime
-    const float fATTACK_STAMINA_COST = 10f;
+    const float fATTACK_STAMINA_COST = 5f;
     const float fSHIELD_STAMINA_COST = 10f;
     const float fSTAMINA_RECOVER_START_TIME = 0.1f;
     const float fSTAMINA_RECOVERY_RATE = 25f; // is multipleid by deltaTime
