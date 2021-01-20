@@ -10,17 +10,23 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     public Image icon;
     public TextMeshProUGUI stackText;
     private Item item;
+    structItem structThisItem;
     Outline outline;
     private void Awake()
     {
         outline = GetComponent<Outline>();
         stackText.text = "";
     }
-    public void UpdateSlot(Item _item)
+    public void UpdateSlot(structItem _structItem)
     {
-        item = new Item(_item);
+        structThisItem = new structItem();
+        structThisItem = _structItem;
+
+        item = new Item(structThisItem);
+
         icon.gameObject.SetActive(true);
         icon.sprite = item.GetSprite();
+
         if(item.iAmount <= 1)
         {
             stackText.text = "";
@@ -95,7 +101,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         {
             Debug.Log(item.sItemName + " used");
             if (item.isStackable)
-                item.iAmount--;
+                item.UpdateAmount(-1);
 
             RemoveItem(item);
         }
@@ -112,11 +118,13 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 
         ItemContainer _newSpawnedItem = _droppedItem.GetComponent<ItemContainer>();
 
-        _newSpawnedItem.SetItem(item);
+        _newSpawnedItem.SetItem(structThisItem);
 
         if (item.isStackable)
-            item.iAmount--;
-        Debug.Log(item.iAmount);
+        {
+            item.UpdateAmount(-1);
+        }
+
         RemoveItem(item);
 
     }
@@ -129,11 +137,11 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
             Transform _droppedItem = Instantiate(ItemsAssets.Instance.GetPrefab(item), _itemDropPosition, Quaternion.identity).transform;
 
             ItemContainer _newSpawnedItem = _droppedItem.GetComponent<ItemContainer>();
-            _newSpawnedItem.SetItem(item);
+            _newSpawnedItem.SetItem(structThisItem);
         }
         //if (item.isStackable)
         // item.iAmount--;
-        item.iAmount = 0;
+        item.UpdateAmount(-item.iAmount); // that will make it equal to 0
         RemoveItem(item);
     }
     public void ClickDetails()

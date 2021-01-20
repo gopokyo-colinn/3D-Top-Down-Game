@@ -16,12 +16,15 @@ public class QuestNPC : MonoBehaviour
             {
                 for (int i = 0; i < _quest.Value.qGoals.Length; i++)
                 {
-                    if (_quest.Value.qGoals[i].eGoalType == QuestGoalType.GOTONPC)
+                    if (_quest.Value.qGoals[i].bIsActive)
                     {
-                        if (_quest.Value.sQuestID == this.sQuestID)
+                        if (_quest.Value.qGoals[i].eGoalType == QuestGoalType.GOTONPC)
                         {
-                            _quest.Value.GoToNPCCompleted(_quest.Value.qGoals[i], true);
-                            return true;
+                            if (_quest.Value.sQuestID == this.sQuestID)
+                            {
+                                _quest.Value.GoToNPCCompleted(_quest.Value.qGoals[i], true);
+                                return true;
+                            }
                         }
                     }
                 }
@@ -34,12 +37,15 @@ public class QuestNPC : MonoBehaviour
             {
                 for (int i = 0; i < _quest.Value.qGoals.Length; i++)
                 {
-                    if (_quest.Value.qGoals[i].eGoalType == QuestGoalType.GOTONPC)
+                    if (_quest.Value.qGoals[i].bIsActive)
                     {
-                        if (_quest.Value.sQuestID == this.sQuestID)
+                        if (_quest.Value.qGoals[i].eGoalType == QuestGoalType.GOTONPC)
                         {
-                            _quest.Value.GoToNPCCompleted(_quest.Value.qGoals[i], true);
-                            return true;
+                            if (_quest.Value.sQuestID == this.sQuestID)
+                            {
+                                _quest.Value.GoToNPCCompleted(_quest.Value.qGoals[i], true);
+                                return true;
+                            }
                         }
                     }
                 }

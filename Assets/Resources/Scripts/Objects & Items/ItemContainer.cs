@@ -5,10 +5,13 @@ using UnityEngine;
 public class ItemContainer : MonoBehaviour
 {
     public Item item;
+    structItem structThisItem;
     public Canvas uiCanvas;
     private void Start()
     {
+        item.sID = System.Guid.NewGuid().ToString();
         item.sItemDescription = item.sItemDescription.Replace("&value", item.fEffectValue.ToString());
+
         if(item.iAmount == 0)
         {
             item.iAmount = 1;
@@ -20,16 +23,17 @@ public class ItemContainer : MonoBehaviour
                 item.iStackLimit = 5;
             }
         }
+        InitializeItem();
         uiCanvas.gameObject.SetActive(false);
     }
     public void Update()
     {
         UIActivator();
     }
-    public void SetItem(Item _item)
+    public void SetItem(structItem _structItem)
     {
-        item = new Item(_item);
-        item.iAmount = 1;
+        item = new Item(_structItem);
+        item.UpdateAmount(-item.iAmount + 1); // to make the amount 1
     }
     public void DestroySelf()
     {
@@ -47,6 +51,22 @@ public class ItemContainer : MonoBehaviour
         {
             uiCanvas.gameObject.SetActive(false);
         }
+    }
+    void InitializeItem()
+    {
+        structThisItem = new structItem();
+        structThisItem.sID = item.sID;
+        structThisItem.sItemName = item.sItemName;
+        structThisItem.sItemDescription = item.sItemDescription;
+        structThisItem.eType = item.eType;
+        structThisItem.fEffectValue = item.fEffectValue;
+        structThisItem.fPrice = item.fPrice;
+        structThisItem.itemIcon = item.itemIcon;
+        structThisItem.isStackable = item.isStackable;
+        structThisItem.iAmount = item.iAmount;
+        structThisItem.iStackLimit = item.iStackLimit;
+
+        item.SetItem(structThisItem);
     }
     private void OnDrawGizmos()
     {

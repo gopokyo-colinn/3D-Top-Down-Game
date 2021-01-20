@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour
     const float fDISTANCE_TO_COLIS = 1.2f;
     const float fVISION_RANGE = 5f;
 
-    protected const float fROTATE_SPEED = 140f;
+    protected const float fROTATE_SPEED = 240f;
     protected float fAttackRange = 5f;
     protected float fFollowRange = 100f;
 

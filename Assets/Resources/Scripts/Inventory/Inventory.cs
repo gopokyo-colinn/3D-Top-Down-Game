@@ -4,20 +4,23 @@ using UnityEngine;
 
 public class Inventory 
 {
-    public int iInventoryLimit = 20;
+    public int iInventorySize = 20;
     public List<Item> lstItems;
 
-    public Inventory(int _size)
+    structInventory structInventory;
+
+    public Inventory(int _iInventoryStartSize)
     {
+        structInventory = new structInventory();
+        structInventory.iInventorySize = _iInventoryStartSize;
         lstItems = new List<Item>();
-        iInventoryLimit = _size;
+        iInventorySize = structInventory.iInventorySize;
     }
 
     public void AddItem(Item _item)
     {
-        if(lstItems.Count < iInventoryLimit)
+        if(lstItems.Count < iInventorySize)
         {
-            _item.sID = System.Guid.NewGuid().ToString();
             lstItems.Add(_item);
         }
         else
@@ -41,8 +44,32 @@ public class Inventory
         {
             if (lstItems[i].sID == _item.sID)
             {
-                lstItems[i].iAmount--;
+                lstItems[i].UpdateAmount(-1);
             }
         }
+    }
+    public structInventory GetInventory()
+    {
+        structInventory.itemsLst = new List<structItem>();
+
+        for (int i = 0; i < lstItems.Count; i++)
+        {
+            structInventory.itemsLst.Add(lstItems[i].GetItem());
+        }
+        return structInventory;
+    }
+    public void SetInventory(structInventory _structInventory)
+    {
+        structInventory = _structInventory;
+        iInventorySize = structInventory.iInventorySize;
+
+        lstItems = new List<Item>();
+
+        for (int i = 0; i < structInventory.itemsLst.Count; i++)
+        {
+            Item _newItem = new Item(structInventory.itemsLst[i]);
+            lstItems.Add(_newItem);
+        }
+
     }
 }

@@ -19,18 +19,28 @@ public class Item
     public int iAmount = 1;
     public int iStackLimit;
 
-    public Item(Item _item)
+    structItem structThisItem;
+
+    public Item(structItem _structItem)
     {
-        sID = _item.sID;
-        sItemName = _item.sItemName;
-        sItemDescription = _item.sItemDescription;
-        eType = _item.eType;
-        fEffectValue = _item.fEffectValue;
-        fPrice = _item.fPrice;
-        itemIcon = _item.itemIcon;
-        isStackable = _item.isStackable;
-        iAmount = _item.iAmount;
-        iStackLimit = _item.iStackLimit;
+        structThisItem = new structItem();
+        structThisItem = _structItem;
+
+        sID = structThisItem.sID;
+        sItemName = structThisItem.sItemName;
+        sItemDescription = structThisItem.sItemDescription;
+        eType = structThisItem.eType;
+        fEffectValue = structThisItem.fEffectValue;
+        fPrice = structThisItem.fPrice;
+        itemIcon = structThisItem.itemIcon;
+        isStackable = structThisItem.isStackable;
+        iAmount = structThisItem.iAmount;
+        iStackLimit = structThisItem.iStackLimit;
+    }
+    public void UpdateAmount(int _amount)
+    {
+        iAmount += _amount;
+        structThisItem.iAmount = iAmount;
     }
     public bool UseItem(PlayerController _player)
     {
@@ -63,5 +73,13 @@ public class Item
     public Sprite GetSprite()
     {
         return itemIcon;
+    }
+    public structItem GetItem()
+    {
+        return structThisItem;
+    }
+    public void SetItem(structItem _structItem)
+    {
+        structThisItem = _structItem;
     }
 }

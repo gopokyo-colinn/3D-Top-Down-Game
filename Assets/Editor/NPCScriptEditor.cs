@@ -10,7 +10,6 @@ public class NPCScriptEditor : Editor
     SerializedProperty npcBehaviour;
     SerializedProperty npcName;
     SerializedProperty npcActivity;
-    SerializedProperty firstDialogLinesArray;   
     SerializedProperty sRandomDialogLinesArray;   
     SerializedProperty patrolPointsArray;
     NPCEntity npc;
@@ -22,7 +21,6 @@ public class NPCScriptEditor : Editor
         npcBehaviour = targetObject.FindProperty("npcBehaviour");
         npcName = targetObject.FindProperty("sNpcName");
         npcActivity = targetObject.FindProperty("npcActivity");
-        firstDialogLinesArray = targetObject.FindProperty("sFirstDialogLines");
         sRandomDialogLinesArray = targetObject.FindProperty("sRandomDialogs");
         patrolPointsArray = targetObject.FindProperty("tPatrolPoints");
     }
@@ -61,7 +59,6 @@ public class NPCScriptEditor : Editor
             }
         }
 
-        EditorGUILayout.PropertyField(firstDialogLinesArray, true);
         EditorGUILayout.PropertyField(sRandomDialogLinesArray);
 
         targetObject.ApplyModifiedProperties();

@@ -13,8 +13,6 @@ public class NPCEntity : MonoBehaviour
     public string sNpcID;
     public string sNpcName = "NPC-";
     public float fSpeed;
-    [TextArea(2, 3)]
-    public string[] sFirstDialogLines;
     public DialogArrays[] sRandomDialogs; // Use this to Randomly choose a dialog  to appear instead of sFirstDialogLines
     string[] sDialogsToUse;
 
@@ -37,7 +35,7 @@ public class NPCEntity : MonoBehaviour
 
     private Quest myActiveQuest;
     private Quest[] myQuests;
-    private QuestGiver[] allQuests;
+    private NewQuest[] allQuests;
     private QuestNPC[] assignedQuestGoals;
     void Start()
     {
@@ -104,7 +102,7 @@ public class NPCEntity : MonoBehaviour
     {
         if (npcBehaviour == NPCBehaviour.QUEST_GIVER)
         {
-            allQuests = GetComponents<QuestGiver>().ToArray();
+            allQuests = GetComponents<NewQuest>().ToArray();
             myQuests = new Quest[allQuests.Length];
             for (int i = 0; i < allQuests.Length; i++)
             {
@@ -278,7 +276,8 @@ public class NPCEntity : MonoBehaviour
                 {
                     if (myQuests[i].IsCompleted())
                     {
-                        sDialogsToUse = sFirstDialogLines.ToArray();
+                        //sDialogsToUse = sFirstDialogLines.ToArray();
+                        sDialogsToUse = SelectRandomDialog();
                         continue;
                     }
                     else
@@ -371,7 +370,8 @@ public class NPCEntity : MonoBehaviour
             }
             else
             {
-                sDialogsToUse = sFirstDialogLines;
+                //sDialogsToUse = sFirstDialogLines.ToArray();
+                sDialogsToUse = SelectRandomDialog();
             }
         }
     }
@@ -427,5 +427,10 @@ public class NPCEntity : MonoBehaviour
     public Quest GetQuest()
     {
         return myActiveQuest;
+    }
+    public string[] SelectRandomDialog()
+    {
+        int _iRandom = Random.Range(0, sRandomDialogs.Length);
+        return sRandomDialogs[_iRandom].sDialogLines.ToArray();
     }
 }

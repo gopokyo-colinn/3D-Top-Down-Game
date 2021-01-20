@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerController : MonoBehaviour, IHittable
+public class PlayerController : MonoBehaviour, IHittable, ISaveable
 {
+    structGameSavePlayer structPlayerSaveData;
+
     const float fHEAD_OFFSET = 1f;
     const float fNPC_DISTANCE_CHECK = 0.8f;
     const float fDISTANCE_TO_GROUND = 0.1f;
@@ -15,6 +17,7 @@ public class PlayerController : MonoBehaviour, IHittable
     const float fSHIELD_STAMINA_COST = 10f;
     const float fSTAMINA_RECOVER_START_TIME = 0.1f;
     const float fSTAMINA_RECOVERY_RATE = 25f; // is multipleid by deltaTime
+    const float fSPEED_DIVISION = 0.7f;
 
     Rigidbody rbody;
     Animator anim;
@@ -32,7 +35,6 @@ public class PlayerController : MonoBehaviour, IHittable
     public float fSpeed;
     public float fJumpForce;
     public float sSpeedMultiplier = 1.5f;
-    const float fSpeedDivision = 0.7f;
     float horizontal;
     float vertical;
     Vector3 lastFacinDirection;
@@ -56,8 +58,8 @@ public class PlayerController : MonoBehaviour, IHittable
     public UnityEvent OnReciveDamageUI;
     public UnityEvent OnStaminaChangeUI;
 
-    public Inventory myInventory;
-    public int iInventorySize;
+    public Inventory playerInventory;
+    public int iStartInventorySize;
 
     void Awake()
     {
@@ -67,10 +69,12 @@ public class PlayerController : MonoBehaviour, IHittable
         fCurrentHitPoints = fMaxHitPoints;
         fCurrentStamina = fMaxStamina;
         bIsAlive = true;
-        myInventory = new Inventory(iInventorySize);
+
+        playerInventory = new Inventory(iStartInventorySize);
     }
     void Update()
     {
+        
         if (GameController.inPlayMode)
         {
             if (bIsAlive && !bIsStun)
@@ -155,8 +159,10 @@ public class PlayerController : MonoBehaviour, IHittable
         }
         if (!bIsAttacking)
         {
-            if(lastFacinDirection != Vector3.zero)
+            if(lastFacinDirection != Vector3.zero) // 
+            {
                 transform.forward = lastFacinDirection.normalized;
+            }
         }
 
         Vector3 movementVector = new Vector3(horizontal, rbody.velocity.y, vertical);
@@ -171,7 +177,7 @@ public class PlayerController : MonoBehaviour, IHittable
                     rbody.velocity = movementVector.normalized * fSpeed * sSpeedMultiplier * Time.fixedDeltaTime;
             }
             else if (bIsShielding || bIsAttacking)
-                rbody.velocity = movementVector.normalized * fSpeedDivision * fSpeed * Time.fixedDeltaTime;
+                rbody.velocity = movementVector.normalized * fSPEED_DIVISION * fSpeed * Time.fixedDeltaTime;
             else
                 rbody.velocity = movementVector.normalized * fSpeed * Time.fixedDeltaTime;
         }
@@ -309,15 +315,14 @@ public class PlayerController : MonoBehaviour, IHittable
     {
         if (_collidedItemContainer.item.isStackable)
         {
-
             bool _bItemAlreadyInventory = false;
-            for (int i = 0; i < myInventory.lstItems.Count; i++)
+            for (int i = 0; i < playerInventory.lstItems.Count; i++)
             {
-                if (myInventory.lstItems[i].sItemName == _collidedItemContainer.item.sItemName)
+                if (playerInventory.lstItems[i].sItemName == _collidedItemContainer.item.sItemName)
                 {
-                    if (myInventory.lstItems[i].iAmount < myInventory.lstItems[i].iStackLimit)
+                    if (playerInventory.lstItems[i].iAmount < playerInventory.lstItems[i].iStackLimit)
                     {
-                        myInventory.lstItems[i].iAmount++;
+                        playerInventory.lstItems[i].UpdateAmount(+1); // increase stack amount by 1
                         _bItemAlreadyInventory = true;
                         _collidedItemContainer.DestroySelf();
                         break;
@@ -326,10 +331,10 @@ public class PlayerController : MonoBehaviour, IHittable
             }
             if (!_bItemAlreadyInventory)
             {
-                if (myInventory.lstItems.Count < myInventory.iInventoryLimit)
+                if (playerInventory.lstItems.Count < playerInventory.iInventorySize)
                 {
-                    Item _newItem = new Item(_collidedItemContainer.item);
-                    myInventory.AddItem(_newItem);
+                    Item _newItem = new Item(_collidedItemContainer.item.GetItem());
+                    playerInventory.AddItem(_newItem);
                     _collidedItemContainer.DestroySelf();
                 }
                 else
@@ -340,10 +345,10 @@ public class PlayerController : MonoBehaviour, IHittable
         }
         else
         {
-            if (myInventory.lstItems.Count < myInventory.iInventoryLimit)
+            if (playerInventory.lstItems.Count < playerInventory.iInventorySize)
             {
-                Item _newItem = new Item(_collidedItemContainer.item);
-                myInventory.AddItem(_newItem);
+                Item _newItem = new Item(_collidedItemContainer.item.GetItem());
+                playerInventory.AddItem(_newItem);
                 _collidedItemContainer.DestroySelf();
             }
             else
@@ -351,7 +356,7 @@ public class PlayerController : MonoBehaviour, IHittable
                 Debug.Log("Inventory is Full");
             }
         }
-        PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(myInventory);
+        PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(playerInventory);
     }
     public void DisablePlayerMoveActions()
     {
@@ -466,12 +471,12 @@ public class PlayerController : MonoBehaviour, IHittable
     // Inventory
     public void UpdateInventory(Inventory _inventory)
     {
-        myInventory = _inventory;
-        PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(myInventory);
+        playerInventory = _inventory;
+        PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(playerInventory);
     }
     public Inventory GetInventory()
     {
-        return myInventory;
+        return playerInventory;
     }
 
     /// Triggers
@@ -494,6 +499,38 @@ public class PlayerController : MonoBehaviour, IHittable
     {
         //Gizmos.color = Color.red;
         //Gizmos.DrawWireCube(transform.position + transform.forward * 0.5f, transform.localScale);
+    }
+
+    public void SaveAllData(SaveData _saveData)
+    {
+        structGameSavePlayer _playerSaveData = new structGameSavePlayer();
+        _playerSaveData.fCurrentHitPoints = fCurrentHitPoints;
+        _playerSaveData.fCurrentStamina = fCurrentStamina;
+        _playerSaveData.tPosition = new float[3] { transform.position.x, transform.position.y, transform.position.z};
+        _playerSaveData.tRotation = new float[3] {lastFacinDirection.x, lastFacinDirection.y, lastFacinDirection.z};
+        _playerSaveData.playerInventory = playerInventory.GetInventory();
+        //_playerSaveData.tRotation = new float[3] { transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z};
+
+        _saveData.playerSaveData = _playerSaveData;
+    }
+
+    public void LoadSaveData(SaveData _saveData)
+    {
+        structPlayerSaveData = new structGameSavePlayer();
+        structPlayerSaveData = _saveData.playerSaveData;
+
+        fCurrentHitPoints = structPlayerSaveData.fCurrentHitPoints;
+        fCurrentStamina = structPlayerSaveData.fCurrentStamina;
+
+        transform.position = new Vector3(structPlayerSaveData.tPosition[0], structPlayerSaveData.tPosition[1], structPlayerSaveData.tPosition[2]); // 0 = x, 1 = y, 2 = z
+        lastFacinDirection = new Vector3(structPlayerSaveData.tRotation[0], structPlayerSaveData.tRotation[1], structPlayerSaveData.tRotation[2]); // 0 = x, 1 = y, 2 = z
+
+        playerInventory = new Inventory(structPlayerSaveData.playerInventory.iInventorySize);
+        playerInventory.SetInventory(structPlayerSaveData.playerInventory);
+        PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(playerInventory);
+
+        OnReciveDamageUI.Invoke();
+        OnStaminaChangeUI.Invoke();
     }
 }
 

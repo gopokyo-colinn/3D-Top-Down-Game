@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-[Serializable]
+[System.Serializable]
 public class DialogArrays 
 {
+    [TextArea(2, 3)]
     public string[] sDialogLines;
 }

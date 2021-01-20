@@ -24,6 +24,7 @@ public class InventoryPopup : Popup
         inventorySlots = GetComponentsInChildren<InventorySlot>();
 
         InitializeInventoryUI();
+
         close();
     }
 
@@ -53,11 +54,11 @@ public class InventoryPopup : Popup
 
         LockSlots();
 
-        if (inventory.lstItems.Count <= inventory.iInventoryLimit)
+        if (inventory.lstItems.Count <= inventory.iInventorySize)
         {
             for (int i = 0; i < inventory.lstItems.Count; i++)
             {
-                inventorySlots[i].UpdateSlot(inventory.lstItems[i]);
+                inventorySlots[i].UpdateSlot(inventory.lstItems[i].GetItem());
             }
         }
     }
@@ -68,7 +69,7 @@ public class InventoryPopup : Popup
 
     public void LockSlots()
     {
-        for (int i = inventory.iInventoryLimit; i < inventorySlots.Length; i++)
+        for (int i = inventory.iInventorySize; i < inventorySlots.Length; i++)
         {
             inventorySlots[i].icon.gameObject.SetActive(true);
             inventorySlots[i].icon.sprite = lockImage;
