@@ -13,7 +13,41 @@ public class QuestGoal
     public Transform tLocationToReach;
     [Tooltip("Set Spawn Location for these Enemies in KillQuestManager")]
     public EnemySpawner enemiesSpawner;
-    public QuestNPC taskNPC;
-    public bool bIsActive;
-    public bool bIsFinished;
+    public NPCAssignedQuestGoal taskNPC;
+    [SerializeField]
+    private bool bIsActive;
+    [SerializeField]
+    private bool bIsFinished;
+
+    public void InitializeGoal(string _sID)
+    {
+        if(eGoalType == QuestGoalType.GOTONPC)
+        {
+            taskNPC.SetQuestID(_sID);
+        }
+        else if(eGoalType == QuestGoalType.KILL)
+        {
+            enemiesSpawner.SetID(_sID);
+            enemiesSpawner.SetActive(true);
+            enemiesSpawner.SpawnEnemies();
+        }
+
+    }
+
+    public bool GetIsFinished()
+    {
+        return bIsFinished;
+    }
+    public bool GetIsActive()
+    {
+        return bIsActive;
+    }
+    public void SetIsFinished(bool _bIsFinished)
+    {
+        bIsFinished = _bIsFinished;
+    }
+    public void SetIsActive(bool _bIsActive)
+    {
+        bIsActive = _bIsActive;
+    }
 }

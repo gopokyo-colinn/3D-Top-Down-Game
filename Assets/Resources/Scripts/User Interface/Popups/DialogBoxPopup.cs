@@ -119,7 +119,7 @@ public class DialogBoxPopup : Popup
                 }
                 else if (sDialogLines[iDialogLineNumber].Contains("&questCompleted"))
                 {
-                    string _message = "Quest Completed !! \n You Got 10 XP....";
+                    string _message = "Quest Completed !! \n You Got " + questNPC.GetQuest().sRewards;
                     sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questCompleted", MsgBoxPopup(_message));
                 }
             }

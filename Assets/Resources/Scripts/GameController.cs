@@ -54,12 +54,10 @@ public class GameController : MonoBehaviour
 	void Start()
     {
         inPlayMode = true;
-		QuestManager.Instance.Initialize(player);
-    }
+	}
     private void Update()
     {
 		QuestManager.Instance.Refresh();
-
 
 		/// Saving and Loading Testing
 		if (Input.GetKeyDown(KeyCode.F5))

@@ -44,31 +44,47 @@ public class QuestPopupUI : Popup
     }
     public void SetQuestElements()
     {
+        // Adds Main Quest label elements
         QuestElement _mainQuestLabel = Instantiate(prefabLabelQuestElement, questsContainer);
         _mainQuestLabel.SetElement("Main Quests:");
         lstlabelElements.Add(_mainQuestLabel);
-
+        // Adds active Main quest elements
         foreach (var _quest in QuestManager.Instance.dictMainQuests)
         {
             QuestElement _qE = Instantiate(prefabQuestElement, questsContainer);
             _qE.SetElement(_quest.Value, delegate { SetSelected(_qE); });
             lstQuestElements.Add(_qE);
         }
-        // TODO: maybe Add another list containing of only the label elements or just make two variables for both labels
-        if(QuestManager.Instance.dictSideQuests.Count > 0)
+       // Adds Side Quest Label Element even without any active side quest, (to change that to if there is at least 1 side quest, than remove = operator)
+        if(QuestManager.Instance.dictSideQuests.Count >= 0)
         {
             QuestElement _sideQuestLabel = Instantiate(prefabLabelQuestElement, questsContainer);
             _sideQuestLabel.SetElement("Side Quests:");
             lstlabelElements.Add(_sideQuestLabel);
         }
-
+        // Adds active Side Quests Elements
         foreach (var _quest in QuestManager.Instance.dictSideQuests)
         {
             QuestElement _qE = Instantiate(prefabQuestElement, questsContainer);
             _qE.SetElement(_quest.Value, delegate { SetSelected(_qE); });
             lstQuestElements.Add(_qE);
         }
-       // if(selectedQuestElement == null) // TODO: Make it so the selected element is previously selected one
+        // Adds Completed Quests Label Element if there is at least 1 completed quest
+        if (QuestManager.Instance.dictCompletedQuests.Count > 0)
+        {
+            QuestElement _completedQuestLabel = Instantiate(prefabLabelQuestElement, questsContainer);
+            _completedQuestLabel.SetElement("Completed Quests:");
+            lstlabelElements.Add(_completedQuestLabel);
+        }
+        // Adds active Side Quests Elements
+        foreach (var _quest in QuestManager.Instance.dictCompletedQuests)
+        {
+            QuestElement _qE = Instantiate(prefabQuestElement, questsContainer);
+            _qE.SetElement(_quest.Value, delegate { SetSelected(_qE); });
+            lstQuestElements.Add(_qE);
+        }
+
+        // TODO: Make it so the selected element is previously selected one
         {
             if (lstQuestElements.Count > 0)
                 SetSelected(lstQuestElements[0]); 
@@ -112,9 +128,7 @@ public class QuestPopupUI : Popup
             selectedQuestElement.SetSelectedElement(true);
             SetQuestDetails();
         }
-
     }
-
     public void SetQuestDetails()
     {
         txtQuestDescription.text = selectedQuestElement.myQuest.sQuestDescription;
@@ -141,7 +155,7 @@ public class QuestPopupUI : Popup
                 QuestElement _qE = Instantiate(prefabQuestElement, objectivesContainer);
                 _qE.SetElement(selectedQuestElement.myQuest.qGoals[i].sGoalObjective, true);
 
-                if (selectedQuestElement.myQuest.qGoals[i].bIsFinished)
+                if (selectedQuestElement.myQuest.qGoals[i].GetIsFinished())
                 {
                     _qE.SetFontStrikethrough();
                 }
@@ -149,12 +163,12 @@ public class QuestPopupUI : Popup
             }
             else
             {
-                if (selectedQuestElement.myQuest.qGoals[i].bIsActive)
+                if (selectedQuestElement.myQuest.qGoals[i].GetIsActive())
                 {
                     QuestElement _qE = Instantiate(prefabQuestElement, objectivesContainer);
                     _qE.SetElement(selectedQuestElement.myQuest.qGoals[i].sGoalObjective, true);
 
-                    if (selectedQuestElement.myQuest.qGoals[i].bIsFinished)
+                    if (selectedQuestElement.myQuest.qGoals[i].GetIsFinished())
                     {
                         _qE.SetFontStrikethrough();
                     }

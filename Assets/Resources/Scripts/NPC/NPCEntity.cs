@@ -34,15 +34,19 @@ public class NPCEntity : MonoBehaviour
     private int iPatrolPos = 0;
 
     private Quest myActiveQuest;
-    private Quest[] myQuests;
-    private NewQuest[] allQuests;
-    private QuestNPC[] assignedQuestGoals;
+    //private Quest[] myQuests;
+    private AddNewQuest[] myQuestsLst;
+    private NPCAssignedQuestGoal[] assignedQuestGoals;
     void Start()
     {
         anim = GetComponent<Animator>();
         rbody = GetComponent<Rigidbody>();
 
-        assignedQuestGoals = GetComponents<QuestNPC>();
+        assignedQuestGoals = GetComponentsInChildren<NPCAssignedQuestGoal>();
+        if(assignedQuestGoals.Length <= 0)
+        {
+            assignedQuestGoals = null;
+        }
 
         rbody.isKinematic = true;
         SetNPCBehaviour();
@@ -52,6 +56,10 @@ public class NPCEntity : MonoBehaviour
     }
     void Update()
     {
+        if(npcBehaviour == NPCBehaviour.QUEST_GIVER)
+        {
+        //    Debug.Log(myQuests[0].GetIsActive());
+        }
         SetRbodyAccToGroundCheck();
         CheckForDialogToFinish();
         SetAnimations();
@@ -102,51 +110,12 @@ public class NPCEntity : MonoBehaviour
     {
         if (npcBehaviour == NPCBehaviour.QUEST_GIVER)
         {
-            allQuests = GetComponents<NewQuest>().ToArray();
-            myQuests = new Quest[allQuests.Length];
-            for (int i = 0; i < allQuests.Length; i++)
-            {
-                myQuests[i] = allQuests[i].quest;
-                if (myQuests[i] != null)
-                {
-                    if (myQuests[i].eQuestType == QuestType.MAINQUEST)
-                    {
-                        foreach (var item in QuestManager.Instance.dictMainQuests)
-                        {
-                            if (item.Value.sQuestID == myQuests[i].sQuestID)
-                            {
-                                myQuests[i] = item.Value;
-                                break;
-                            }
-                        }
-                    }
-                    else if (myQuests[i].eQuestType == QuestType.SIDEQUEST)
-                    {
-                        foreach (var item in QuestManager.Instance.dictMainQuests)
-                        {
-                            if (item.Value.sQuestID == myQuests[i].sQuestID)
-                            {
-                                myQuests[i] = item.Value;
-                                break;
-                            }
-                        }
-                    }
-                }
-                foreach (var item in QuestManager.Instance.dictCompletedQuests)
-                {
-                    if (item.Value.sQuestID == myQuests[i].sQuestID)
-                    {
-                        myQuests[i] = null;
-                        break;
-                    }
-                }
-            }
+            myQuestsLst = GetComponents<AddNewQuest>().ToArray();
         }
     }
     public void ActivateQuest()
     {
-        myActiveQuest.bIsActive = true;
-        myActiveQuest.Initialize(GameController.Instance.player);
+        myActiveQuest.Initialize();
     }
     // NPC SHOP SYSTEM
     public void MerchantShop()
@@ -175,7 +144,7 @@ public class NPCEntity : MonoBehaviour
                 rbody.MovePosition(transform.position + (transform.forward * fSpeed * Time.fixedDeltaTime));
             }
         }
-    }// Add Moving Area
+    }// TODO: Add Moving Area
     public void Patrolling()
     {
         if (bIsMoving)
@@ -225,30 +194,6 @@ public class NPCEntity : MonoBehaviour
            
         }
     }
-    /*//public void FindPathToLocation()
-    //{
-    //    bool bf = Physics.Raycast(startPos, Vector3.forward, 5f);
-    //    bool bb = Physics.Raycast(startPos, Vector3.forward * -1, 5f);
-    //    bool br = Physics.Raycast(startPos, Vector3.right, 5f);
-    //    bool bl = Physics.Raycast(startPos, Vector3.right * -1, 5f);
-    //    if (bf || bb || br || bl)
-    //    {
-    //        Debug.DrawRay(startPos, Vector3.forward * 5f, Color.red);
-    //        Debug.DrawRay(startPos, Vector3.forward * -1 * 5f, Color.red);
-    //        Debug.DrawRay(startPos, Vector3.right * 5f, Color.red);
-    //        Debug.DrawRay(startPos, Vector3.right * -1 * 5f, Color.red);
-    //        startPos = new Vector3(startPos.x + 0.2f, startPos.y, startPos.z);
-    //    }
-    //    else
-    //    {
-    //        Debug.DrawRay(startPos, Vector3.forward * 5f, Color.red);
-    //        Debug.DrawRay(startPos, Vector3.forward * -1 * 5f, Color.red);
-    //        Debug.DrawRay(startPos, Vector3.right * 5f, Color.red);
-    //        Debug.DrawRay(startPos, Vector3.right * -1 * 5f, Color.red);
-    //    }
-    //}
-    */
-
     // Setter Functions
     public void SetNPCBehaviour()
     {
@@ -264,63 +209,97 @@ public class NPCEntity : MonoBehaviour
                 break;
         }
     }
-    public void SetDialog()
+    public void SetDialogWithQuest()
     {
         bIsInteracting = true;
         bDialogCheck = true;
+
         if(npcBehaviour == NPCBehaviour.QUEST_GIVER)
         {
-            for (int i = 0; i < myQuests.Length; i++)
-            {
-                if (myQuests[i] != null)
+            SetActiveQuest(); // Setting myActive Quest
+
+            if (myActiveQuest == null) // if my active quest is null then it checks if it has assigned active goal, if there is a goal then
+            {                          // then it sets dialog acc to that goal else it checks about this npc's quest
+                if (!CheckNpcAssignedTalkingGoals())
                 {
-                    if (myQuests[i].IsCompleted())
+                    SetQuestDialogToUse();
+                }
+            }
+            else if (myActiveQuest.GetQuestActive()) // if this npc has an active quest then it prioritize its quest than other assigned goals
+            {
+                SetQuestDialogToUse();
+            }
+            else
+            {
+                if (!CheckNpcAssignedTalkingGoals()) // if quest not active then it prioritize any active assigned goals
+                {
+                    SetQuestDialogToUse();
+                }
+            }
+        }
+        else
+        {
+            if (!CheckNpcAssignedTalkingGoals())
+            {
+                sDialogsToUse = SelectRandomDialog();
+            }
+        }
+
+        PopupUIManager.Instance.dialogBoxPopup.SetQuestNPC(this);
+        PopupUIManager.Instance.dialogBoxPopup.setDialogText(sDialogsToUse);
+    }
+    public void SetQuestDialogToUse()
+    {
+        for (int i = 0; i < myQuestsLst.Length; i++)
+        {
+            if (myActiveQuest == null) // if this quest is null just continue to next one
+            {
+                sDialogsToUse = SelectRandomDialog();
+                continue;
+            }
+            else
+            {
+                if (myActiveQuest.GetQuestCompleted()) // if this is completed, continue to nextone
+                {
+                    sDialogsToUse = SelectRandomDialog();
+                    continue;
+                }
+                else
+                {
+                    if (!myActiveQuest.GetQuestActive()) // means quest is not active or started, or not there in quest manager
                     {
-                        //sDialogsToUse = sFirstDialogLines.ToArray();
-                        sDialogsToUse = SelectRandomDialog();
-                        continue;
+                        if (myActiveQuest.eQuestType == QuestType.MAINQUEST) // Initialize quest directly only if it is a main quest, else ask for response.
+                        {
+                            ActivateQuest();
+                        }
+                        sDialogsToUse = myQuestsLst[i].QuestStartDialog().ToArray();
+                        break;
                     }
                     else
                     {
-                        if (!myQuests[i].bIsActive)
+                        if (myActiveQuest.CheckQuestProgress()) // quest is active and checking its progress to check 
                         {
-                            myActiveQuest = myQuests[i];
-                            sDialogsToUse = allQuests[i].QuestStartDialog().ToArray();
+                            sDialogsToUse = myQuestsLst[i].QuestFinishedDialog().ToArray();
                             break;
                         }
-                        else
+                        else // The quest is in progress
                         {
-                            if (myQuests[i].AllGoalsCompleted())
-                            {
-                                sDialogsToUse = allQuests[i].QuestFinishedDialog().ToArray();
-                                break;
-                            }
-                            else
-                            {
-                                if (myQuests[i].CheckQuestProgress())
-                                {
-                                    sDialogsToUse = allQuests[i].QuestFinishedDialog().ToArray();
-                                    break;
-                                }
-                                else
-                                {
-                                    sDialogsToUse = allQuests[i].QuestInProgressDialog().ToArray();
-                                    break;
-                                }
-                            }
+                            sDialogsToUse = myQuestsLst[i].QuestInProgressDialog().ToArray();
+                            break;
                         }
                     }
                 }
             }
         }
-
-        if (assignedQuestGoals != null)
+    }
+    public void SetActiveQuest()
+    {
+        for (int i = 0; i < myQuestsLst.Length; i++)
         {
-            CheckNpcAssignedTalkingGoals();
+            myActiveQuest = QuestManager.Instance.GetQuestByID(myQuestsLst[i].quest);
+            if (myActiveQuest != null)
+                break;                
         }
-
-        PopupUIManager.Instance.dialogBoxPopup.SetQuestNPC(this);
-        PopupUIManager.Instance.dialogBoxPopup.setDialogText(sDialogsToUse);
     }
     public void SetRbodyAccToGroundCheck()
     {
@@ -359,21 +338,25 @@ public class NPCEntity : MonoBehaviour
             }
         }
     }
-    public void CheckNpcAssignedTalkingGoals()
+    public bool CheckNpcAssignedTalkingGoals()
     {
-        for (int i = 0; i < assignedQuestGoals.Length; i++)
+        if(assignedQuestGoals != null)
         {
-            if (assignedQuestGoals[i].QuestGoalCheck())
+            for (int i = 0; i < assignedQuestGoals.Length; i++)
             {
-                sDialogsToUse = assignedQuestGoals[i].sQuestDialog.ToArray();
-                break;
-            }
-            else
-            {
-                //sDialogsToUse = sFirstDialogLines.ToArray();
-                sDialogsToUse = SelectRandomDialog();
+                if (assignedQuestGoals[i].QuestGoalCheck())
+                {
+                    sDialogsToUse = assignedQuestGoals[i].sQuestDialog.ToArray();
+                    return true;
+                }
+                else
+                {
+                    continue;
+                }
             }
         }
+        sDialogsToUse = SelectRandomDialog();
+        return false;
     }
 
     /// Enumerators

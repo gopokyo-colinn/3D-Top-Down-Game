@@ -302,17 +302,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80927d9f4e36e414cb73ba3c666ddf72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item:
-    sID: 
-    sItemName: Health Potion
-    sItemDescription: It Restores health by &value points.
-    eType: 0
-    fEffectValue: 20
-    fPrice: 5
-    itemIcon: {fileID: 21300000, guid: dd29ecb199426084ebe85c57d31aa18c, type: 3}
-    isStackable: 1
-    iAmount: 1
-    iStackLimit: 5
+  item: {fileID: 11400000, guid: 453e74b8070760a43a8cc054b9c99c60, type: 2}
   uiCanvas: {fileID: 6720013897105001860}
 --- !u!54 &4656454389564655835
 Rigidbody:

@@ -16,6 +16,8 @@ public class SubMenuPopup : Popup
 
     public PopupButtonElement prefabButtonElement;
 
+    private PopupButtonElement selectedButtonElement;
+
     private List<PopupButtonElement> lstPopupButtonElement;
 
     private RectTransform rtTransform;
@@ -27,6 +29,20 @@ public class SubMenuPopup : Popup
         lstPopupButtonElement = new List<PopupButtonElement>();
         rtTransform = GetComponent<RectTransform>();
         containerAll.gameObject.SetActive(false);
+    }
+    private void Update()
+    {
+        if (container.gameObject.activeSelf)
+        {
+            if(Input.GetAxis("Vertical") > 0)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
     }
     public override void open()
     {
@@ -75,6 +91,7 @@ public class SubMenuPopup : Popup
 
             lstPopupButtonElement.Add(_buttonElement);
         }
+        selectedButtonElement = lstPopupButtonElement[0];
     }
     public void openMenu(List<structSubMenu> _lstSubMenu, Vector2 _position)
     {

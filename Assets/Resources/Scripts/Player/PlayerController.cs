@@ -298,7 +298,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             var targetRotation = Quaternion.LookRotation(_collidedNPC.transform.position - transform.position);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
 
-            _collidedNPC.SetDialog();
+            _collidedNPC.SetDialogWithQuest();
             _collidedNPC.LookAtTarget(transform);
             DisablePlayerMoveActions();
             GameController.inPlayMode = false;
@@ -320,9 +320,9 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             {
                 if (playerInventory.lstItems[i].sItemName == _collidedItemContainer.item.sItemName)
                 {
-                    if (playerInventory.lstItems[i].iAmount < playerInventory.lstItems[i].iStackLimit)
+                    if (playerInventory.lstItems[i].iQuantity < playerInventory.lstItems[i].iStackLimit)
                     {
-                        playerInventory.lstItems[i].UpdateAmount(+1); // increase stack amount by 1
+                        playerInventory.lstItems[i].UpdateQuantity(playerInventory.lstItems[i].iQuantity + 1); // increase stack amount by 1
                         _bItemAlreadyInventory = true;
                         _collidedItemContainer.DestroySelf();
                         break;
@@ -333,7 +333,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             {
                 if (playerInventory.lstItems.Count < playerInventory.iInventorySize)
                 {
-                    Item _newItem = new Item(_collidedItemContainer.item.GetItem());
+                    Item _newItem = new Item(_collidedItemContainer.item);
                     playerInventory.AddItem(_newItem);
                     _collidedItemContainer.DestroySelf();
                 }
@@ -347,7 +347,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         {
             if (playerInventory.lstItems.Count < playerInventory.iInventorySize)
             {
-                Item _newItem = new Item(_collidedItemContainer.item.GetItem());
+                Item _newItem = new Item(_collidedItemContainer.item);
                 playerInventory.AddItem(_newItem);
                 _collidedItemContainer.DestroySelf();
             }

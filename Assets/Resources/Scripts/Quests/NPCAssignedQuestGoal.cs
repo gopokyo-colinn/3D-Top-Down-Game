@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuestNPC : MonoBehaviour
+public class NPCAssignedQuestGoal : MonoBehaviour
 {
-    public string sQuestID;
+    private string sQuestID;
     public string[] sQuestDialog;
     bool bHasFinished;
+
     public bool QuestGoalCheck()
     {
         // can add another dialog to use if this quest is completed to make it more real.
@@ -16,7 +17,7 @@ public class QuestNPC : MonoBehaviour
             {
                 for (int i = 0; i < _quest.Value.qGoals.Length; i++)
                 {
-                    if (_quest.Value.qGoals[i].bIsActive)
+                    if (_quest.Value.qGoals[i].GetIsActive())
                     {
                         if (_quest.Value.qGoals[i].eGoalType == QuestGoalType.GOTONPC)
                         {
@@ -37,7 +38,7 @@ public class QuestNPC : MonoBehaviour
             {
                 for (int i = 0; i < _quest.Value.qGoals.Length; i++)
                 {
-                    if (_quest.Value.qGoals[i].bIsActive)
+                    if (_quest.Value.qGoals[i].GetIsActive())
                     {
                         if (_quest.Value.qGoals[i].eGoalType == QuestGoalType.GOTONPC)
                         {
@@ -61,5 +62,9 @@ public class QuestNPC : MonoBehaviour
     public bool IsFinished()
     {
         return bHasFinished;
+    }
+    public void SetQuestID(string _sID)
+    {
+        sQuestID = _sID;
     }
 }

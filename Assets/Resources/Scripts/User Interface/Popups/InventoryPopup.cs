@@ -58,7 +58,7 @@ public class InventoryPopup : Popup
         {
             for (int i = 0; i < inventory.lstItems.Count; i++)
             {
-                inventorySlots[i].UpdateSlot(inventory.lstItems[i].GetItem());
+                inventorySlots[i].UpdateSlot(inventory.lstItems[i]);
             }
         }
     }

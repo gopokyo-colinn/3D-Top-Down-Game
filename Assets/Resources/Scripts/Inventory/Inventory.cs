@@ -44,7 +44,7 @@ public class Inventory
         {
             if (lstItems[i].sID == _item.sID)
             {
-                lstItems[i].UpdateAmount(-1);
+                lstItems[i].UpdateQuantity(lstItems[i].iQuantity - 1);
             }
         }
     }
@@ -65,10 +65,16 @@ public class Inventory
 
         lstItems = new List<Item>();
 
-        for (int i = 0; i < structInventory.itemsLst.Count; i++)
+        List<structItem> _savedItemsLst = structInventory.itemsLst;
+
+        for (int i = 0; i < _savedItemsLst.Count; i++)
         {
-            Item _newItem = new Item(structInventory.itemsLst[i]);
-            lstItems.Add(_newItem);
+            Item _newItem = new Item(ItemDatabaseManager.Instance.GetItemByID(_savedItemsLst[i].sID));
+            if(_newItem != null)
+            {
+                _newItem.UpdateQuantity(_savedItemsLst[i].iQuantity);
+                lstItems.Add(_newItem);
+            }
         }
 
     }

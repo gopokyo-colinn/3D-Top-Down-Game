@@ -17,23 +17,23 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         outline = GetComponent<Outline>();
         stackText.text = "";
     }
-    public void UpdateSlot(structItem _structItem)
+    public void UpdateSlot(Item _item)
     {
         structThisItem = new structItem();
-        structThisItem = _structItem;
+        structThisItem = _item.GetItem();
 
-        item = new Item(structThisItem);
+        item = new Item(_item);
 
         icon.gameObject.SetActive(true);
         icon.sprite = item.GetSprite();
 
-        if(item.iAmount <= 1)
+        if(item.iQuantity <= 1)
         {
             stackText.text = "";
         }
         else
         {
-           stackText.text = item.iAmount.ToString();
+           stackText.text = item.iQuantity.ToString();
         }
     }
     public void OnPointerClick(PointerEventData eventData)
@@ -101,7 +101,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         {
             Debug.Log(item.sItemName + " used");
             if (item.isStackable)
-                item.UpdateAmount(-1);
+                item.UpdateQuantity(item.iQuantity - 1);
 
             RemoveItem(item);
         }
@@ -114,34 +114,30 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     {
         Debug.Log(item.sItemName + " Discarded");
         Vector3 _itemDropPosition = GameController.Instance.player.transform.position + new Vector3(Random.Range(-1f, 1f), 1.5f, Random.Range(-1f, 1f));
-        Transform _droppedItem = Instantiate(ItemsAssets.Instance.GetPrefab(item), _itemDropPosition , Quaternion.identity).transform;
+        ItemContainer _newDroppedItem = Instantiate(item.GetItemPrefab(), _itemDropPosition , Quaternion.identity);
 
-        ItemContainer _newSpawnedItem = _droppedItem.GetComponent<ItemContainer>();
-
-        _newSpawnedItem.SetItem(structThisItem);
+        _newDroppedItem.SetItem(item);
 
         if (item.isStackable)
         {
-            item.UpdateAmount(-1);
+            item.UpdateQuantity(item.iQuantity - 1);
         }
 
         RemoveItem(item);
-
     }
     public void ClickDiscardAll()
     {
         Debug.Log(item.sItemName + " Discarded");
-        for (int i = 0; i < item.iAmount; i++)
+        for (int i = 0; i < item.iQuantity; i++)
         {
             Vector3 _itemDropPosition = GameController.Instance.player.transform.position + new Vector3(Random.Range(-1f, 1f), 1.5f, Random.Range(-1f, 1f));
-            Transform _droppedItem = Instantiate(ItemsAssets.Instance.GetPrefab(item), _itemDropPosition, Quaternion.identity).transform;
+            ItemContainer _newDroppedItem = Instantiate(item.GetItemPrefab(), _itemDropPosition, Quaternion.identity);
 
-            ItemContainer _newSpawnedItem = _droppedItem.GetComponent<ItemContainer>();
-            _newSpawnedItem.SetItem(structThisItem);
+            _newDroppedItem.SetItem(item);
         }
         //if (item.isStackable)
         // item.iAmount--;
-        item.UpdateAmount(-item.iAmount); // that will make it equal to 0
+        item.UpdateQuantity(0); // that will make it equal to 0
         RemoveItem(item);
     }
     public void ClickDetails()
@@ -152,7 +148,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     {
         if (item.isStackable)
         {
-            if(_item.iAmount > 0)
+            if(_item.iQuantity > 0)
             {
                 Inventory _updatedUIInventory = GameController.Instance.player.GetInventory();
                 _updatedUIInventory.UpdateItemAmount(item); /// aaa hun chlana pena tenu

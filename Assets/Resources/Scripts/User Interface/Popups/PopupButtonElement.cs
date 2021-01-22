@@ -8,6 +8,8 @@ using TMPro;
 public class PopupButtonElement : MonoBehaviour
 {
     public Button btnMain;
+    public Image imgSelected;
+    bool isSelected;
     public void SetButtonName(string _setName)
     {
         btnMain.gameObject.SetActive(true);
