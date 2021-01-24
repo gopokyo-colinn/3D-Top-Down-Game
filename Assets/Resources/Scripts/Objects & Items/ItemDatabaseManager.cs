@@ -4,32 +4,17 @@ using UnityEngine;
 
 public class ItemDatabaseManager : MonoBehaviour
 {
-    private static ItemDatabaseManager instance;
-    public static ItemDatabaseManager Instance {
-        get
-        {
-            if (instance == null)
-            {
-                instance = new ItemDatabaseManager();
-            }
-            return instance;
-        }
-    }
+    #region Singleton
+    protected static ItemDatabaseManager instance;
+    public static ItemDatabaseManager Instance { get { return instance; } }
+    #endregion
 
     public ItemsDatabase itemDatabase;
     public List<ItemContainer> worldItemsLst;
 
     private void Awake()
     {
-        if(instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        instance = this;
         worldItemsLst = new List<ItemContainer>();
     }
 

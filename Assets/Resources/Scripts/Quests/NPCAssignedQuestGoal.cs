@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class NPCAssignedQuestGoal : MonoBehaviour
 {
+    [SerializeField]
     private string sQuestID;
     public string[] sQuestDialog;
-    bool bHasFinished;
+    bool bIsFinished;
 
     public bool QuestGoalCheck()
     {
@@ -19,12 +20,13 @@ public class NPCAssignedQuestGoal : MonoBehaviour
                 {
                     if (_quest.Value.qGoals[i].GetIsActive())
                     {
-                        if (_quest.Value.qGoals[i].eGoalType == QuestGoalType.GOTONPC)
+                        if (_quest.Value.qGoals[i].eGoalType == QuestGoalType.GO_TO_NPC)
                         {
                             if (_quest.Value.sQuestID == this.sQuestID)
                             {
-                                _quest.Value.GoToNPCCompleted(_quest.Value.qGoals[i], true);
-                                return true;
+                                _quest.Value.SetGoToNPCGoal(_quest.Value.qGoals[i], true);
+                                bIsFinished = true;
+                                return bIsFinished;
                             }
                         }
                     }
@@ -40,12 +42,13 @@ public class NPCAssignedQuestGoal : MonoBehaviour
                 {
                     if (_quest.Value.qGoals[i].GetIsActive())
                     {
-                        if (_quest.Value.qGoals[i].eGoalType == QuestGoalType.GOTONPC)
+                        if (_quest.Value.qGoals[i].eGoalType == QuestGoalType.GO_TO_NPC)
                         {
                             if (_quest.Value.sQuestID == this.sQuestID)
                             {
-                                _quest.Value.GoToNPCCompleted(_quest.Value.qGoals[i], true);
-                                return true;
+                                _quest.Value.SetGoToNPCGoal(_quest.Value.qGoals[i], true);
+                                bIsFinished = true;
+                                return bIsFinished;
                             }
                         }
                     }
@@ -55,13 +58,13 @@ public class NPCAssignedQuestGoal : MonoBehaviour
         return false;
 
     }
-    public void SetIsFinished(bool _bHasFinished)
-    {
-        bHasFinished = _bHasFinished;
-    }
     public bool IsFinished()
     {
-        return bHasFinished;
+        return bIsFinished;
+    }
+    public void SetIsFinished(bool _bIsFinished)
+    {
+        bIsFinished = _bIsFinished;
     }
     public void SetQuestID(string _sID)
     {

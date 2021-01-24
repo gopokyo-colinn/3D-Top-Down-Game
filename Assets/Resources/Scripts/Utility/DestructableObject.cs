@@ -25,7 +25,7 @@ public class DestructableObject : MonoBehaviour, IHittable
         }
     }
 
-    public void TakeDamage(int _damage)
+    public void ApplyDamage(int _damage)
     {
         health -= _damage;
     }
@@ -48,7 +48,7 @@ public class DestructableObject : MonoBehaviour, IHittable
         {
             if (_collider.gameObject.GetComponent<ICanDamage>() != null)
             {
-                TakeDamage(_collider.gameObject.GetComponent<ICanDamage>().Damage());
+                ApplyDamage(_collider.gameObject.GetComponent<ICanDamage>().Damage());
             }
         }
     }
@@ -58,7 +58,7 @@ public class DestructableObject : MonoBehaviour, IHittable
         return false;
     }
 
-    public void Knockback(Vector3 _sourcePosition, float _pushForce)
+    public void ApplyKnockback(Vector3 _sourcePosition, float _pushForce)
     {
         //
     }

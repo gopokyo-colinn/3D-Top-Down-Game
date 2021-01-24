@@ -8,7 +8,7 @@ public class DamageTarget : MonoBehaviour, ICanDamage
     //public Collider dmgColi;
     public bool bIsProjectileAttack;
     public bool bIsTypeOfEnemy = true;
-    public float fKnockForce = 4f;
+    public float fKnockForce = 8f;
 
     Vector3 startPos;
 
@@ -37,26 +37,26 @@ public class DamageTarget : MonoBehaviour, ICanDamage
                     IHittable _hitTarget = other.gameObject.GetComponent<IHittable>();
                     if (bIsProjectileAttack)
                     {
-                        _hitTarget.Knockback(startPos, fKnockForce);
+                        _hitTarget.ApplyKnockback(startPos, fKnockForce);
                     }
                     else
                     {
-                        _hitTarget.Knockback(transform.position, fKnockForce);
+                        _hitTarget.ApplyKnockback(transform.position, fKnockForce);
                     }
-                    _hitTarget.TakeDamage(Damage());
+                    _hitTarget.ApplyDamage(Damage());
                 }
                 if (other.gameObject.CompareTag("Shield"))
                 {
                     IHittable _hitTarget = other.gameObject.GetComponentInParent<IHittable>();
                     if (bIsProjectileAttack)
                     {
-                        _hitTarget.Knockback(startPos, fKnockForce / 2f);
+                        _hitTarget.ApplyKnockback(startPos, fKnockForce / 2f);
                     }
                     else
                     {
-                        _hitTarget.Knockback(transform.position, fKnockForce / 2f);
+                        _hitTarget.ApplyKnockback(transform.position, fKnockForce / 2f);
                     }
-                    _hitTarget.TakeDamage(0);
+                    _hitTarget.ApplyDamage(0);
                 }
             }
             else 
@@ -66,13 +66,13 @@ public class DamageTarget : MonoBehaviour, ICanDamage
                     IHittable _hitTarget = other.gameObject.GetComponentInParent<IHittable>();
                     if (bIsProjectileAttack)
                     {
-                        _hitTarget.Knockback(startPos, fKnockForce / 2f);
+                        _hitTarget.ApplyKnockback(startPos, fKnockForce / 2f);
                     }
                     else
                     {
-                        _hitTarget.Knockback(transform.position, fKnockForce / 2f);
+                        _hitTarget.ApplyKnockback(transform.position, fKnockForce / 2f);
                     }
-                    _hitTarget.TakeDamage(0);
+                    _hitTarget.ApplyDamage(0);
                 }
                 else
                 {
@@ -82,13 +82,13 @@ public class DamageTarget : MonoBehaviour, ICanDamage
                     {
                         if (bIsProjectileAttack)
                         {
-                            _hitTarget.Knockback(startPos, fKnockForce);
+                            _hitTarget.ApplyKnockback(startPos, fKnockForce);
                         }
                         else
                         {
-                            _hitTarget.Knockback(transform.position, fKnockForce);
+                            _hitTarget.ApplyKnockback(transform.position, fKnockForce);
                         }
-                        _hitTarget.TakeDamage(Damage());
+                        _hitTarget.ApplyDamage(Damage());
                     }
                    
                 }

@@ -9,8 +9,6 @@ public class GameController : MonoBehaviour
 
 	public static bool bGamePaused;
 
-	public PlayerController player;
-
 	SaveData saveData;
 
 	ISaveable[] saveablesList;
@@ -45,28 +43,52 @@ public class GameController : MonoBehaviour
 			Destroy(gameObject);
 		}
 
-		saveablesList = FindObjectsOfType<MonoBehaviour>().OfType<ISaveable>().ToArray();
+		LoadSceneInfo();
 
-		player = FindObjectOfType<PlayerController>();
-		saveData = new SaveData();
 	}
 	// Start is called before the first frame update
 	void Start()
     {
         inPlayMode = true;
+		if (SaveGameManager.gameLoaded)
+		{
+			LoadGame();
+		}
 	}
     private void Update()
     {
-		QuestManager.Instance.Refresh();
+		if(QuestManager.Instance)
+			QuestManager.Instance.Refresh();
 
 		/// Saving and Loading Testing
 		if (Input.GetKeyDown(KeyCode.F5))
         {
-			SaveGameManager.SaveGame(saveablesList);
+			SaveGame();
         }
 		if (Input.GetKeyDown(KeyCode.F9))
         {
-			SaveGameManager.LoadGame(saveablesList);
+			LoadGame();
         }
+	}
+	public void SaveGame()
+    {
+		SaveGameManager.SaveGame(saveablesList);
+	}
+	public void LoadGame()
+    {
+		UnityEngine.SceneManagement.SceneManager.LoadScene(1); 
+		StartCoroutine(LoadAfter());
+	}
+	IEnumerator LoadAfter()
+    {
+		yield return new WaitForSeconds(0f);
+		//LoadSceneInfo();
+		SaveGameManager.LoadGame(saveablesList);
+		StopAllCoroutines();
+	}
+    public void LoadSceneInfo()
+    {
+		saveablesList = FindObjectsOfType<MonoBehaviour>().OfType<ISaveable>().ToArray();
+		saveData = new SaveData();
 	}
 }

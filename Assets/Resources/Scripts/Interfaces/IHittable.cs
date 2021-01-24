@@ -4,8 +4,8 @@ using UnityEngine;
 
 public interface IHittable
 {
-    void TakeDamage(int _damage);
+    void ApplyDamage(int _damage);
     bool IsInvulnerable();
 
-    void Knockback(Vector3 _sourcePosition, float _pushForce);
+    void ApplyKnockback(Vector3 _sourcePosition, float _pushForce);
 }

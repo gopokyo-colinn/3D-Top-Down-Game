@@ -6,16 +6,13 @@ public class AddNewQuest : MonoBehaviour
 {
     public Quest quest;
     [TextArea(2, 3)]
-    [Tooltip("Use '&response' for adding user response for accepting or declining the quest." +
-    "\n Use '&questAdded' to show quest added popup message. \n Use '&questCompleted' to show quest completed popup message")]
+    [Tooltip("Use '&response' for adding user response for Side Quests for accepting or declining the quest.")]
     public string[] sQuestStartDialogLines;
     [TextArea(2, 3)]
-    [Tooltip("Use '&response' for adding user response for accepting or declining the quest." +
-        "\n Use '&questAdded' to show quest added popup message. \n Use '&questCompleted' to show quest completed popup message")]
+    [Tooltip("Use '&response' for adding user response for Side Quests for accepting or declining the quest.")]
     public string[] sQuestInProgressDialogLines;
     [TextArea(2, 3)]
-    [Tooltip("Use '&response' for adding user response for accepting or declining the quest." +
-        "\n Use '&questAdded' to show quest added popup message. \n Use '&questCompleted' to show quest completed popup message")]
+    [Tooltip("Use '&response' for adding user response for Side Quests for accepting or declining the quest.")]
     public string[] sQuestEndDialogLines;
 
     public void Start()

@@ -43,6 +43,7 @@ public class NPCEntity : MonoBehaviour
         rbody = GetComponent<Rigidbody>();
 
         assignedQuestGoals = GetComponentsInChildren<NPCAssignedQuestGoal>();
+
         if(assignedQuestGoals.Length <= 0)
         {
             assignedQuestGoals = null;
@@ -56,10 +57,6 @@ public class NPCEntity : MonoBehaviour
     }
     void Update()
     {
-        if(npcBehaviour == NPCBehaviour.QUEST_GIVER)
-        {
-        //    Debug.Log(myQuests[0].GetIsActive());
-        }
         SetRbodyAccToGroundCheck();
         CheckForDialogToFinish();
         SetAnimations();
@@ -340,11 +337,25 @@ public class NPCEntity : MonoBehaviour
     }
     public bool CheckNpcAssignedTalkingGoals()
     {
-        if(assignedQuestGoals != null)
+        if(assignedQuestGoals != null) // right now the npc only prefers the latest goal its assigned -----
         {
             for (int i = 0; i < assignedQuestGoals.Length; i++)
             {
-                if (assignedQuestGoals[i].QuestGoalCheck())
+                if (assignedQuestGoals[i].IsFinished()) // it checks if this goal is done already, then check for the latest one
+                {
+                    sDialogsToUse = assignedQuestGoals[i].sQuestDialog.ToArray();
+
+                    if(i == assignedQuestGoals.Length - 1) // if its the last assigned goal then, it should check if the mission exist and return on based of that 
+                    {
+                        if (assignedQuestGoals[i].QuestGoalCheck())
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                    continue;
+                }
+                if (assignedQuestGoals[i].QuestGoalCheck()) //this is to check if the assigned goal is not finished yet
                 {
                     sDialogsToUse = assignedQuestGoals[i].sQuestDialog.ToArray();
                     return true;

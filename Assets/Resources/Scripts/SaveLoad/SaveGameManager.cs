@@ -5,6 +5,8 @@ public static class SaveGameManager
 {
     public static string sFileName = "gamesave"; // 1 save file for now
 
+    public static bool gameLoaded;
+
     public static void SaveGame(ISaveable[] _saveAbles)
     {
         SaveData _saveData = new SaveData();

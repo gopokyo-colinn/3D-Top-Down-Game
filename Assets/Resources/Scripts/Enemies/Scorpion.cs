@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Scorpion : Enemy, IHittable
 {
-    const float fPUSHBACKFORCE = 3f;
     private bool bRotateAnims = true;
     float fSTUN_TIME = 0f; // this is extra time after the animation
 
@@ -109,7 +108,7 @@ public class Scorpion : Enemy, IHittable
         }
 
     }
-    public void TakeDamage(int _damage)
+    public void ApplyDamage(int _damage)
     {
         if (!bIsInvulnerable)
         {

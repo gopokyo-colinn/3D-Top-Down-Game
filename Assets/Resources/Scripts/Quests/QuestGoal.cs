@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public enum QuestGoalType { KILL = 0, GATHER = 1, DELIVER = 2, GOTOLOCATION = 3, GOTONPC = 4}
+public enum QuestGoalType { KILL = 0, GATHER = 1, DELIVER = 2, GO_TO_LOCATION = 3, GO_TO_NPC = 4, RETURN_TO_QUEST_GIVER}
 
 [Serializable]
 public class QuestGoal 
@@ -21,17 +21,23 @@ public class QuestGoal
 
     public void InitializeGoal(string _sID)
     {
-        if(eGoalType == QuestGoalType.GOTONPC)
+        if (bIsActive)
         {
-            taskNPC.SetQuestID(_sID);
+            if (eGoalType == QuestGoalType.GO_TO_NPC)
+            {
+                taskNPC.SetQuestID(_sID);
+                taskNPC.SetIsFinished(bIsFinished);
+            }
+            else if (eGoalType == QuestGoalType.KILL)
+            {
+                if (bIsActive && !bIsFinished)
+                {
+                    enemiesSpawner.SetID(_sID);
+                    enemiesSpawner.SetActive(true);
+                    enemiesSpawner.SpawnEnemies();
+                }
+            }
         }
-        else if(eGoalType == QuestGoalType.KILL)
-        {
-            enemiesSpawner.SetID(_sID);
-            enemiesSpawner.SetActive(true);
-            enemiesSpawner.SpawnEnemies();
-        }
-
     }
 
     public bool GetIsFinished()

@@ -18,37 +18,16 @@ public class QuestManager: MonoBehaviour, ISaveable
 	public QuestGoal activeGoal;
 
 	#region Singleton
-	private static QuestManager instance = null;
-	public QuestManager() 
-	{
-		dictMainQuests = new Dictionary<string, Quest>();
-		dictSideQuests = new Dictionary<string, Quest>();
-		dictCompletedQuests = new Dictionary<string, Quest>();
-	}
-	public static QuestManager Instance
-	{
-		get
-		{
-			if (instance == null)
-			{
-				instance = new QuestManager();
-			}
-			return instance;
-		}
-	}
+	protected static QuestManager instance;
+	public static QuestManager Instance { get { return instance; } }
     #endregion
     private void Awake()
     {
-        if(instance == null)
-        {
-			instance = this;
-			DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-			Destroy(gameObject);
-        }
+		instance = this;
 		dictAllQuests = new Dictionary<string, Quest>();
+		dictMainQuests = new Dictionary<string, Quest>();
+		dictSideQuests = new Dictionary<string, Quest>();
+		dictCompletedQuests = new Dictionary<string, Quest>();
     }
     public void Initialize()
     {
@@ -75,13 +54,13 @@ public class QuestManager: MonoBehaviour, ISaveable
 
     public void SaveAllData(SaveData _saveData)
     {
-		SaveQuestsData(_saveData);
+		instance.SaveQuestsData(_saveData);
     }
 
     public void LoadSaveData(SaveData _saveData) 
 	{   
-		LoadQuestsData(_saveData);
-		Initialize();
+		instance.LoadQuestsData(_saveData);
+		instance.Initialize();
 	}
 	public void SaveQuestsData(SaveData _saveData)
     {
@@ -155,16 +134,18 @@ public class QuestManager: MonoBehaviour, ISaveable
 		}
 		return _qGoalsLst;
     }
-	public QuestGoal[] SetGoals(Quest _quest, structQuest _questsLst)
+	public QuestGoal[] SetGoals(Quest _quest, structQuest _loadedQuestsLst)
 	{
 		QuestGoal[]_qGoalsLst = _quest.qGoals.ToArray();
 
-		List<structQuestGoal> _loadedGoalsLst = _questsLst.qGoalsLst.ToList();
-
         for (int i = 0; i < _qGoalsLst.Length; i++)
         {
-			_qGoalsLst[i].SetIsActive(_questsLst.qGoalsLst[i].bIsActive);
-			_qGoalsLst[i].SetIsFinished(_questsLst.qGoalsLst[i].bIsFinished);
+			_qGoalsLst[i].SetIsActive(_loadedQuestsLst.qGoalsLst[i].bIsActive);
+			_qGoalsLst[i].SetIsFinished(_loadedQuestsLst.qGoalsLst[i].bIsFinished);
+			//if(_qGoalsLst[i].GetIsActive() && !_qGoalsLst[i].GetIsFinished())
+            {
+				_qGoalsLst[i].InitializeGoal(_loadedQuestsLst.sQuestID);
+            }
         }
 
 		return _qGoalsLst;

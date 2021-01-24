@@ -5,29 +5,27 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
 {
     public Image icon;
+    public Image imgSelected;
     public TextMeshProUGUI stackText;
+    public RectTransform tMenuPosition;
     private Item item;
-    structItem structThisItem;
-    Outline outline;
-    private void Awake()
+    private bool bSelected;
+    private InventoryPopup inventoryPopup;
+    private void Start()
     {
-        outline = GetComponent<Outline>();
-        stackText.text = "";
+        inventoryPopup = PopupUIManager.Instance.inventoryPopup;
     }
     public void UpdateSlot(Item _item)
     {
-        structThisItem = new structItem();
-        structThisItem = _item.GetItem();
-
         item = new Item(_item);
 
         icon.gameObject.SetActive(true);
         icon.sprite = item.GetSprite();
 
-        if(item.iQuantity <= 1)
+        if (item.iQuantity <= 1)
         {
             stackText.text = "";
         }
@@ -38,66 +36,46 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     }
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(item != null)
-        {
-            ClickItem();
-        }
+        OpenItemMenu();
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        outline.enabled = true;
-        InventoryPopup _invPopup = PopupUIManager.Instance.inventoryPopup;
-        //_invPopup.detailsContainer.gameObject.SetActive(true);
+        inventoryPopup.SetSelected(this);
+    }
+    public void OpenItemMenu()
+    {
         if(item != null)
         {
-            _invPopup.txtDetailItemName.text = item.sItemName;
-            _invPopup.txtDetailItemDescription.text = item.sItemDescription;
-        }
-        else
-        {
-            _invPopup.txtDetailItemName.text = "No Item Selected";
-            _invPopup.txtDetailItemDescription.text = "";
-        }
-       // icon.color = new Color(icon.color.r, icon.color.g, icon.color.b, 1);
-    }
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        outline.enabled = false;
-        //icon.color = new Color(icon.color.r, icon.color.g, icon.color.b, 0.92f);
-    }
-    public void ClickItem()
-    {
-        List<structSubMenu> _lstSubMenu = new List<structSubMenu>();
-        structSubMenu _subMenu = new structSubMenu();
-        _subMenu.sName = "Use";
-        _subMenu.action = delegate () { ClickUse(); };
-        _lstSubMenu.Add(_subMenu);
-
-        _subMenu = new structSubMenu();
-        _subMenu.sName = "Discard";
-        _subMenu.action = delegate () { ClickDiscard(); };
-        _lstSubMenu.Add(_subMenu);
-        PopupUIManager.Instance.subMenuPopup.openMenu(_lstSubMenu);
-
-
-        if (item.isStackable)
-        {
-            _subMenu = new structSubMenu();
-            _subMenu.sName = "Discard All";
-            _subMenu.action = delegate () { ClickDiscardAll(); };
+            inventoryPopup.SetItemMenuOpenBool(true);
+            List<structSubMenu> _lstSubMenu = new List<structSubMenu>();
+            structSubMenu _subMenu = new structSubMenu();
+            _subMenu.sName = "Use";
+            _subMenu.action = delegate () { ClickUse(); };
             _lstSubMenu.Add(_subMenu);
-            PopupUIManager.Instance.subMenuPopup.openMenu(_lstSubMenu);
-        }
 
-        _subMenu = new structSubMenu();
-        _subMenu.sName = "Details";
-        _subMenu.action = delegate () { ClickDetails(); };
-        _lstSubMenu.Add(_subMenu);
-        PopupUIManager.Instance.subMenuPopup.openMenu(_lstSubMenu);
+            _subMenu = new structSubMenu();
+            _subMenu.sName = "Discard";
+            _subMenu.action = delegate () { ClickDiscard(); };
+            _lstSubMenu.Add(_subMenu);
+
+            if (item.isStackable)
+            {
+                _subMenu = new structSubMenu();
+                _subMenu.sName = "Discard All";
+                _subMenu.action = delegate () { ClickDiscardAll(); };
+                _lstSubMenu.Add(_subMenu);
+            }
+
+            _subMenu = new structSubMenu();
+            _subMenu.sName = "Cancel";
+            _subMenu.action = delegate () { ClickCancel(); };
+            _lstSubMenu.Add(_subMenu);
+            PopupUIManager.Instance.subMenuPopup.openMenu(_lstSubMenu, tMenuPosition.position);
+        }
     }
     public void ClickUse()
     {
-        if (item.UseItem(GameController.Instance.player))
+        if (item.UseItem(PlayerController.Instance))
         {
             Debug.Log(item.sItemName + " used");
             if (item.isStackable)
@@ -107,13 +85,14 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         }
         else
         {
-            PopupUIManager.Instance.msgBoxPopup.SendTextMessage("Can't use this item right now..... ");
+            PopupUIManager.Instance.msgBoxPopup.ShowTextMessage("Can't use this item right now..... ");
         }
+        inventoryPopup.SetItemMenuOpenBool(false);
     }
     public void ClickDiscard()
     {
         Debug.Log(item.sItemName + " Discarded");
-        Vector3 _itemDropPosition = GameController.Instance.player.transform.position + new Vector3(Random.Range(-1f, 1f), 1.5f, Random.Range(-1f, 1f));
+        Vector3 _itemDropPosition = PlayerController.Instance.transform.position + new Vector3(Random.Range(-1f, 1f), 1.5f, Random.Range(-1f, 1f));
         ItemContainer _newDroppedItem = Instantiate(item.GetItemPrefab(), _itemDropPosition , Quaternion.identity);
 
         _newDroppedItem.SetItem(item);
@@ -122,15 +101,15 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         {
             item.UpdateQuantity(item.iQuantity - 1);
         }
-
         RemoveItem(item);
+        inventoryPopup.SetItemMenuOpenBool(false);
     }
     public void ClickDiscardAll()
     {
         Debug.Log(item.sItemName + " Discarded");
         for (int i = 0; i < item.iQuantity; i++)
         {
-            Vector3 _itemDropPosition = GameController.Instance.player.transform.position + new Vector3(Random.Range(-1f, 1f), 1.5f, Random.Range(-1f, 1f));
+            Vector3 _itemDropPosition = PlayerController.Instance.transform.position + new Vector3(Random.Range(-1f, 1f), 1.5f, Random.Range(-1f, 1f));
             ItemContainer _newDroppedItem = Instantiate(item.GetItemPrefab(), _itemDropPosition, Quaternion.identity);
 
             _newDroppedItem.SetItem(item);
@@ -139,10 +118,11 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         // item.iAmount--;
         item.UpdateQuantity(0); // that will make it equal to 0
         RemoveItem(item);
+        inventoryPopup.SetItemMenuOpenBool(false);
     }
-    public void ClickDetails()
+    public void ClickCancel()
     {
-        Debug.Log(item.sItemDescription);
+        inventoryPopup.SetItemMenuOpenBool(false);
     }
     public void RemoveItem(Item _item)
     {
@@ -150,25 +130,25 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         {
             if(_item.iQuantity > 0)
             {
-                Inventory _updatedUIInventory = GameController.Instance.player.GetInventory();
+                Inventory _updatedUIInventory = PlayerController.Instance.GetInventory();
                 _updatedUIInventory.UpdateItemAmount(item); /// aaa hun chlana pena tenu
                 //EmptySlot();
-                GameController.Instance.player.UpdateInventory(_updatedUIInventory);
+                PlayerController.Instance.UpdateInventory(_updatedUIInventory);
             }
             else
             {
-                Inventory _updatedUIInventory = GameController.Instance.player.GetInventory();
+                Inventory _updatedUIInventory = PlayerController.Instance.GetInventory();
                 _updatedUIInventory.RemoveItem(item);
                 EmptySlot();
-                GameController.Instance.player.UpdateInventory(_updatedUIInventory);
+                PlayerController.Instance.UpdateInventory(_updatedUIInventory);
             }
         }
         else
         {
-            Inventory _updatedUIInventory = GameController.Instance.player.GetInventory();
+            Inventory _updatedUIInventory = PlayerController.Instance.GetInventory();
             _updatedUIInventory.RemoveItem(item);
             EmptySlot();
-            GameController.Instance.player.UpdateInventory(_updatedUIInventory);
+            PlayerController.Instance.UpdateInventory(_updatedUIInventory);
         }
     }
     public void EmptySlot()
@@ -177,5 +157,27 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         icon.sprite = null;
         icon.gameObject.SetActive(false);
         stackText.text = "";
+    }
+    public void SetSelectedElement(bool _bSelected)
+    {
+        bSelected = _bSelected;
+        imgSelected.gameObject.SetActive(bSelected);
+        SetItemDetails();
+    }
+    void SetItemDetails()
+    {
+        if(inventoryPopup != null)
+        {
+            if (item != null)
+            {
+                inventoryPopup.txtDetailItemName.text = item.sItemName;
+                inventoryPopup.txtDetailItemDescription.text = item.sItemDescription;
+            }
+            else
+            {
+                inventoryPopup.txtDetailItemName.text = "No Item Selected";
+                inventoryPopup.txtDetailItemDescription.text = "";
+            }
+        }
     }
 }

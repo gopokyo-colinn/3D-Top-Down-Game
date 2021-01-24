@@ -16,37 +16,34 @@ public class SubMenuPopup : Popup
 
     public PopupButtonElement prefabButtonElement;
 
-    private PopupButtonElement selectedButtonElement;
-
     private List<PopupButtonElement> lstPopupButtonElement;
 
     private RectTransform rtTransform;
 
     public Transform containerAll;
 
+    int iSelectedElement;
+
+    private PopupButtonElement selectedButtonElement;
     void Start()
     {
         lstPopupButtonElement = new List<PopupButtonElement>();
         rtTransform = GetComponent<RectTransform>();
         containerAll.gameObject.SetActive(false);
+        
     }
     private void Update()
     {
         if (container.gameObject.activeSelf)
         {
-            if(Input.GetAxis("Vertical") > 0)
-            {
-
-            }
-            else
-            {
-
-            }
+            SelectElementWithInput();
         }
     }
     public override void open()
     {
         base.open();
+        iSelectedElement = 0;
+        Debug.Log("I am opened");
         containerAll.gameObject.SetActive(true);
     }
     public override void close()
@@ -79,25 +76,21 @@ public class SubMenuPopup : Popup
 
         lstPopupButtonElement = new List<PopupButtonElement>();
 
-        PopupButtonElement _buttonElement;
+       // PopupButtonElement _buttonElement;
         lstSubMenu = _lstSubMenu;
         for (int i = 0; i < _lstSubMenu.Count; i++)
         {
-            _buttonElement = Instantiate<PopupButtonElement>(prefabButtonElement, tFieldContainer);
-            
-            _buttonElement.btnMain.onClick.AddListener(_lstSubMenu[i].action);
-            _buttonElement.btnMain.onClick.AddListener(delegate () { close(); });
-            _buttonElement.SetButtonName(_lstSubMenu[i].sName);
+            PopupButtonElement _buttonElement = Instantiate<PopupButtonElement>(prefabButtonElement, tFieldContainer);
+
+            _buttonElement.SetButtonElement(_lstSubMenu[i].sName, _lstSubMenu[i].action, delegate () { SetSelected(_buttonElement); });
 
             lstPopupButtonElement.Add(_buttonElement);
         }
-        selectedButtonElement = lstPopupButtonElement[0];
+        selectedButtonElement = null;
     }
     public void openMenu(List<structSubMenu> _lstSubMenu, Vector2 _position)
     {
         open();
-
-        containerAll.gameObject.SetActive(false);
 
         rtTransform.position = _position;
 
@@ -110,17 +103,62 @@ public class SubMenuPopup : Popup
 
         lstPopupButtonElement = new List<PopupButtonElement>();
 
-        PopupButtonElement _buttonElement;
         lstSubMenu = _lstSubMenu;
         for (int i = 0; i < _lstSubMenu.Count; i++)
         {
-            _buttonElement = Instantiate<PopupButtonElement>(prefabButtonElement, tFieldContainer);
+            PopupButtonElement _buttonElement = Instantiate<PopupButtonElement>(prefabButtonElement, tFieldContainer);
 
-            _buttonElement.btnMain.onClick.AddListener(_lstSubMenu[i].action);
-            _buttonElement.btnMain.onClick.AddListener(delegate () { close(); });
-            _buttonElement.SetButtonName(_lstSubMenu[i].sName);
+            _buttonElement.SetButtonElement(_lstSubMenu[i].sName, _lstSubMenu[i].action, delegate () { SetSelected(_buttonElement); });
 
             lstPopupButtonElement.Add(_buttonElement);
+        }
+        selectedButtonElement = null;
+    }
+    public void SetSelected(PopupButtonElement _element)
+    {
+        if (selectedButtonElement != null)
+            selectedButtonElement.SetSelectedElement(false);
+
+        selectedButtonElement = _element;
+
+        if (selectedButtonElement)
+        {
+            selectedButtonElement.SetSelectedElement(true);
+        }
+        for (int i = 0; i < lstPopupButtonElement.Count; i++)
+        {
+            if(lstPopupButtonElement[i] == selectedButtonElement)
+            {
+                iSelectedElement = i;
+            }
+        }
+    }
+
+    public void SelectElementWithInput()
+    {
+        if (Input.GetAxisRaw("Vertical") > 0 && Input.anyKeyDown)
+        {
+            if (iSelectedElement > 0)
+                SetSelected(lstPopupButtonElement[iSelectedElement - 1]);
+            else if (iSelectedElement == 0)
+                SetSelected(lstPopupButtonElement[lstPopupButtonElement.Count - 1]);
+        }
+        else if (Input.GetAxisRaw("Vertical") < 0 && Input.anyKeyDown)
+        {
+            if (iSelectedElement < lstPopupButtonElement.Count - 1)
+                SetSelected(lstPopupButtonElement[iSelectedElement + 1]);
+            else if (iSelectedElement == lstPopupButtonElement.Count - 1)
+                SetSelected(lstPopupButtonElement[0]);
+            else if (iSelectedElement == 0)
+                SetSelected(lstPopupButtonElement[1]);
+        }
+        if (Input.GetButtonDown("Interact"))
+        {
+            if (selectedButtonElement != null)
+            {
+                selectedButtonElement.clickAction.Invoke();
+                close();
+            }
         }
     }
 }

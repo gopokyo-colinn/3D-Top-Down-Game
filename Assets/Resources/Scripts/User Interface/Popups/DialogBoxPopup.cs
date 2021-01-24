@@ -13,6 +13,8 @@ public class DialogBoxPopup : Popup
     private bool bIsTyping = false;
     private bool bResponseSelecting;
 
+    private bool bResponseFound;
+
     public RectTransform responsePopupPosition;
 
     private static bool dialogInProgress;
@@ -44,6 +46,7 @@ public class DialogBoxPopup : Popup
     public void setDialogText(string[] _dialogLines)
     {
         base.open();
+        PopupUIManager.Instance.SetDialogBoxIsActive(true);
         iDialogLineNumber = -1;
         sDialogLines = new string[_dialogLines.Length];
         sDialogLines = _dialogLines;
@@ -60,6 +63,7 @@ public class DialogBoxPopup : Popup
         if (iDialogLineNumber > sDialogLines.Length - 1)
         {
             base.close();
+            PopupUIManager.Instance.SetDialogBoxIsActive(false);
             iDialogLineNumber = -1;
             dialogInProgress = false;
             GameController.inPlayMode = true;
@@ -76,6 +80,7 @@ public class DialogBoxPopup : Popup
         bIsTyping = true;
 
         char[] _dialogChars = sDialogLines[iDialogLineNumber].ToCharArray();
+
         dialogText.text = "";
         for (int i = 0; i < _dialogChars.Length; i++)
         {
@@ -89,47 +94,28 @@ public class DialogBoxPopup : Popup
     {
         if(questNPC.GetQuest() != null)
         {
-            if(questNPC.GetQuest().eQuestType == QuestType.MAINQUEST)
-            {
-                if (sDialogLines[iDialogLineNumber].Contains("&response"))
-                {
-                    sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&response", "");
-                }
-                else if (sDialogLines[iDialogLineNumber].Contains("&questAdded"))
-                {
-                    string _message = "New Main Quest Added...!!";
-                    sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questAdded", MsgBoxPopup(_message));
-                }
-                else if (sDialogLines[iDialogLineNumber].Contains("&questComplete"))
-                {
-                    string _message = "Quest Completed !! \n You Got 10 XP....";
-                    sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questCompleted", MsgBoxPopup(_message));
-                }
-            }
-            else
+            if(questNPC.GetQuest().eQuestType == QuestType.SIDEQUEST)
             {
                 if (sDialogLines[iDialogLineNumber].Contains("&response"))
                 {
                     sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&response", ShowResponsePopup());
+                    bResponseFound = true;
                 }
-                else if (sDialogLines[iDialogLineNumber].Contains("&questAdded"))
+                if(iDialogLineNumber == sDialogLines.Length - 1)
                 {
-                    string _message = "New Side Quest Added...!!";
-                    sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questAdded", MsgBoxPopup(_message));
-                }
-                else if (sDialogLines[iDialogLineNumber].Contains("&questCompleted"))
-                {
-                    string _message = "Quest Completed !! \n You Got " + questNPC.GetQuest().sRewards;
-                    sDialogLines[iDialogLineNumber] = sDialogLines[iDialogLineNumber].Replace("&questCompleted", MsgBoxPopup(_message));
+                    if (!bResponseFound)
+                    {
+                        ResponseYES();
+                        bResponseFound = false;
+                    }
                 }
             }
-
         }
     }
     public string MsgBoxPopup(string _sMessage)
     {
         // TODO: here select reward text from npc's quest
-        PopupUIManager.Instance.msgBoxPopup.SendTextMessage(_sMessage);
+        PopupUIManager.Instance.msgBoxPopup.ShowTextMessage(_sMessage);
         return "";
     }
     public string ShowResponsePopup()
@@ -154,14 +140,14 @@ public class DialogBoxPopup : Popup
     void ResponseYES()
     {
         questNPC.ActivateQuest();
-        NextLine();
-        PopupUIManager.Instance.msgBoxPopup.SendTextMessage("New Side Quest Added !!", 1.5f,1);
+        if(iDialogLineNumber < sDialogLines.Length - 1)
+            NextLine();
         bResponseSelecting = false;
     }
     void ResponseNO()
     {
         sDialogLines = new string[1];
-        sDialogLines[0] = "Come back if you change your mind...";
+        sDialogLines[0] = "Come back if you change your mind..."; // TODO: Add more lines.....
         iDialogLineNumber = -1;
         StopAllCoroutines();
         NextLine();

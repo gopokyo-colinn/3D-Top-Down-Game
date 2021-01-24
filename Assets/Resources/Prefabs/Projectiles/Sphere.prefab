@@ -139,4 +139,4 @@ MonoBehaviour:
   iDamage: 5
   bIsProjectileAttack: 1
   bIsTypeOfEnemy: 1
-  fKnockForce: 3
+  fKnockForce: 7

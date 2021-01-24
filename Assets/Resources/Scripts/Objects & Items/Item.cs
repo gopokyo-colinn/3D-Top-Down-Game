@@ -2,13 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public enum ItemType { HealthPotion, Weapon, QuestItem, Valuable }
 [Serializable][CreateAssetMenu(fileName ="New Item", menuName = "Assets/Item")]
 public class Item: ScriptableObject
 {
     //[HideInInspector]
+#if UNITY_EDITOR
     [UniqueID]
+#endif
     public string sID;
     public string sItemName;
     public string sItemDescription;

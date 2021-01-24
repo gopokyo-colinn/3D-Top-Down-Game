@@ -8,6 +8,7 @@ public class Popup : MonoBehaviour
     public Transform container;
     public Image bgImage;
 
+    protected bool bIsActive;
     private void Awake()
     {
         container.gameObject.SetActive(false);

@@ -12,36 +12,15 @@ public class PopupUIManager : MonoBehaviour
 	public QuestPopupUI questPopupUI;
 	public MenuBarPopup menuBarPopup;
 
+	bool bDialogBoxActive;
 
-	private static PopupUIManager instance;
-	public static PopupUIManager Instance
+	#region Singleton
+	protected static PopupUIManager instance;
+	public static PopupUIManager Instance { get { return instance; } }
+	#endregion
+	private void Awake()
 	{
-		get
-		{
-			if (instance == null)
-			{
-				instance = FindObjectOfType<PopupUIManager>();
-				if (instance == null)
-				{
-					GameObject obj = new GameObject();
-					obj.name = typeof(PopupUIManager).Name;
-					instance = obj.AddComponent<PopupUIManager>();
-				}
-			}
-			return instance;
-		}
-	}
-	protected virtual void Awake()
-	{
-		if (instance == null)
-		{
-			instance = this;
-			DontDestroyOnLoad(gameObject);
-		}
-		else
-		{
-			Destroy(gameObject);
-		}
+		instance = this;
 	}
 
     private void Update()
@@ -92,5 +71,14 @@ public class PopupUIManager : MonoBehaviour
 			}
 		}
 	}
+
+	public bool GetDialogBoxIsActive()
+    {
+		return bDialogBoxActive;
+    }
+	public void SetDialogBoxIsActive(bool _bActive)
+    {
+		bDialogBoxActive = _bActive;
+    }
 	
 }

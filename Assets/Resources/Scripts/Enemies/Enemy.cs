@@ -38,13 +38,14 @@ public class Enemy : MonoBehaviour
     protected float fAttackWaitTimeCounter;
     private Vector3 randomVector;
     private Vector3 startPosition;
+    public float fOnCollisionKnockBackForce = 5f;
     public void Initialize()
     {
         rbody = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
         fCurrentHitPoints = fMaxHitPoints;
         if (!targetPlayer)
-            targetPlayer = GameController.Instance.player;
+            targetPlayer = PlayerController.Instance;
         startPosition = transform.position;
         fAttackWaitTimeCounter = 0;
         bIsAlive = true;
@@ -57,6 +58,7 @@ public class Enemy : MonoBehaviour
     {
 
     }
+
     private void OnCollisionEnter(Collision _collision)
     {
         if (bIsAlive)
@@ -67,7 +69,8 @@ public class Enemy : MonoBehaviour
                 {
                     if (_collision.collider.GetComponent<IHittable>() != null)
                     {
-                        _collision.collider.GetComponent<IHittable>().TakeDamage(iCollisionDamage);
+                        _collision.collider.GetComponent<IHittable>().ApplyKnockback(transform.position, fOnCollisionKnockBackForce);
+                        _collision.collider.GetComponent<IHittable>().ApplyDamage(iCollisionDamage);
                     }
                 }
             }
@@ -254,7 +257,7 @@ public class Enemy : MonoBehaviour
 
      }*/
 
-    public void Knockback(Vector3 _sourcePosition, float _pushForce)
+    public void ApplyKnockback(Vector3 _sourcePosition, float _pushForce)
     {
         if (!bIsInvulnerable)
         {

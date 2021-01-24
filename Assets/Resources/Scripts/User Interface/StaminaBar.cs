@@ -13,7 +13,7 @@ public class StaminaBar : MonoBehaviour
     void Start()
     {
         /// Right now the health fill amount only works for 100 health, do it for any health value.
-        player = GameController.Instance.player;
+        player = PlayerController.Instance;
         staminaFillAmount.fillAmount = player.fCurrentStamina / player.fMaxStamina;
     }
     public void ChangeStaminaUI()

@@ -6,6 +6,7 @@ using UnityEditor;
 [CustomPropertyDrawer(typeof(UniqueIDAttribute))]
 public class UniqueIDPropertyDrawer : PropertyDrawer
 {
+
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
 
@@ -24,4 +25,5 @@ public class UniqueIDPropertyDrawer : PropertyDrawer
     {
         return base.GetPropertyHeight(property, label);
     }
+
 }

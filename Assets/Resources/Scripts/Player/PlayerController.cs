@@ -5,6 +5,9 @@ using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour, IHittable, ISaveable
 {
+    protected static PlayerController instance;
+    public static PlayerController Instance { get { return instance; } }
+
     structGameSavePlayer structPlayerSaveData;
 
     const float fHEAD_OFFSET = 1f;
@@ -61,26 +64,28 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     public Inventory playerInventory;
     public int iStartInventorySize;
 
+
     void Awake()
     {
-        // controller = GetComponent<CharacterController>();
+        instance = this;
+
         rbody = GetComponent<Rigidbody>();
         anim = GetComponentInChildren<Animator>();
         fCurrentHitPoints = fMaxHitPoints;
         fCurrentStamina = fMaxStamina;
         bIsAlive = true;
-
         playerInventory = new Inventory(iStartInventorySize);
     }
     void Update()
     {
-        
         if (GameController.inPlayMode)
         {
             if (bIsAlive && !bIsStun)
             {
+                if(Grounded())
+                    GetDirectionalInput();
+
                 StaminaCheck();
-                GetDirectionalInput();
                 UseShield();
                 DrawSword();
                 SwordAttacks();
@@ -250,10 +255,10 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     public void Jumping()
     {
         /// For Jumping
-        if (Grounded())
+      //  if (Grounded())
         {
             if (Input.GetKeyDown(KeyCode.Space))
-                rbody.AddForce(rbody.velocity.x, fJumpForce, rbody.velocity.z, ForceMode.Impulse);
+                rbody.AddForce(new Vector3( rbody.velocity.x, fJumpForce, rbody.velocity.z) * Time.fixedDeltaTime, ForceMode.Impulse);
         }
     }
     void JumpControlling()
@@ -371,7 +376,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         return bIsInteracting;
     }
     /// Health System
-    public void TakeDamage(int _damage)
+    public void ApplyDamage(int _damage)
     {
         if (!bIsInvulnerable)
         {
@@ -388,7 +393,8 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     public void Die()
     {
         bIsAlive = false;
-        gameObject.SetActive(false);
+        //TODO: Add a beath animation and remove collisions
+        //gameObject.SetActive(false); // deactivating it or destroying can coz some loading bugs
     }
     public bool IsInvulnerable()
     {
@@ -404,6 +410,11 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
 
     public void StaminaCheck()
     {
+        if(fCurrentStamina < 0)
+        {
+            fCurrentStamina = 0;
+        }
+
         if(bIsShielding || bIsSprinting || bIsAttacking)
         {
             OnStaminaChangeUI.Invoke();
@@ -442,15 +453,13 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             }
         }
     }
-    public void Knockback(Vector3 _sourcePosition, float _pushForce)
+    public void ApplyKnockback(Vector3 _sourcePosition, float _pushForce)
     {
         // Stops for a hit time to play the hit animation and then move
-
         Stun();
-
         if (!bIsInvulnerable)
         {
-            fCurrentStamina -= _pushForce * 2f;
+            fCurrentStamina -= _pushForce;
             Vector3 pushForce = transform.position - _sourcePosition;
             pushForce.y = 0;
             //transform.forward = -pushForce.normalized;
@@ -459,7 +468,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     public void Stun()
     {
-        rbody.velocity = HelperFunctions.VectorZero(rbody);
+        //rbody.velocity = HelperFunctions.VectorZero(rbody);
         anim.SetFloat("moveVelocity", 0f);
         bIsStun = true;
         if (bIsStun)
@@ -504,11 +513,11 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     public void SaveAllData(SaveData _saveData)
     {
         structGameSavePlayer _playerSaveData = new structGameSavePlayer();
-        _playerSaveData.fCurrentHitPoints = fCurrentHitPoints;
-        _playerSaveData.fCurrentStamina = fCurrentStamina;
-        _playerSaveData.tPosition = new float[3] { transform.position.x, transform.position.y, transform.position.z};
+        _playerSaveData.fCurrentHitPoints = instance.fCurrentHitPoints;
+        _playerSaveData.fCurrentStamina = instance.fCurrentStamina;
+        _playerSaveData.tPosition = new float[3] { instance.transform.position.x, instance.transform.position.y, instance.transform.position.z};
         _playerSaveData.tRotation = new float[3] {lastFacinDirection.x, lastFacinDirection.y, lastFacinDirection.z};
-        _playerSaveData.playerInventory = playerInventory.GetInventory();
+        _playerSaveData.playerInventory = instance.playerInventory.GetInventory();
         //_playerSaveData.tRotation = new float[3] { transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z};
 
         _saveData.playerSaveData = _playerSaveData;
@@ -519,18 +528,18 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         structPlayerSaveData = new structGameSavePlayer();
         structPlayerSaveData = _saveData.playerSaveData;
 
-        fCurrentHitPoints = structPlayerSaveData.fCurrentHitPoints;
-        fCurrentStamina = structPlayerSaveData.fCurrentStamina;
+        instance.fCurrentHitPoints = structPlayerSaveData.fCurrentHitPoints;
+        instance.fCurrentStamina = structPlayerSaveData.fCurrentStamina;
 
-        transform.position = new Vector3(structPlayerSaveData.tPosition[0], structPlayerSaveData.tPosition[1], structPlayerSaveData.tPosition[2]); // 0 = x, 1 = y, 2 = z
-        lastFacinDirection = new Vector3(structPlayerSaveData.tRotation[0], structPlayerSaveData.tRotation[1], structPlayerSaveData.tRotation[2]); // 0 = x, 1 = y, 2 = z
+        instance.transform.position = new Vector3(structPlayerSaveData.tPosition[0], structPlayerSaveData.tPosition[1], structPlayerSaveData.tPosition[2]); // 0 = x, 1 = y, 2 = z
+        instance.lastFacinDirection = new Vector3(structPlayerSaveData.tRotation[0], structPlayerSaveData.tRotation[1], structPlayerSaveData.tRotation[2]); // 0 = x, 1 = y, 2 = z
 
-        playerInventory = new Inventory(structPlayerSaveData.playerInventory.iInventorySize);
-        playerInventory.SetInventory(structPlayerSaveData.playerInventory);
-        PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(playerInventory);
+        instance.playerInventory = new Inventory(structPlayerSaveData.playerInventory.iInventorySize);
+        instance.playerInventory.SetInventory(structPlayerSaveData.playerInventory);
+        PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(instance.playerInventory);
 
-        OnReciveDamageUI.Invoke();
-        OnStaminaChangeUI.Invoke();
+        instance.OnReciveDamageUI.Invoke();
+        instance.OnStaminaChangeUI.Invoke();
     }
 }
 

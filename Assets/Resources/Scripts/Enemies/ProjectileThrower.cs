@@ -17,7 +17,7 @@ public class ProjectileThrower : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = GameController.Instance.player;
+        player = PlayerController.Instance;
         if(userCollider == null)
         {
             userCollider = GetComponentInParent<Collider>();

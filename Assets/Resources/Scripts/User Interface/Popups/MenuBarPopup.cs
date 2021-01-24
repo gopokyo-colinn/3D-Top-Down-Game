@@ -7,6 +7,7 @@ public class MenuBarPopup : Popup
     InventoryPopup inventoryPopup;
     QuestPopupUI questPopupUI;
     PauseMenuPopup pauseMenuPopup;
+    SubMenuPopup subMenuPopup;
     List<Popup> lstPopup;
 
     private void Start()
@@ -19,6 +20,8 @@ public class MenuBarPopup : Popup
         lstPopup.Add(questPopupUI);
         pauseMenuPopup = PopupUIManager.Instance.pauseMenuPopup;
         lstPopup.Add(pauseMenuPopup);
+        subMenuPopup = PopupUIManager.Instance.subMenuPopup;
+        lstPopup.Add(subMenuPopup);
         close();
 
     }
@@ -42,6 +45,7 @@ public class MenuBarPopup : Popup
         if (GameController.inPlayMode)
         {
             GameController.inPlayMode = false;
+            inventoryPopup.UpdateInventoryUI(PlayerController.Instance.GetInventory());
             inventoryPopup.open();
         }
     }

@@ -7,7 +7,6 @@ public class SpittyPlant : Enemy, IHittable
 
     float fINVULNERABILITY_TIME = 0.7f;
     float fTARGET_FOLLOW_RANGE = 120f;
-    const float fPUSHBACKFORCE = 4f;
 
     ProjectileThrower projectileThrower;
 
@@ -78,7 +77,7 @@ public class SpittyPlant : Enemy, IHittable
         }
     }
 
-    public void TakeDamage(int _damage)
+    public void ApplyDamage(int _damage)
     {
         if (!bIsInvulnerable)
         {
