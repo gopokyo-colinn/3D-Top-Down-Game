@@ -44,7 +44,17 @@ public class Inventory
         {
             if (lstItems[i].sID == _item.sID)
             {
-                lstItems[i].UpdateQuantity(lstItems[i].iQuantity - 1);
+                lstItems[i].SetQuantity(lstItems[i].iQuantity - 1);
+            }
+        }
+    }
+    public void UpdateItem(Item _item)
+    {
+        for (int i = 0; i < lstItems.Count; i++)
+        {
+            if (lstItems[i].sID == _item.sID)
+            {
+                lstItems[i] = new Item(_item);
             }
         }
     }
@@ -72,7 +82,7 @@ public class Inventory
             Item _newItem = new Item(ItemDatabaseManager.Instance.GetItemByID(_savedItemsLst[i].sID));
             if(_newItem != null)
             {
-                _newItem.UpdateQuantity(_savedItemsLst[i].iQuantity);
+                _newItem.SetQuantity(_savedItemsLst[i].iQuantity);
                 lstItems.Add(_newItem);
             }
         }

@@ -35,6 +35,7 @@ public class PauseMenuPopup : Popup
     public override void open()
     {
         base.open();
+        SetSelected(lstButtonsElement[0]);
         PopupUIManager.Instance.menuBarPopup.open();
     }
     public override void close()
@@ -77,7 +78,7 @@ public class PauseMenuPopup : Popup
         Destroy(GameController.Instance.gameObject);
         UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
-    public void MenuKeysInput()
+    public override void MenuKeysInput()
     {
         if (Input.GetAxisRaw("Vertical") > 0f && Input.anyKeyDown)
         {

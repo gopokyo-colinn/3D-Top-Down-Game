@@ -47,6 +47,7 @@ public class DialogBoxPopup : Popup
     {
         base.open();
         PopupUIManager.Instance.SetDialogBoxIsActive(true);
+        GameController.inPlayMode = false;
         iDialogLineNumber = -1;
         sDialogLines = new string[_dialogLines.Length];
         sDialogLines = _dialogLines;
@@ -133,7 +134,7 @@ public class DialogBoxPopup : Popup
 
         bResponseSelecting = true;
 
-        PopupUIManager.Instance.subMenuPopup.openMenu(_lstSubMenu, responsePopupPosition.position);// new Vector2(556, 126));
+        PopupUIManager.Instance.subMenuPopup.openMenu(_lstSubMenu, responsePopupPosition.position, true);// new Vector2(556, 126));
 
         return "";
     }

@@ -4,37 +4,64 @@ using UnityEngine;
 
 public class DamageTarget : MonoBehaviour, ICanDamage
 {
-    public int iDamage;
+    public float fDamage;
     //public Collider dmgColi;
     public bool bIsProjectileAttack;
-    public bool bIsTypeOfEnemy = true;
+    public bool bIsTypeOfEnemy;
+    public bool bIsPlayer; 
     public float fKnockForce = 8f;
+    public Collider attackCollider;
 
     Vector3 startPos;
 
     public void Start()
     {
+        if (GetComponentInParent<PlayerController>())
+            bIsPlayer = true;
+        if (GetComponent<Enemy>() || GetComponentInParent<Enemy>())
+            bIsTypeOfEnemy = true;
+        if (GetComponent<Projectile>())
+            bIsProjectileAttack = true;
         if (bIsProjectileAttack)
-        {
             startPos = transform.position;
+    }
+
+    private void Update()
+    {
+        CheckAttackBox(attackCollider);
+    }
+    public void CheckAttackBox(Collider _col)
+    {
+        if (_col.enabled)
+        {
+            Collider[] _coliLst = Physics.OverlapBox(_col.bounds.center, _col.bounds.extents, _col.transform.rotation);
+
+            foreach (Collider _coli in _coliLst)
+            {
+                if (_coli.transform.root == transform.root)
+                {
+                    continue;
+                }
+
+                CheckHitEffects(_coli);
+            }
         }
     }
-    public int Damage()
+    public float Damage()
     {
-        return iDamage;
+        return fDamage;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void CheckHitEffects(Collider _other)
     {
-        if (other)
+       // if (other)
         {
-            //if (other.gameObject.CompareTag("Player"))
-
             if (bIsTypeOfEnemy)
             {
-                if (other.gameObject.CompareTag("Player"))
+                if (_other.gameObject.CompareTag("Player")) /// this is so that enemies ignore damaging each other
                 {
-                    IHittable _hitTarget = other.gameObject.GetComponent<IHittable>();
+                    IHittable _hitTarget = _other.GetComponent<IHittable>();
+
                     if (bIsProjectileAttack)
                     {
                         _hitTarget.ApplyKnockback(startPos, fKnockForce);
@@ -45,9 +72,10 @@ public class DamageTarget : MonoBehaviour, ICanDamage
                     }
                     _hitTarget.ApplyDamage(Damage());
                 }
-                if (other.gameObject.CompareTag("Shield"))
+                if (_other.gameObject.CompareTag("Shield"))
                 {
-                    IHittable _hitTarget = other.gameObject.GetComponentInParent<IHittable>();
+                    IHittable _hitTarget = _other.GetComponentInParent<IHittable>();
+
                     if (bIsProjectileAttack)
                     {
                         _hitTarget.ApplyKnockback(startPos, fKnockForce / 2f);
@@ -61,9 +89,10 @@ public class DamageTarget : MonoBehaviour, ICanDamage
             }
             else 
             {
-                if (other.gameObject.CompareTag("Shield"))
+                if (_other.gameObject.CompareTag("Shield"))
                 {
-                    IHittable _hitTarget = other.gameObject.GetComponentInParent<IHittable>();
+                    IHittable _hitTarget = _other.GetComponentInParent<IHittable>();
+
                     if (bIsProjectileAttack)
                     {
                         _hitTarget.ApplyKnockback(startPos, fKnockForce / 2f);
@@ -76,9 +105,9 @@ public class DamageTarget : MonoBehaviour, ICanDamage
                 }
                 else
                 {
-                    IHittable _hitTarget = other.gameObject.GetComponent<IHittable>();
+                    IHittable _hitTarget = _other.GetComponent<IHittable>();
 
-                    if(_hitTarget != null)
+                    if (_hitTarget != null)
                     {
                         if (bIsProjectileAttack)
                         {
@@ -90,8 +119,18 @@ public class DamageTarget : MonoBehaviour, ICanDamage
                         }
                         _hitTarget.ApplyDamage(Damage());
                     }
-                   
                 }
+            }
+        }
+    }
+    public void InitializeStats(ItemContainer _itemContainer)
+    {
+        if (_itemContainer)
+        {
+            if (_itemContainer.item.eType == ItemType.PrimaryWeapon || _itemContainer.item.eType == ItemType.SecondaryWeapon)
+            {
+                fDamage = _itemContainer.item.fEffectValue;
+                fKnockForce = _itemContainer.item.fWeaponKnockback;
             }
         }
     }

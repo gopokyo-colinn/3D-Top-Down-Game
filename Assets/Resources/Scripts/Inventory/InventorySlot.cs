@@ -50,6 +50,15 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
             List<structSubMenu> _lstSubMenu = new List<structSubMenu>();
             structSubMenu _subMenu = new structSubMenu();
             _subMenu.sName = "Use";
+            if (item.bIsEquipable)
+            {
+                _subMenu.sName = "Equip";
+
+                if (item.bIsEquipped)
+                {
+                    _subMenu.sName = "Unequip";
+                }
+            }
             _subMenu.action = delegate () { ClickUse(); };
             _lstSubMenu.Add(_subMenu);
 
@@ -58,7 +67,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
             _subMenu.action = delegate () { ClickDiscard(); };
             _lstSubMenu.Add(_subMenu);
 
-            if (item.isStackable)
+            if (item.bIsStackable)
             {
                 _subMenu = new structSubMenu();
                 _subMenu.sName = "Discard All";
@@ -78,30 +87,56 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         if (item.UseItem(PlayerController.Instance))
         {
             Debug.Log(item.sItemName + " used");
-            if (item.isStackable)
-                item.UpdateQuantity(item.iQuantity - 1);
 
-            RemoveItem(item);
+            if (item.bIsStackable)
+                item.SetQuantity(item.iQuantity - 1);
+           
+            UpdatePlayerIventory(item); 
         }
         else
         {
-            PopupUIManager.Instance.msgBoxPopup.ShowTextMessage("Can't use this item right now..... ");
+            if(item.bIsEquipable)
+                PopupUIManager.Instance.msgBoxPopup.ShowTextMessage("Can't use this item right now..... ");
+            else
+                PopupUIManager.Instance.msgBoxPopup.ShowTextMessage("Can't use this action right now..... ");
+
         }
         inventoryPopup.SetItemMenuOpenBool(false);
     }
     public void ClickDiscard()
     {
         Debug.Log(item.sItemName + " Discarded");
-        Vector3 _itemDropPosition = PlayerController.Instance.transform.position + new Vector3(Random.Range(-1f, 1f), 1.5f, Random.Range(-1f, 1f));
-        ItemContainer _newDroppedItem = Instantiate(item.GetItemPrefab(), _itemDropPosition , Quaternion.identity);
+        bool _bDropItem = true;
 
-        _newDroppedItem.SetItem(item);
-
-        if (item.isStackable)
+        if (item.bIsStackable)
         {
-            item.UpdateQuantity(item.iQuantity - 1);
+            item.SetQuantity(item.iQuantity - 1);
         }
-        RemoveItem(item);
+        else
+        {
+            if (item.bIsEquipable)
+            {
+                if (item.bIsEquipped)
+                {
+                    _bDropItem = false;
+                    PopupUIManager.Instance.msgBoxPopup.ShowTextMessage("Cannot Discard Equipped Item.", 1);
+                }
+                else
+                    item.SetQuantity(0);
+            }
+            else
+                item.SetQuantity(0);
+        }
+        if (_bDropItem)
+        {
+            Vector3 _itemDropPosition = PlayerController.Instance.transform.position + new Vector3(Random.Range(-1f, 1f), 1.5f, Random.Range(-1f, 1f));
+            ItemContainer _newDroppedItem = Instantiate(item.GetItemPrefab(), _itemDropPosition, Quaternion.identity);
+
+            _newDroppedItem.SetItem(item);
+        }
+
+        UpdatePlayerIventory(item);
+
         inventoryPopup.SetItemMenuOpenBool(false);
     }
     public void ClickDiscardAll()
@@ -114,25 +149,44 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 
             _newDroppedItem.SetItem(item);
         }
-        //if (item.isStackable)
-        // item.iAmount--;
-        item.UpdateQuantity(0); // that will make it equal to 0
-        RemoveItem(item);
+
+        item.SetQuantity(0); // that will make it equal to 0
+
+        UpdatePlayerIventory(item);
         inventoryPopup.SetItemMenuOpenBool(false);
     }
     public void ClickCancel()
     {
         inventoryPopup.SetItemMenuOpenBool(false);
     }
-    public void RemoveItem(Item _item)
+    public void UpdatePlayerIventory(Item _item) // It Removes or equip/unequip the item and updates player inventory
     {
-        if (item.isStackable)
+        if (item.bIsEquipable)
         {
+            Inventory _updatedUIInventory = PlayerController.Instance.GetInventory();
+
             if(_item.iQuantity > 0)
+                _updatedUIInventory.UpdateItem(item);
+            else
+            {
+                _updatedUIInventory.RemoveItem(item);
+                EmptySlot();
+            }
+
+            PlayerController.Instance.UpdateInventory(_updatedUIInventory);
+        }
+        else
+        {
+            if (item.bIsStackable)
             {
                 Inventory _updatedUIInventory = PlayerController.Instance.GetInventory();
-                _updatedUIInventory.UpdateItemAmount(item); /// aaa hun chlana pena tenu
-                //EmptySlot();
+                if(_item.iQuantity > 0)
+                    _updatedUIInventory.UpdateItem(item);
+                else
+                {
+                    _updatedUIInventory.RemoveItem(item);
+                    EmptySlot();
+                }
                 PlayerController.Instance.UpdateInventory(_updatedUIInventory);
             }
             else
@@ -142,13 +196,6 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
                 EmptySlot();
                 PlayerController.Instance.UpdateInventory(_updatedUIInventory);
             }
-        }
-        else
-        {
-            Inventory _updatedUIInventory = PlayerController.Instance.GetInventory();
-            _updatedUIInventory.RemoveItem(item);
-            EmptySlot();
-            PlayerController.Instance.UpdateInventory(_updatedUIInventory);
         }
     }
     public void EmptySlot()

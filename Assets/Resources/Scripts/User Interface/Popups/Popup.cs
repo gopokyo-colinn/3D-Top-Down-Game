@@ -26,4 +26,9 @@ public class Popup : MonoBehaviour
     {
         return container.gameObject.activeSelf;
     }
+
+    public virtual void MenuKeysInput()
+    {
+        
+    }
 }

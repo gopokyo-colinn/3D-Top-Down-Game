@@ -5,28 +5,30 @@ using UnityEngine;
 public class ItemContainer : MonoBehaviour
 {
     public Item item;
-    [SerializeField]
-    string sItemContainerID;
+   // string sItemContainerID;
     structItem structThisItem;
     public Canvas uiCanvas;
     private void Start()
     {
+        #region Non Usable Code
         // item.sID = System.Guid.NewGuid().ToString();
-        sItemContainerID = "Item_C" + gameObject.GetInstanceID().ToString();
+        // sItemContainerID = "Item_C" + gameObject.GetInstanceID().ToString();
 
-        item.sItemDescription = item.sItemDescription.Replace("&value", item.fEffectValue.ToString());
+        //item.sItemDescription = item.sItemDescription.Replace("&value", item.fEffectValue.ToString());
 
-        if(item.iQuantity == 0)
-        {
-            item.iQuantity = 1;
-        }
-        if (item.isStackable)
-        {
-            if(item.iStackLimit == 0)
-            {
-                item.iStackLimit = 5;
-            }
-        }
+        //if(item.iQuantity == 0)
+        //{
+        //    item.iQuantity = 1;
+        //}
+        //if (item.bIsStackable)
+        //{
+        //    if(item.iStackLimit == 0)
+        //    {
+        //        item.iStackLimit = 5;
+        //    }
+        //}
+        #endregion
+        CheckIfEquipable();
         InitializeItem();
         uiCanvas.gameObject.SetActive(false);
     }
@@ -37,7 +39,7 @@ public class ItemContainer : MonoBehaviour
     public void SetItem(Item _item)
     {
         item = new Item(_item);
-        item.UpdateQuantity(1); // to make the amount 1
+        item.SetQuantity(1); // to make the amount 1
     }
     public void DestroySelf()
     {
@@ -63,6 +65,35 @@ public class ItemContainer : MonoBehaviour
         structThisItem.iQuantity = item.iQuantity;
 
         item.SetItem(structThisItem);
+    }
+    public void CheckIfEquipable()
+    {
+        if (item.bIsEquipable)
+        {
+            item.bIsStackable = false;
+            item.iQuantity = 1;
+
+            Weapon _weapon = GetComponent<Weapon>();
+            DamageTarget _dmgTargetScript = GetComponent<DamageTarget>();
+            if (_weapon)
+                _weapon.enabled = false;
+            if (_dmgTargetScript)
+                _dmgTargetScript.enabled = false;
+        }
+    }
+    public void SetItemEquipable()
+    {
+        Weapon _weapon = GetComponent<Weapon>();
+        DamageTarget _dmgTargetScript = GetComponent<DamageTarget>();
+        if (_weapon)
+            _weapon.enabled = true;
+        if (_dmgTargetScript)
+        {
+            _dmgTargetScript.enabled = true;
+            _dmgTargetScript.InitializeStats(this);
+        }
+        Destroy(uiCanvas.gameObject);
+        Destroy(this);
     }
     private void OnDrawGizmos()
     {

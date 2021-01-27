@@ -42,21 +42,20 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     float vertical;
     Vector3 lastFacinDirection;
 
-    public bool bIsAlive;
-    [HideInInspector]
-    public bool bIsShielding;
-    bool bIsSprinting;
-    bool bCanSprint = true;
-    [HideInInspector]
-    public bool bSwordEquipped = false;
-    [HideInInspector]
-    public bool bCanAttack = true;
-    [HideInInspector]
-    public bool bIsAttacking = false;
-    private bool bIsInteracting = false;
+    private bool bIsAlive;
+    private bool bIsShielding;
+    private bool bIsSprinting;
+    private bool bCanSprint = true;
+    private bool bDrawPrimaryWeapon;
+    private bool bPrimaryWeaponEquipped;
+    private bool bShieldEquipped;
+    private bool bCanAttack = true;
+    private bool bIsAttacking;
+    private bool bIsInteracting;
     private bool bIsInvulnerable;
+    private bool bIsStun;
+    
     int iAttackCombo = -1;
-    bool bIsStun;
 
     public UnityEvent OnReciveDamageUI;
     public UnityEvent OnStaminaChangeUI;
@@ -64,6 +63,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     public Inventory playerInventory;
     public int iStartInventorySize;
 
+    PlayerEquipmentManager pEquimentManager;
 
     void Awake()
     {
@@ -75,6 +75,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         fCurrentStamina = fMaxStamina;
         bIsAlive = true;
         playerInventory = new Inventory(iStartInventorySize);
+        pEquimentManager = GetComponent<PlayerEquipmentManager>();
     }
     void Update()
     {
@@ -87,7 +88,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
 
                 StaminaCheck();
                 UseShield();
-                DrawSword();
+                DrawSheathPrimaryWeapon();
                 SwordAttacks();
                 CheckAheadForColliders();
                 Jumping();
@@ -151,11 +152,13 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             }
 
             lastFacinDirection = new Vector3(horizontal, 0f, vertical);
-        
-            // It is for keeping the direction while shielding
-            //if (!isShielding)
+
+            //It is for keeping the direction while shielding
+            //if (!bIsShielding)
+            //{
             //    if (Mathf.Abs(horizontal) > 0.2f || Mathf.Abs(vertical) > 0.2f)
             //        lastFacinDirection = new Vector3(horizontal, 0f, vertical);
+            //}
         }
         else
         {
@@ -205,30 +208,38 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             bIsShielding = false;
         anim.SetBool("isShielding", bIsShielding);
     }
-    void DrawSword()
+    void DrawSheathPrimaryWeapon()
     {
-        if (!bSwordEquipped)
+        if (pEquimentManager.primaryWeapon != null)
         {
-            if (Input.GetButton("Attack"))
+            if (!bDrawPrimaryWeapon)
             {
-                anim.SetBool("draw_Sword", true);
-                bSwordEquipped = true;
+                if (Input.GetButton("Attack"))
+                {
+                    bDrawPrimaryWeapon = true;
+                }
+            }
+            else
+            {
+                if (Input.GetKeyDown(KeyCode.T))
+                {
+                    SheathWeapon();
+                }
             }
         }
-        else
-        {
-            if(Input.GetKeyDown(KeyCode.T))
-            {
-                anim.SetBool("draw_Sword", false);
-                bSwordEquipped = false;
-                bIsAttacking = false;
-                iAttackCombo = -1;
-            }
-        }
+        anim.SetBool("draw_Weapon", bDrawPrimaryWeapon);
+    }
+    void SheathWeapon(bool _bIsRemoved = false)
+    {
+        if(_bIsRemoved)
+            anim.SetTrigger("weapon_removed");
+        bDrawPrimaryWeapon = false;
+        bIsAttacking = false;
+        iAttackCombo = -1;
     }
     void SwordAttacks()
     {
-        if (bSwordEquipped)
+        if (bDrawPrimaryWeapon)
         {
             if (Input.GetButtonDown("Attack"))
             {
@@ -247,15 +258,10 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             }
         } 
     }
-    public bool Grounded()
-    {
-        // use a spherecast instead
-        return Physics.Raycast(transform.position, Vector3.down, fDISTANCE_TO_GROUND);
-    }
     public void Jumping()
     {
         /// For Jumping
-      //  if (Grounded())
+        if (Grounded())
         {
             if (Input.GetKeyDown(KeyCode.Space))
                 rbody.AddForce(new Vector3( rbody.velocity.x, fJumpForce, rbody.velocity.z) * Time.fixedDeltaTime, ForceMode.Impulse);
@@ -272,6 +278,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     {
         RaycastHit hit;
         // now the boxcast is as same as in the gizmos below
+
         if(Physics.BoxCast(transform.position + (transform.forward * -1f), transform.localScale, transform.forward, out hit, transform.rotation, 1f))
         //|| Physics.Raycast(transform.position + new Vector3(0, fHEAD_OFFSET, 0), transform.forward, out hit, fNPC_DISTANCE_CHECK))
         {
@@ -318,7 +325,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     private void CheckForItems(ItemContainer _collidedItemContainer)
     {
-        if (_collidedItemContainer.item.isStackable)
+        if (_collidedItemContainer.item.bIsStackable)
         {
             bool _bItemAlreadyInventory = false;
             for (int i = 0; i < playerInventory.lstItems.Count; i++)
@@ -327,7 +334,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                 {
                     if (playerInventory.lstItems[i].iQuantity < playerInventory.lstItems[i].iStackLimit)
                     {
-                        playerInventory.lstItems[i].UpdateQuantity(playerInventory.lstItems[i].iQuantity + 1); // increase stack amount by 1
+                        playerInventory.lstItems[i].SetQuantity(playerInventory.lstItems[i].iQuantity + 1); // increase stack amount by 1
                         _bItemAlreadyInventory = true;
                         _collidedItemContainer.DestroySelf();
                         break;
@@ -371,12 +378,23 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         anim.SetBool("isShielding", false);
     }
 
-    public bool IsInteracting()
-    {
-        return bIsInteracting;
-    }
+   
     /// Health System
-    public void ApplyDamage(int _damage)
+    public void ApplyKnockback(Vector3 _sourcePosition, float _pushForce)
+    {
+        // Stops for a hit time to play the hit animation and then move
+        Stun();
+        if (!bIsInvulnerable)
+        {
+            fCurrentStamina -= _pushForce * 1.5f;
+            OnStaminaChangeUI.Invoke();
+            Vector3 pushForce = transform.position - _sourcePosition;
+            pushForce.y = 0;
+            //transform.forward = -pushForce.normalized;
+            rbody.AddForce(pushForce.normalized * _pushForce, ForceMode.Impulse);
+        }
+    }
+    public void ApplyDamage(float _damage)
     {
         if (!bIsInvulnerable)
         {
@@ -396,18 +414,12 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         //TODO: Add a beath animation and remove collisions
         //gameObject.SetActive(false); // deactivating it or destroying can coz some loading bugs
     }
-    public bool IsInvulnerable()
-    {
-        return bIsInvulnerable;
-    }
-
     public void HealthCheck()
     {
         if (fCurrentHitPoints > fMaxHitPoints)
             fCurrentHitPoints = fMaxHitPoints;
 
     }
-
     public void StaminaCheck()
     {
         if(fCurrentStamina < 0)
@@ -415,7 +427,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             fCurrentStamina = 0;
         }
 
-        if(bIsShielding || bIsSprinting || bIsAttacking)
+        if(bIsSprinting || bIsAttacking)
         {
             OnStaminaChangeUI.Invoke();
             bStaminaUsed = true;
@@ -428,7 +440,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             }
         }
 
-        if(!bIsSprinting && !bIsAttacking && !bIsShielding)
+        if(!bIsSprinting && !bIsAttacking)
         {
             if((int)fCurrentStamina <= (int)fMaxStamina + 10)
             {
@@ -444,26 +456,21 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                 }
                 if(fStaminaTimeCounter <= 0)
                 {
-                    fCurrentStamina += fSTAMINA_RECOVERY_RATE * Time.deltaTime;
+                    if (bIsShielding)
+                    {
+                        fCurrentStamina += (fSTAMINA_RECOVERY_RATE / 5) * Time.deltaTime;
+                    }
+                    else
+                    {
+                        fCurrentStamina += fSTAMINA_RECOVERY_RATE * Time.deltaTime;
+                    }
+
                     if(fCurrentStamina > fMaxStamina)
                     {
                         fCurrentStamina = fMaxStamina;
                     }
                 }
             }
-        }
-    }
-    public void ApplyKnockback(Vector3 _sourcePosition, float _pushForce)
-    {
-        // Stops for a hit time to play the hit animation and then move
-        Stun();
-        if (!bIsInvulnerable)
-        {
-            fCurrentStamina -= _pushForce;
-            Vector3 pushForce = transform.position - _sourcePosition;
-            pushForce.y = 0;
-            //transform.forward = -pushForce.normalized;
-            rbody.AddForce(pushForce.normalized * _pushForce, ForceMode.Impulse);
         }
     }
     public void Stun()
@@ -480,6 +487,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     // Inventory
     public void UpdateInventory(Inventory _inventory)
     {
+        // TODO: Update Player about the sword that its gone now, make make sword to null;
         playerInventory = _inventory;
         PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(playerInventory);
     }
@@ -487,29 +495,67 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     {
         return playerInventory;
     }
-
-    /// Triggers
-    private void OnTriggerEnter(Collider other)
+    /// Bools Getter And Setters
+    public bool Grounded()
     {
-        //ItemContainer _itemContainer = other.gameObject.GetComponent<ItemContainer>();
-        //if (_itemContainer)
-        //{
-        //    //if (Input.GetButtonDown("Interact"))
-        //    {
-        //        myInventory.AddItem(_itemContainer.item);
-        //        _itemContainer.DestroySelf();
-        //        PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(myInventory);
-        //    }
-        //}
+        // use a spherecast instead
+        return Physics.Raycast(transform.position, Vector3.down, fDISTANCE_TO_GROUND);
     }
-
-    ///// Gizmos
-    private void OnDrawGizmos()
+    public bool IsInteracting()
     {
-        //Gizmos.color = Color.red;
-        //Gizmos.DrawWireCube(transform.position + transform.forward * 0.5f, transform.localScale);
+        return bIsInteracting;
     }
+    public bool IsInvulnerable()
+    {
+        return bIsInvulnerable;
+    }
+    public bool IsAlive()
+    {
+        return bIsAlive;
+    }
+    public bool IsAttacking()
+    {
+        return bIsAttacking;
+    }
+    public bool IsSwordEquipped()
+    {
+        return bDrawPrimaryWeapon;
+    }
+    public void SetPrimaryWeaponEquipped(Item _swordToEquip)
+    {
+        // TODO: Set player animtaion to deafult on changing new weapon or place the new weapon in its hand according to drawWeaponBool
+        ItemContainer _newWeapon = null;
+        if (_swordToEquip != null)
+        {
+            SheathWeapon(true);
+            _newWeapon = Instantiate(_swordToEquip.GetItemPrefab(), pEquimentManager.phPrimaryWeaponUnEquipped);
+            _newWeapon.SetItemEquipable();
+            pEquimentManager.SetPrimaryWeapon(_newWeapon.gameObject);
+        }
+        else // when there is no weapon equipped
+        {
+            SheathWeapon(true);
+            pEquimentManager.SetPrimaryWeapon(null);
+        }
+    }
+    public void SetSecondaryWeaponEquipped(Item _swordToEquip)
+    {
+        
 
+    }
+    public void SetShieldEquipped(Item _swordToEquip)
+    {
+
+    }
+    public void SetCanAttack(bool _bCanAttack)
+    {
+        bCanAttack = _bCanAttack;
+    }
+    public Animator GetAnimator()
+    {
+        return anim;
+    }
+    ///// Saving And Loading Data
     public void SaveAllData(SaveData _saveData)
     {
         structGameSavePlayer _playerSaveData = new structGameSavePlayer();

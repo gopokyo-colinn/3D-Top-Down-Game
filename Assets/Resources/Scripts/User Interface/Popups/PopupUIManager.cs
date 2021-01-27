@@ -25,13 +25,16 @@ public class PopupUIManager : MonoBehaviour
 
     private void Update()
 	{
-		EscapeButtonFunction();
-		InventoryInput();
-		QuestUIInput();
+        if (!GetDialogBoxIsActive())
+        {
+			EscapeButtonFunction();
+			InventoryInput();
+			QuestUIInput();
+        }
     }
 	void EscapeButtonFunction()
     {
-		if (Input.GetKeyDown(KeyCode.Escape))
+		if (Input.GetButtonDown("Escape"))
 		{
             if (GameController.inPlayMode)
             {
@@ -45,7 +48,7 @@ public class PopupUIManager : MonoBehaviour
 	} // Escape for Closing any open popup and opening pause menu
 	void InventoryInput() // I for Inventory
     {
-		if (Input.GetKeyDown(KeyCode.I))
+		if (Input.GetButtonDown("Inventory"))
 		{
 			if (!inventoryPopup.IsActive())
 			{
@@ -59,7 +62,7 @@ public class PopupUIManager : MonoBehaviour
 	}
 	void QuestUIInput() // Tab for opening quest manager UI
     {
-		if (Input.GetKeyDown(KeyCode.Tab))
+		if (Input.GetButtonDown("QuestMenu"))
 		{
 			if (!questPopupUI.IsActive())
 			{

@@ -4,32 +4,31 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-   // public int iDamage;
-  //  public float fKnockBackForce;
     Collider coli;
     PlayerController player;
 
+    //TODO: Add functionality to be used by enemies too...
 
     public void Start()
     {
         coli = GetComponent<Collider>();
         coli.enabled = false;
-        player = GetComponentInParent<PlayerController>();
+        player = PlayerController.Instance;
     }
 
     public void Update()
     {
-        CheckPlayerForAttack();
+        if (player.IsAttacking())
+        {
+            coli.enabled = true;
+            StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b)=> { coli.enabled = b; }, false, player.GetAnimator().GetCurrentAnimatorStateInfo(player.GetAnimator().GetLayerIndex("SwordAnims(Right Hand)")).length));
+        }
     }
-    //public int Damage()
-    //{
-    //    return iDamage;
-    //}
+
     public void CheckPlayerForAttack()
     {
-        if (player.bIsAttacking)
+        if (player.IsAttacking())
         {
-           // trialEffectAnimator.SetTrigger("slash_1");
             coli.enabled = true;
         }
         else
@@ -38,16 +37,4 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (other)
-    //    {
-    //        if(other.gameObject.GetComponent<IHittable>() != null)
-    //        {
-    //            IHittable _hitTarget = other.gameObject.GetComponent<IHittable>();
-    //            _hitTarget.Knockback(transform.position, fKnockBackForce);
-    //            _hitTarget.TakeDamage(iDamage);
-    //        }
-    //    }
-    //}
 }

@@ -28,6 +28,8 @@ public class MainMenuPopup : Popup
         quitGameElement.SetButtonElement(delegate () { Quit(); }, delegate () { SetSelected(quitGameElement); });
         lstButtonsElement.Add(quitGameElement);
 
+        SetSelected(lstButtonsElement[0]);
+
     }
     private void Update()
     {
@@ -79,7 +81,7 @@ public class MainMenuPopup : Popup
 #endif
     }
 
-    public void MenuKeysInput()
+    public override void MenuKeysInput()
     {
         if (Input.GetAxisRaw("Vertical") > 0f && Input.anyKeyDown)
         {

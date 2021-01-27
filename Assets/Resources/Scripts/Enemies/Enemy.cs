@@ -69,6 +69,7 @@ public class Enemy : MonoBehaviour
                 {
                     if (_collision.collider.GetComponent<IHittable>() != null)
                     {
+                        bTargetFound = true;
                         _collision.collider.GetComponent<IHittable>().ApplyKnockback(transform.position, fOnCollisionKnockBackForce);
                         _collision.collider.GetComponent<IHittable>().ApplyDamage(iCollisionDamage);
                     }
@@ -190,6 +191,7 @@ public class Enemy : MonoBehaviour
         // In Attack Range
         else if ((transform.position - targetPlayer.transform.position).sqrMagnitude <= _fAttackRange)
         {
+            bCanFollow = false;
             //rbody.velocity = Vector3.zero;// HelperFunctions.VectorZero(rbody);
             if (!bIsInvulnerable)
             {
@@ -212,6 +214,7 @@ public class Enemy : MonoBehaviour
         // In Non Attack Range
         else
         {
+            bCanFollow = true;
             bCanAttack = false;
         }
     }

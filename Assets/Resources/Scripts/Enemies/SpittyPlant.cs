@@ -77,7 +77,7 @@ public class SpittyPlant : Enemy, IHittable
         }
     }
 
-    public void ApplyDamage(int _damage)
+    public void ApplyDamage(float _damage)
     {
         if (!bIsInvulnerable)
         {

@@ -44,7 +44,7 @@ public class InventoryPopup : Popup
         if (container.gameObject.activeSelf)
         {
             if(!bItemMenuOpen)
-                SelectElementWithInput();
+                MenuKeysInput();
         }
     }
 
@@ -124,7 +124,7 @@ public class InventoryPopup : Popup
         
     }
 
-    public void SelectElementWithInput()
+    public override void MenuKeysInput()
     {
         if (Input.GetAxisRaw("Horizontal") < 0f && Input.anyKeyDown) // going left
         {

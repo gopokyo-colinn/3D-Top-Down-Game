@@ -14,13 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sID: dff6555b-5b78-4474-ba96-5a61bb1edddb
   sItemName: Health Potion
-  sItemDescription: It Restores Health by 20 points.
+  sItemDescription: 'It Restores Health by some points.
+
+
+    Effect: 20'
   eType: 0
   fEffectValue: 20
   fPrice: 10
   itemIcon: {fileID: 21300000, guid: dd29ecb199426084ebe85c57d31aa18c, type: 3}
-  isStackable: 1
+  bIsStackable: 1
   iQuantity: 1
   iStackLimit: 5
+  bIsEquipable: 0
   prefabItem: {fileID: 8642281231212874405, guid: fe883887b8eb3c44f85fb612d449666d,
     type: 3}

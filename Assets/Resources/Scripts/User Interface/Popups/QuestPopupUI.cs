@@ -15,6 +15,8 @@ public class QuestPopupUI : Popup
 
     QuestElement selectedQuestElement;
 
+    int iSelectedQuestElement;
+
     public QuestElement prefabQuestElement;
     public QuestElement prefabLabelQuestElement;
 
@@ -36,6 +38,13 @@ public class QuestPopupUI : Popup
         lstlabelElements = new List<QuestElement>();
         UpdateQuestsUI();
     }
+    private void Update()
+    {
+        if (container.gameObject.activeSelf)
+        {
+             MenuKeysInput();
+        }
+    }
 
     public void UpdateQuestsUI()
     {
@@ -55,8 +64,8 @@ public class QuestPopupUI : Popup
             _qE.SetElement(_quest.Value, delegate { SetSelected(_qE); });
             lstQuestElements.Add(_qE);
         }
-       // Adds Side Quest Label Element even without any active side quest, (to change that to if there is at least 1 side quest, than remove = operator)
-        if(QuestManager.Instance.dictSideQuests.Count >= 0)
+        // Adds Side Quest Label Element even without any active side quest, (to change that to if there is at least 1 side quest, than remove = operator)
+        if (QuestManager.Instance.dictSideQuests.Count >= 0)
         {
             QuestElement _sideQuestLabel = Instantiate(prefabLabelQuestElement, questsContainer);
             _sideQuestLabel.SetElement("Side Quests:");
@@ -87,7 +96,7 @@ public class QuestPopupUI : Popup
         // TODO: Make it so the selected element is previously selected one
         {
             if (lstQuestElements.Count > 0)
-                SetSelected(lstQuestElements[0]); 
+                SetSelected(lstQuestElements[iSelectedQuestElement]);
         }
     }
     public void RemoveAllElements()
@@ -115,10 +124,9 @@ public class QuestPopupUI : Popup
             lstObjectiveElements.Clear();
         }
     }
-
     public void SetSelected(QuestElement _element)
     {
-        if(selectedQuestElement != null)
+        if (selectedQuestElement != null)
             selectedQuestElement.SetSelectedElement(false);
 
         selectedQuestElement = _element;
@@ -128,18 +136,26 @@ public class QuestPopupUI : Popup
             selectedQuestElement.SetSelectedElement(true);
             SetQuestDetails();
         }
+
+        for (int i = 0; i < lstQuestElements.Count; i++)
+        {
+            if (lstQuestElements[i] == selectedQuestElement)
+            {
+                iSelectedQuestElement = i;
+            }
+        }
     }
     public void SetQuestDetails()
     {
         txtQuestDescription.text = selectedQuestElement.myQuest.sQuestDescription;
         txtQuestRewards.text = selectedQuestElement.myQuest.sRewards;
 
-        if(lstObjectiveElements == null)
+        if (lstObjectiveElements == null)
         {
             lstObjectiveElements = new List<QuestElement>();
         }
 
-        if(lstObjectiveElements.Count > 0)
+        if (lstObjectiveElements.Count > 0)
         {
             for (int i = 0; i < lstObjectiveElements.Count; i++)
             {
@@ -176,5 +192,31 @@ public class QuestPopupUI : Popup
                 }
             }
         }
+    }
+    public override void MenuKeysInput()
+    {
+        if (Input.GetAxisRaw("Vertical") > 0f && Input.anyKeyDown) // going up
+        {
+            if (iSelectedQuestElement > 0)
+                SetSelected(lstQuestElements[iSelectedQuestElement - 1]);
+            else if (iSelectedQuestElement == 0)
+                SetSelected(lstQuestElements[lstQuestElements.Count - 1]);
+        }
+        else if (Input.GetAxisRaw("Vertical") < 0 && Input.anyKeyDown) // going down
+        {
+            if (iSelectedQuestElement < lstQuestElements.Count - 1)
+                SetSelected(lstQuestElements[iSelectedQuestElement + 1]);
+            else if (iSelectedQuestElement == lstQuestElements.Count - 1)
+                SetSelected(lstQuestElements[0]);
+            else if (iSelectedQuestElement == 0)
+                SetSelected(lstQuestElements[1]);
+        }
+        //if (Input.GetButtonDown("Interact"))
+        //{
+        //    if (selectedQuestElement != null)
+        //    {
+        //        selectedQuestElement.clickAction.Invoke();
+        //    }
+        //}
     }
 }

@@ -136,7 +136,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b90c73b44a6f8294aa6c131fdb2c317b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  iDamage: 5
+  fDamage: 10
   bIsProjectileAttack: 1
   bIsTypeOfEnemy: 1
+  bIsPlayer: 0
   fKnockForce: 7
+  attackCollider: {fileID: 2409141566461220095}

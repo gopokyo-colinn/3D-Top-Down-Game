@@ -36,7 +36,7 @@ public class SubMenuPopup : Popup
     {
         if (container.gameObject.activeSelf)
         {
-            SelectElementWithInput();
+            MenuKeysInput();
         }
     }
     public override void open()
@@ -86,9 +86,10 @@ public class SubMenuPopup : Popup
 
             lstPopupButtonElement.Add(_buttonElement);
         }
+
         selectedButtonElement = null;
     }
-    public void openMenu(List<structSubMenu> _lstSubMenu, Vector2 _position)
+    public void openMenu(List<structSubMenu> _lstSubMenu, Vector2 _position, bool _bDisabelContainerAll = false)
     {
         open();
 
@@ -113,13 +114,18 @@ public class SubMenuPopup : Popup
             lstPopupButtonElement.Add(_buttonElement);
         }
         selectedButtonElement = null;
+        if (_bDisabelContainerAll)
+        {
+            containerAll.gameObject.SetActive(false);
+        }
     }
     public void SetSelected(PopupButtonElement _element)
     {
         if (selectedButtonElement != null)
             selectedButtonElement.SetSelectedElement(false);
 
-        selectedButtonElement = _element;
+        if(_element != null)
+            selectedButtonElement = _element;
 
         if (selectedButtonElement)
         {
@@ -134,23 +140,33 @@ public class SubMenuPopup : Popup
         }
     }
 
-    public void SelectElementWithInput()
+    public override void MenuKeysInput()
     {
-        if (Input.GetAxisRaw("Vertical") > 0 && Input.anyKeyDown)
+        if (Input.GetAxisRaw("Vertical") > 0 && Input.anyKeyDown) // going up
         {
-            if (iSelectedElement > 0)
-                SetSelected(lstPopupButtonElement[iSelectedElement - 1]);
-            else if (iSelectedElement == 0)
-                SetSelected(lstPopupButtonElement[lstPopupButtonElement.Count - 1]);
-        }
-        else if (Input.GetAxisRaw("Vertical") < 0 && Input.anyKeyDown)
-        {
-            if (iSelectedElement < lstPopupButtonElement.Count - 1)
-                SetSelected(lstPopupButtonElement[iSelectedElement + 1]);
-            else if (iSelectedElement == lstPopupButtonElement.Count - 1)
+            if (selectedButtonElement == null)
                 SetSelected(lstPopupButtonElement[0]);
-            else if (iSelectedElement == 0)
+            else
+            {
+                if (iSelectedElement > 0)
+                    SetSelected(lstPopupButtonElement[iSelectedElement - 1]);
+                else if (iSelectedElement == 0)
+                    SetSelected(lstPopupButtonElement[lstPopupButtonElement.Count - 1]);
+            }
+        }
+        else if (Input.GetAxisRaw("Vertical") < 0 && Input.anyKeyDown) //  going down
+        {
+            if (selectedButtonElement == null)
                 SetSelected(lstPopupButtonElement[1]);
+            else
+            {
+                if (iSelectedElement < lstPopupButtonElement.Count - 1)
+                    SetSelected(lstPopupButtonElement[iSelectedElement + 1]);
+                else if (iSelectedElement == lstPopupButtonElement.Count - 1)
+                    SetSelected(lstPopupButtonElement[0]);
+                else if (iSelectedElement == 0)
+                    SetSelected(lstPopupButtonElement[1]);
+            }
         }
         if (Input.GetButtonDown("Interact"))
         {

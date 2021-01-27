@@ -16,7 +16,6 @@ public class Projectile : MonoBehaviour
         userColli = _collider;
         wasFired = true;
 
-
         Physics.IgnoreCollision(colli, userColli);
     }
 

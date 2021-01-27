@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DestructableObject : MonoBehaviour, IHittable
 {
-    public int health = 1;
+    public float health = 1;
     public ParticleSystem destroyParticleEffect;
     Collider coli;
 
@@ -25,7 +25,7 @@ public class DestructableObject : MonoBehaviour, IHittable
         }
     }
 
-    public void ApplyDamage(int _damage)
+    public void ApplyDamage(float _damage)
     {
         health -= _damage;
     }
