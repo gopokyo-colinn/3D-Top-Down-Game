@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a377ed8f724ec545802a92cc752c334, type: 3}
+  m_Name: IronSword
+  m_EditorClassIdentifier: 
+  sID: 6f277b16-e049-4e41-959a-20e049f797b2
+  sItemName: Iron Sword
+  sItemDescription: 'Iron sword made to slain enemies.
+
+
+    Damage: 15'
+  eType: 1
+  fEffectValue: 15
+  fWeaponKnockback: 5
+  fPrice: 100
+  itemIcon: {fileID: 21300000, guid: 922e50dfe50ea1948ad212b359eb4b78, type: 3}
+  bIsStackable: 0
+  iQuantity: 1
+  iStackLimit: 1
+  bIsEquipable: 1
+  prefabItem: {fileID: 137455695499148879, guid: f8e66db88511f6846a717951d887c832,
+    type: 3}

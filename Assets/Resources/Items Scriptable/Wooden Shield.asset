@@ -10,22 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a377ed8f724ec545802a92cc752c334, type: 3}
-  m_Name: IronSword
+  m_Name: Wooden Shield
   m_EditorClassIdentifier: 
-  sID: 6f277b16-e049-4e41-959a-20e049f797b2
-  sItemName: Iron Sword
-  sItemDescription: 'Iron sword made to slain enemies.
-
-
-    Damage: 15'
-  eType: 1
-  fEffectValue: 15
-  fWeaponKnockback: 3
-  fPrice: 100
-  itemIcon: {fileID: 21300000, guid: 922e50dfe50ea1948ad212b359eb4b78, type: 3}
+  sID: b27f7825-4abd-4b0b-9edd-c825828ae1dd
+  sItemName: Wooden Shield
+  sItemDescription: Simple Wooden Shield, can block most of the attacks, but sometimes
+    even simple attacks got through. Can break easily.
+  eType: 5
+  fEffectValue: 500
+  fWeaponKnockback: 0
+  fPrice: 10
+  itemIcon: {fileID: 0}
   bIsStackable: 0
   iQuantity: 1
   iStackLimit: 1
   bIsEquipable: 1
-  prefabItem: {fileID: 2712423130650812441, guid: 1cb0a44b776118a44890bbbca83beb73,
-    type: 3}
+  prefabItem: {fileID: 0}

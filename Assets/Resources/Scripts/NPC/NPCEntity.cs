@@ -54,6 +54,8 @@ public class NPCEntity : MonoBehaviour
 
         if (string.IsNullOrEmpty(sNpcID))
             sNpcID = System.Guid.NewGuid().ToString();
+
+        gameObject.layer = LayerMask.NameToLayer("Npc");
     }
     void Update()
     {

@@ -274,29 +274,30 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         else
             rbody.velocity = new Vector3(horizontal * fSpeed * Time.fixedDeltaTime, rbody.velocity.y, vertical * fSpeed * Time.fixedDeltaTime);
     }
+    // Gizmos
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawSphere(transform.position + transform.forward, 1f);
+        // Gizmo for below Function
+    }
     public void CheckAheadForColliders()
     {
-        RaycastHit hit;
-        // now the boxcast is as same as in the gizmos below
-
-        if(Physics.BoxCast(transform.position + (transform.forward * -1f), transform.localScale, transform.forward, out hit, transform.rotation, 1f))
-        //|| Physics.Raycast(transform.position + new Vector3(0, fHEAD_OFFSET, 0), transform.forward, out hit, fNPC_DISTANCE_CHECK))
+        if (Input.GetButtonDown("Interact"))
         {
-            if (hit.collider)
+            Collider[] _hitColliders = Physics.OverlapSphere(transform.position + transform.forward, 1f, LayerMask.GetMask("Npc","Item"));
+            foreach (var _collider in _hitColliders)
             {
-                ItemContainer _itemContainer = hit.transform.GetComponent<ItemContainer>();
-                NPCEntity _npc = hit.transform.GetComponent<NPCEntity>();
+                Debug.Log(_collider.gameObject.name);
+                ItemContainer _itemContainer = _collider.transform.GetComponent<ItemContainer>();
+                NPCEntity _npc = _collider.transform.GetComponent<NPCEntity>();
 
-                if (Input.GetButtonDown("Interact"))
+                if (_npc)
                 {
-                    if (_npc)
-                    {
-                        CheckForNPC(_npc);
-                    }
-                    if (_itemContainer)
-                    {
-                        CheckForItems(_itemContainer);
-                    }
+                    CheckForNPC(_npc);
+                }
+                else if (_itemContainer)
+                {
+                    CheckForItems(_itemContainer);
                 }
             }
         }

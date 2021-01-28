@@ -8,29 +8,15 @@ public class ItemContainer : MonoBehaviour
    // string sItemContainerID;
     structItem structThisItem;
     public Canvas uiCanvas;
+
+    PlayerController player;
     private void Start()
     {
-        #region Non Usable Code
-        // item.sID = System.Guid.NewGuid().ToString();
-        // sItemContainerID = "Item_C" + gameObject.GetInstanceID().ToString();
-
-        //item.sItemDescription = item.sItemDescription.Replace("&value", item.fEffectValue.ToString());
-
-        //if(item.iQuantity == 0)
-        //{
-        //    item.iQuantity = 1;
-        //}
-        //if (item.bIsStackable)
-        //{
-        //    if(item.iStackLimit == 0)
-        //    {
-        //        item.iStackLimit = 5;
-        //    }
-        //}
-        #endregion
         CheckIfEquipable();
         InitializeItem();
         uiCanvas.gameObject.SetActive(false);
+        player = PlayerController.Instance;
+        gameObject.layer = LayerMask.NameToLayer("Item");
     }
     public void Update()
     {
@@ -47,9 +33,10 @@ public class ItemContainer : MonoBehaviour
     }
     private void UIActivator()
     {
-        Collider[] _hitColliders = Physics.OverlapSphere(transform.position, 3f, LayerMask.GetMask("Player"));
+        //Collider[] _hitColliders = Physics.OverlapSphere(transform.position, 3f, LayerMask.GetMask("Player"));
 
-        if(_hitColliders.Length > 0)
+       // if (_hitColliders.Length > 0)
+        if((transform.position - player.transform.position).sqrMagnitude < 16)
         {
             uiCanvas.gameObject.SetActive(true);
         }
@@ -57,6 +44,7 @@ public class ItemContainer : MonoBehaviour
         {
             uiCanvas.gameObject.SetActive(false);
         }
+        uiCanvas.GetComponent<RectTransform>().rotation = Quaternion.Euler(45, 180, 0);//startRotation;
     }
     void InitializeItem()
     {
