@@ -98,7 +98,7 @@ public class PlayerEquipmentManager : MonoBehaviour
     {
         if (shield != null)
         {
-            Destroy(primaryWeapon);
+            Destroy(shield);
         }
         shield = _shield;
     }

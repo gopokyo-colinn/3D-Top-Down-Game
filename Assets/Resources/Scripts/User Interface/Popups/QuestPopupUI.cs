@@ -42,7 +42,8 @@ public class QuestPopupUI : Popup
     {
         if (container.gameObject.activeSelf)
         {
-             MenuKeysInput();
+            if(lstQuestElements.Count > 0)
+                MenuKeysInput();
         }
     }
 

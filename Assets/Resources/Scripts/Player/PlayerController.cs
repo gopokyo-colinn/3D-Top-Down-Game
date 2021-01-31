@@ -68,7 +68,6 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     void Awake()
     {
         instance = this;
-
         rbody = GetComponent<Rigidbody>();
         anim = GetComponentInChildren<Animator>();
         fCurrentHitPoints = fMaxHitPoints;
@@ -191,22 +190,27 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         }
     }
     void UseShield()
-    {   
-        if (Input.GetButton("Shield"))
+    {
+        if (pEquimentManager.shield != null)
         {
-            if(fCurrentStamina > fSHIELD_STAMINA_COST)
+            if (Input.GetButton("Shield"))
             {
-                bIsShielding = true;
-                bIsSprinting = false;
+                if (fCurrentStamina > fSHIELD_STAMINA_COST)
+                {
+                    bIsShielding = true;
+                    bIsSprinting = false;
+                }
+                else
+                {
+                    bIsShielding = false;
+                }
             }
             else
-            {
                 bIsShielding = false;
-            }
+
+            anim.SetBool("isShielding", bIsShielding);
         }
-        else
-            bIsShielding = false;
-        anim.SetBool("isShielding", bIsShielding);
+        
     }
     void DrawSheathPrimaryWeapon()
     {
@@ -231,8 +235,10 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     void SheathWeapon(bool _bIsRemoved = false)
     {
+        anim.ResetTrigger("weapon_removed");
         if(_bIsRemoved)
             anim.SetTrigger("weapon_removed");
+
         bDrawPrimaryWeapon = false;
         bIsAttacking = false;
         iAttackCombo = -1;
@@ -294,10 +300,12 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                 if (_npc)
                 {
                     CheckForNPC(_npc);
+                    break;
                 }
                 else if (_itemContainer)
                 {
                     CheckForItems(_itemContainer);
+                    break;
                 }
             }
         }
@@ -518,18 +526,17 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     {
         return bIsAttacking;
     }
-    public bool IsSwordEquipped()
+    public bool IsUsingShield()
     {
-        return bDrawPrimaryWeapon;
+        return bIsShielding;
     }
     public void SetPrimaryWeaponEquipped(Item _swordToEquip)
     {
         // TODO: Set player animtaion to deafult on changing new weapon or place the new weapon in its hand according to drawWeaponBool
-        ItemContainer _newWeapon = null;
         if (_swordToEquip != null)
         {
             SheathWeapon(true);
-            _newWeapon = Instantiate(_swordToEquip.GetItemPrefab(), pEquimentManager.phPrimaryWeaponUnEquipped);
+            ItemContainer _newWeapon = Instantiate(_swordToEquip.GetItemPrefab(), pEquimentManager.phPrimaryWeaponUnEquipped);
             _newWeapon.SetItemEquipable();
             pEquimentManager.SetPrimaryWeapon(_newWeapon.gameObject);
         }
@@ -544,9 +551,16 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         
 
     }
-    public void SetShieldEquipped(Item _swordToEquip)
+    public void SetShieldEquipped(Item _shieldToEquip)
     {
-
+        if (_shieldToEquip != null)
+        {
+            ItemContainer _newShield = Instantiate(_shieldToEquip.GetItemPrefab(), pEquimentManager.phShieldUnEquipped);
+            _newShield.SetItemEquipable();
+            pEquimentManager.SetShield(_newShield.gameObject);
+        }
+        else
+            pEquimentManager.SetShield(null);
     }
     public void SetCanAttack(bool _bCanAttack)
     {

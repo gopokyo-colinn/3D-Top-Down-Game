@@ -20,9 +20,10 @@ MonoBehaviour:
   fEffectValue: 500
   fWeaponKnockback: 0
   fPrice: 10
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 21300000, guid: f7b92aa4b6595a341a2a98bde62bca06, type: 3}
   bIsStackable: 0
   iQuantity: 1
   iStackLimit: 1
   bIsEquipable: 1
-  prefabItem: {fileID: 0}
+  prefabItem: {fileID: 4420549534943956692, guid: bab8d68357f8dcb43b6665f023cab95c,
+    type: 3}

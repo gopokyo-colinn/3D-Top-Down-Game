@@ -117,6 +117,7 @@ public class Item: ScriptableObject
             if (!_player.IsAttacking())
             {
                 bIsEquipped = true;
+                UnequipOtherSimilarItem(_player.GetInventory(), eType);
                 _player.SetPrimaryWeaponEquipped(this);
                 return true;
             }
@@ -149,11 +150,36 @@ public class Item: ScriptableObject
     }
     public bool EquipShield(PlayerController _player)
     {
-        if (!_player.IsSwordEquipped())
+        if (!bIsEquipped)
         {
-            _player.SetShieldEquipped(this);
-            return true;
+            if (!_player.IsUsingShield())
+            {
+                bIsEquipped = true;
+                UnequipOtherSimilarItem(_player.GetInventory(), eType);
+                _player.SetShieldEquipped(this);
+                return true;
+            }
+        }
+        else
+        {
+            if (!_player.IsUsingShield())
+            {
+                bIsEquipped = false;
+                _player.SetShieldEquipped(null);
+                return true;
+            }
         }
         return false;
+    }
+
+    public void UnequipOtherSimilarItem(Inventory _inventory, ItemType _eItemType)
+    {
+        foreach (var _item in _inventory.lstItems)
+        {
+            if(_item.eType == _eItemType)
+            {
+                _item.bIsEquipped = false;
+            }
+        }
     }
 }

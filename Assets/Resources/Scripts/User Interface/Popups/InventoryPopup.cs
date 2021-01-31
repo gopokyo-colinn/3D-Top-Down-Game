@@ -76,6 +76,7 @@ public class InventoryPopup : Popup
         for (int i = 0; i < lstInventorySlots.Length; i++)
         {
             lstInventorySlots[i].EmptySlot();
+            lstInventorySlots[i].SetSlotNumber(i);
         }
 
         LockSlots();

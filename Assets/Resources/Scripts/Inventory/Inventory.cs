@@ -38,6 +38,11 @@ public class Inventory
             }
         }
     }
+    public void RemoveItemInSlot(Item _item, int _iNumber)
+    {
+        
+         lstItems.Remove(lstItems[_iNumber]);
+    }
     public void UpdateItemAmount(Item _item)
     {
         for (int i = 0; i < lstItems.Count; i++)
@@ -55,8 +60,13 @@ public class Inventory
             if (lstItems[i].sID == _item.sID)
             {
                 lstItems[i] = new Item(_item);
+                break;
             }
         }
+    }
+    public void UpdateItemInSlot(Item _item, int _iNumber)
+    {
+        lstItems[_iNumber] = new Item(_item);
     }
     public structInventory GetInventory()
     {

@@ -24,6 +24,8 @@ public class DamageTarget : MonoBehaviour, ICanDamage
             bIsProjectileAttack = true;
         if (bIsProjectileAttack)
             startPos = transform.position;
+
+        attackCollider.isTrigger = true;
     }
 
     private void Update()

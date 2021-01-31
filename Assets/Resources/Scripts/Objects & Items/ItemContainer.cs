@@ -8,12 +8,14 @@ public class ItemContainer : MonoBehaviour
    // string sItemContainerID;
     structItem structThisItem;
     public Canvas uiCanvas;
+    Rigidbody rb;
 
     PlayerController player;
     private void Start()
     {
         CheckIfEquipable();
         InitializeItem();
+        
         uiCanvas.gameObject.SetActive(false);
         player = PlayerController.Instance;
         gameObject.layer = LayerMask.NameToLayer("Item");
@@ -36,7 +38,7 @@ public class ItemContainer : MonoBehaviour
         //Collider[] _hitColliders = Physics.OverlapSphere(transform.position, 3f, LayerMask.GetMask("Player"));
 
        // if (_hitColliders.Length > 0)
-        if((transform.position - player.transform.position).sqrMagnitude < 16)
+        if((transform.position - player.transform.position).sqrMagnitude < 12)
         {
             uiCanvas.gameObject.SetActive(true);
         }
@@ -67,6 +69,9 @@ public class ItemContainer : MonoBehaviour
                 _weapon.enabled = false;
             if (_dmgTargetScript)
                 _dmgTargetScript.enabled = false;
+
+            rb = GetComponent<Rigidbody>();
+            rb.isKinematic = false;
         }
     }
     public void SetItemEquipable()
@@ -80,6 +85,7 @@ public class ItemContainer : MonoBehaviour
             _dmgTargetScript.enabled = true;
             _dmgTargetScript.InitializeStats(this);
         }
+        Destroy(GetComponent<Rigidbody>());
         Destroy(uiCanvas.gameObject);
         Destroy(this);
     }

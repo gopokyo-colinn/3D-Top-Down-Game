@@ -9,11 +9,13 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 {
     public Image icon;
     public Image imgSelected;
-    public TextMeshProUGUI stackText;
+    public TextMeshProUGUI quanintyText;
+    public TextMeshProUGUI equippedText;
     public RectTransform tMenuPosition;
     private Item item;
     private bool bSelected;
     private InventoryPopup inventoryPopup;
+    int iSlotNumber;
     private void Start()
     {
         inventoryPopup = PopupUIManager.Instance.inventoryPopup;
@@ -25,13 +27,18 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         icon.gameObject.SetActive(true);
         icon.sprite = item.GetSprite();
 
-        if (item.iQuantity <= 1)
+        equippedText.text = "";
+        quanintyText.text = "";
+
+        if (item.bIsEquipable) 
         {
-            stackText.text = "";
+            if (item.bIsEquipped)
+                equippedText.text = "E";
         }
-        else
+
+        if (item.iQuantity > 1)
         {
-           stackText.text = item.iQuantity.ToString();
+            quanintyText.text = item.iQuantity.ToString();
         }
     }
     public void OnPointerClick(PointerEventData eventData)
@@ -96,9 +103,9 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         else
         {
             if(item.bIsEquipable)
-                PopupUIManager.Instance.msgBoxPopup.ShowTextMessage("Can't use this item right now..... ");
-            else
                 PopupUIManager.Instance.msgBoxPopup.ShowTextMessage("Can't use this action right now..... ");
+            else
+                PopupUIManager.Instance.msgBoxPopup.ShowTextMessage("Can't use this item right now..... ");
 
         }
         inventoryPopup.SetItemMenuOpenBool(false);
@@ -166,10 +173,10 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
             Inventory _updatedUIInventory = PlayerController.Instance.GetInventory();
 
             if(_item.iQuantity > 0)
-                _updatedUIInventory.UpdateItem(item);
+                _updatedUIInventory.UpdateItemInSlot(item, iSlotNumber);
             else
             {
-                _updatedUIInventory.RemoveItem(item);
+                _updatedUIInventory.RemoveItemInSlot(item, iSlotNumber);
                 EmptySlot();
             }
 
@@ -181,10 +188,10 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
             {
                 Inventory _updatedUIInventory = PlayerController.Instance.GetInventory();
                 if(_item.iQuantity > 0)
-                    _updatedUIInventory.UpdateItem(item);
+                    _updatedUIInventory.UpdateItemInSlot(item, iSlotNumber);
                 else
                 {
-                    _updatedUIInventory.RemoveItem(item);
+                    _updatedUIInventory.RemoveItemInSlot(item, iSlotNumber);
                     EmptySlot();
                 }
                 PlayerController.Instance.UpdateInventory(_updatedUIInventory);
@@ -192,7 +199,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
             else
             {
                 Inventory _updatedUIInventory = PlayerController.Instance.GetInventory();
-                _updatedUIInventory.RemoveItem(item);
+                _updatedUIInventory.RemoveItemInSlot(item, iSlotNumber);
                 EmptySlot();
                 PlayerController.Instance.UpdateInventory(_updatedUIInventory);
             }
@@ -203,7 +210,8 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         item = null;
         icon.sprite = null;
         icon.gameObject.SetActive(false);
-        stackText.text = "";
+        quanintyText.text = "";
+        equippedText.text = "";
     }
     public void SetSelectedElement(bool _bSelected)
     {
@@ -226,5 +234,9 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
                 inventoryPopup.txtDetailItemDescription.text = "";
             }
         }
+    }
+    public void SetSlotNumber(int _number)
+    {
+        iSlotNumber = _number;
     }
 }
