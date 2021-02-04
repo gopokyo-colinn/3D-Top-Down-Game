@@ -25,7 +25,7 @@ public class SpittyPlant : Enemy, IHittable
 
         if (bIsAlive)
         {
-            if (HelperFunctions.Grounded(transform, 0.2f))
+            if (HelpUtils.Grounded(transform, 0.2f))
             {
                 if (!bTargetFound)
                 {
@@ -44,19 +44,15 @@ public class SpittyPlant : Enemy, IHittable
         base.FixedRefresh();
         if (bIsAlive)
         {
-            if (HelperFunctions.Grounded(transform, 0.2f))
+            if (HelpUtils.Grounded(transform, 0.2f))
             {
                 if (!bTargetFound)
                 {
-                    MovingRandomly();
+                    MovingRandomly(); // This is moves look direction and not move itself, coz this is a plant.
                 }
                 else
                 {
-                    if (!bCanAttack)
-                    {
-                        FollowTarget();
-                    }
-                    else
+                    if (bCanAttack)
                     {
                         AttackMove();
                     }
@@ -71,7 +67,7 @@ public class SpittyPlant : Enemy, IHittable
             bCanFollow = false;
             projectileThrower.InitializeProjectile();
             // anim.SetTrigger("StabAttack"); set attack animation here
-            StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b) => { fAttackWaitTimeCounter = fAttackWaitTime; bCanFollow = true; bCanRotate = true; }, false, fAttackWaitTime)); //anim.GetCurrentAnimatorStateInfo(0).length));
+            StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { fAttackWaitTimeCounter = fAttackWaitTime; bCanFollow = true; bCanRotate = true; }, false, fAttackWaitTime)); //anim.GetCurrentAnimatorStateInfo(0).length));
             fAttackWaitTimeCounter = fAttackWaitTime;
             bCanRotate = true;
         }

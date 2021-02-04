@@ -10,7 +10,7 @@ public class NPCEntity : MonoBehaviour
     const float fDISTANCE_TO_COLIS = 1.2f;
     //public static List<NPCEntity> npcList;
     [HideInInspector]
-    public string sNpcID;
+    public string sNpcID = System.Guid.NewGuid().ToString();
     public string sNpcName = "NPC-";
     public float fSpeed;
     public DialogArrays[] sRandomDialogs; // Use this to Randomly choose a dialog  to appear instead of sFirstDialogLines
@@ -25,18 +25,22 @@ public class NPCEntity : MonoBehaviour
     public float fWaitTime;
     private Vector3 randomVector;
     private Vector3 lastDirection;
-    private bool bCanMove = false;
+    private bool bCanMove;
     private bool bIsMoving = true;
     private bool bIsInteracting;
-    private bool bDialogCheck = false;
+    private bool bDialogCheck;
     private bool bDirReverse;
     public bool bReveseDirection;
     private int iPatrolPos = 0;
-
+    // Quest Variables
     private Quest myActiveQuest;
-    //private Quest[] myQuests;
     private AddNewQuest[] myQuestsLst;
     private NPCAssignedQuestGoal[] assignedQuestGoals;
+    // Walk Area Variables
+    public float fMaxWalkingDistance = 20;
+    private Vector3 startPosition;
+
+
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -55,12 +59,15 @@ public class NPCEntity : MonoBehaviour
         if (string.IsNullOrEmpty(sNpcID))
             sNpcID = System.Guid.NewGuid().ToString();
 
+        startPosition = transform.position;
+
         gameObject.layer = LayerMask.NameToLayer("Npc");
     }
     void Update()
     {
         SetRbodyAccToGroundCheck();
         CheckForDialogToFinish();
+        CheckWalkingArea();
         SetAnimations();
     }
     private void FixedUpdate()
@@ -134,7 +141,8 @@ public class NPCEntity : MonoBehaviour
         {
             if (bIsMoving)
             {
-                if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
+                CheckWalkingArea();
+                if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
                 {
                     bIsMoving = false;
                     StartCoroutine(ChangeBoolAfter((bool b) => { bCanMove = b; }, false, fWaitTime));
@@ -152,7 +160,7 @@ public class NPCEntity : MonoBehaviour
 
             //HelperFunctions.RotateTowardsTarget(transform, lastDirection);
 
-            if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
+            if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
             {
                 bIsMoving = false;
                 StartCoroutine(ChangeBoolAfter((bool b) => { bIsMoving = b; }, true, fWaitTime));
@@ -185,7 +193,7 @@ public class NPCEntity : MonoBehaviour
                     bDirReverse = false;
                 }
             }
-            if (!HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
+            if (!HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
             {
                 transform.forward = new Vector3(lastDirection.x, transform.forward.y, lastDirection.z);
                 rbody.MovePosition(transform.position + (transform.forward * fSpeed * Time.fixedDeltaTime));
@@ -302,7 +310,7 @@ public class NPCEntity : MonoBehaviour
     }
     public void SetRbodyAccToGroundCheck()
     {
-        if (HelperFunctions.Grounded(transform, fDISTANCE_TO_GROUND))
+        if (HelpUtils.Grounded(transform, fDISTANCE_TO_GROUND))
         {
             rbody.isKinematic = true;
         }
@@ -389,7 +397,7 @@ public class NPCEntity : MonoBehaviour
     {
         randomVector = new Vector3(Random.Range(1f, -1f), 0, Random.Range(1f, -1f)); // For transfom forward without rotation
 
-        if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
+        if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
         {
             transform.forward *= -1;
         }
@@ -429,4 +437,13 @@ public class NPCEntity : MonoBehaviour
         int _iRandom = Random.Range(0, sRandomDialogs.Length);
         return sRandomDialogs[_iRandom].sDialogLines.ToArray();
     }
+    public void CheckWalkingArea()
+    {
+        if ((transform.position - startPosition).sqrMagnitude > fMaxWalkingDistance)
+        {
+            transform.forward = (startPosition - transform.position).normalized;
+           // HelpUtils.RotateTowardsTarget(transform, startPosition, Random.Range(80f, 120));
+        }
+    }
 }
+

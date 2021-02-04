@@ -11,7 +11,7 @@ public class Scorpion : Enemy, IHittable
     {
         base.Initialize();
         fAttackRange = 2.5f;
-        fFollowRange = 80f;
+        fFollowRange = 280f;
     }
 
     // Update is called once per frame
@@ -23,7 +23,7 @@ public class Scorpion : Enemy, IHittable
 
         if (bIsAlive)
         {
-            if(HelperFunctions.Grounded(transform, 0.2f))
+            if(HelpUtils.Grounded(transform, 0.2f))
             {
                 if (!bTargetFound)
                 {
@@ -42,17 +42,21 @@ public class Scorpion : Enemy, IHittable
         base.FixedRefresh();
         if (bIsAlive)
         {
-            if (HelperFunctions.Grounded(transform, 0.2f))
+            if (HelpUtils.Grounded(transform, 0.2f))
             {
                 if (!bTargetFound)
                 {
-                    MovingRandomly();
+                    if(!bFollowPath)
+                        MovingRandomly();
                 }
                 else
                 {
                     if (!bCanAttack)
                     {
-                        FollowTarget();
+                        if (bCanFollow)
+                        {
+                            FollowTarget(targetPlayer.transform.position);
+                        }
                     }
                     else
                     {
@@ -68,9 +72,11 @@ public class Scorpion : Enemy, IHittable
         {
             bCanFollow = false;
             anim.SetTrigger("StabAttack");
-            StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b) => { fAttackWaitTimeCounter = fAttackWaitTime; bCanFollow = true; bCanRotate = true; }, false, anim.GetCurrentAnimatorStateInfo(0).length + 0.5f));
+            bIsAttacking = true;
+            bCanRotate = false;
+            StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsAttacking = false; fAttackWaitTimeCounter = fAttackWaitTime; bCanFollow = true; bCanRotate = true; }, false, anim.GetCurrentAnimatorStateInfo(0).length + 0.5f));
             fAttackWaitTimeCounter = fAttackWaitTime;
-            bCanRotate = true;
+            //bCanRotate = true;
         }
     }
     public void SetAnimations()
@@ -78,6 +84,7 @@ public class Scorpion : Enemy, IHittable
         if (bIsAlive)
         {
             anim.SetFloat("isWalking", rbody.velocity.sqrMagnitude);
+            anim.SetBool("canAttack", bCanAttack);
 
             if (bIsHit)
             {

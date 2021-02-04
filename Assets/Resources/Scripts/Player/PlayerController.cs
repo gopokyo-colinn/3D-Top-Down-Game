@@ -76,6 +76,9 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         playerInventory = new Inventory(iStartInventorySize);
         pEquimentManager = GetComponent<PlayerEquipmentManager>();
     }
+    private void Start()
+    {
+    }
     void Update()
     {
         if (GameController.inPlayMode)
@@ -410,7 +413,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             bIsInvulnerable = true;
             fCurrentHitPoints -= _damage;
             OnReciveDamageUI.Invoke();
-            StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b) => { bIsInvulnerable = b;}, false, fINVULNERABILITY_TIME));
+            StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsInvulnerable = b;}, false, fINVULNERABILITY_TIME));
         }
         if(fCurrentHitPoints <= 0)
         {
@@ -489,7 +492,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         bIsStun = true;
         if (bIsStun)
         {
-           StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b)=> { bIsStun = b; }, false, fSTUN_TIME)); // Replace stun time with stun animation
+           StartCoroutine(HelpUtils.ChangeBoolAfter((bool b)=> { bIsStun = b; }, false, fSTUN_TIME)); // Replace stun time with stun animation
         }
     }
 

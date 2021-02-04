@@ -85,6 +85,9 @@ public class ItemContainer : MonoBehaviour
             _dmgTargetScript.enabled = true;
             _dmgTargetScript.InitializeStats(this);
         }
+
+        gameObject.layer = LayerMask.NameToLayer("Weapon");
+
         Destroy(GetComponent<Rigidbody>());
         Destroy(uiCanvas.gameObject);
         Destroy(this);

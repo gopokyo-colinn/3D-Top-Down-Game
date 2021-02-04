@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour
 
     protected const float fROTATE_SPEED = 240f;
     protected float fAttackRange = 5f;
-    protected float fFollowRange = 100f;
+    protected float fFollowRange = 120f;
 
     public float fMaxHitPoints;
     protected float fCurrentHitPoints;
@@ -27,6 +27,7 @@ public class Enemy : MonoBehaviour
     protected bool bCanMove;
     protected bool bCanRotate;
     protected bool bIsMoving;
+    protected bool bIsAttacking;
     protected bool bIsInvulnerable;
     protected bool bIsHit;
     protected bool bTargetFound;
@@ -37,18 +38,23 @@ public class Enemy : MonoBehaviour
     public float fAttackWaitTime = 1.5f;
     protected float fAttackWaitTimeCounter;
     private Vector3 randomVector;
-    private Vector3 startPosition;
     public float fOnCollisionKnockBackForce = 5f;
-    public Vector3 tHeadOffset = new Vector3(0,0.5f,0);
+    public Vector3 tHeadOffset = new Vector3(0, 0.5f, 0);
 
 
-    // Worst Obstacle Crossing Technique
-    bool bObstacleInMyWay;
-    bool bForwardHit;
-    bool bLeftHit;
-    bool bRightHit;
-    Vector3 dirObstCross = Vector3.zero;
-    float fObstacleCheckTimer = 0.3f;
+    //// Worst Obstacle Crossing Technique
+    //bool bObstacleInMyWay;
+    //bool bForwardHit;
+    //bool bLeftHit;
+    //bool bRightHit;
+    //bool bTotalRightHit;
+    //bool bTotalLeftHit;
+    //Vector3 dirToObstacleCross = Vector3.zero;
+    //float fObstacleCheckTimer = 0.3f;
+
+    // Walk Area Variables
+    public float fMaxWalkingDistance = 40;
+    private Vector3 startPosition;
 
     public void Initialize()
     {
@@ -63,11 +69,17 @@ public class Enemy : MonoBehaviour
     }
     public void Refresh()
     {
-       
+        if (bIsAlive)
+        {
+            if (!bTargetFound) 
+            {
+               CheckWalkingArea(startPosition); 
+            }
+        }
     }
     public void FixedRefresh()
     {
-       
+
     }
 
     private void OnCollisionEnter(Collision _collision)
@@ -81,6 +93,7 @@ public class Enemy : MonoBehaviour
                     if (_collision.collider.GetComponent<IHittable>() != null)
                     {
                         bTargetFound = true;
+
                         _collision.collider.GetComponent<IHittable>().ApplyKnockback(transform.position, fOnCollisionKnockBackForce);
                         _collision.collider.GetComponent<IHittable>().ApplyDamage(iCollisionDamage);
                     }
@@ -103,17 +116,17 @@ public class Enemy : MonoBehaviour
     {
         if (!bCanMove)
         {
-           StopAllCoroutines(); /// Bug: This could cause some bugs;
-           StartCoroutine(SetRandomDirection());
+            StopAllCoroutines(); /// Bug: This could cause some bugs;
+            StartCoroutine(SetRandomDirection());
         }
         else
         {
             if (bIsMoving)
             {
-                if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
+                if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
                 {
                     bIsMoving = false;
-                    StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b) => { bCanMove = b; }, false, fWaitTime));
+                    StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bCanMove = b; }, false, fWaitTime));
                 }
 
                 rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
@@ -122,7 +135,7 @@ public class Enemy : MonoBehaviour
             {
                 if (bCanRotate)
                 {
-                    HelperFunctions.RotateTowardsTarget(transform, randomVector, Random.Range(80f, fROTATE_SPEED));
+                    HelpUtils.RotateTowardsTarget(transform, randomVector, Random.Range(80f, fROTATE_SPEED));
                 }
             }
         }
@@ -140,26 +153,86 @@ public class Enemy : MonoBehaviour
             }
         }
     }
-    public void FollowTarget()
+    public void FollowTarget(Vector3 _targetPosition)
     {
-        if (bCanFollow && !bIsInvulnerable)
+        if (!bIsAttacking && !bIsInvulnerable)
         {
-            MoveWithAIRaycastMethod();
-
-            if (!bObstacleInMyWay)
+            if (CheckForObstacles()) // obstacle is in way
             {
-                HelperFunctions.RotateTowardsTarget(transform, targetPlayer.transform.position, fROTATE_SPEED);
+                if (!bFollowPath)
+                {
+                    RequestPath(_targetPosition);
+                }
             }
             else
-                CheckObstaclesInPath();
-
-            rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
+            {
+                if (!bFollowPath)
+                {
+                    HelpUtils.RotateTowardsTarget(transform, _targetPosition, fROTATE_SPEED);
+                    rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
+                }
+            }
+            if (bFollowPath)
+            {
+                FollowPath();
+            }
         }
+    }
+    public void CheckBetweenPlayerAndItself(Vector3 _targetPosition)
+    {
+        Ray _rayToPlayer = new Ray(transform.position + tHeadOffset, (_targetPosition - transform.position).normalized);
+        RaycastHit _hit;
+        Debug.DrawRay(transform.position, (_targetPosition - transform.position).normalized * 44f);
+        if(Physics.Raycast(_rayToPlayer, out _hit, 44f))
+        {
+            Debug.Log(_hit.collider.gameObject.name);
+            if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("Player"))
+            {
+                bFollowPath = false;
+                iPathIndex = 0;
+            }
+            else
+            {
+                RequestPath(_targetPosition);
+            }
+        }
+        else
+        {
+            bFollowPath = false;
+            iPathIndex = 0;
+        }
+        
+    }
+    bool bPathSuccess;
+    protected bool bFollowPath;
+    int iPathIndex = 0;
+    Vector3[] pathToFollow = new Vector3[0];
+    public void OnPathRequest(Vector3[] _path, bool _bSuccess)
+    {
+        if (_bSuccess)
+        {
+            pathToFollow = _path;
+        }
+    }
+    public void FollowTarget()
+    {
+
+    }
+    public bool CheckForObstacles()
+    {
+        RaycastHit _hit;
+
+        if (Physics.BoxCast(transform.position  + tHeadOffset, transform.localScale, transform.forward, out _hit, Quaternion.identity, 3f, LayerMask.GetMask("Default"), QueryTriggerInteraction.Ignore)) // obstacle is in way
+        {
+            //Debug.Log(_hit.collider.gameObject.name);
+            return true;
+        }
+        return false;
     }
     IEnumerator SetRandomDirection()
     {
         randomVector = transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(1f, -1f)); // added transform position for rotating correctly
-        if (HelperFunctions.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
+        if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
         {
             transform.forward *= -1;// transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(1f, -1f)); //new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
         }
@@ -205,7 +278,7 @@ public class Enemy : MonoBehaviour
                 bCanRotate = false;
                 //bCanMove = true;
                 //// StopAllCoroutines();
-                StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b) => { bIsMoving = true; bCanMove = b; }, false, fWaitTime * 2f));
+                StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsMoving = true; bCanMove = b; }, false, fWaitTime * 2f));
             }
         }
         // In Attack Range
@@ -218,7 +291,7 @@ public class Enemy : MonoBehaviour
                 if (fAttackWaitTimeCounter <= 0)
                 {
                     Vector3 dir = (targetPlayer.transform.position - transform.position).normalized;
-                    float dot = Vector3.Dot(dir, transform.forward); 
+                    float dot = Vector3.Dot(dir, transform.forward);
                     if (dot > 0.98f)  // if the enemy is facing the target
                     {
                         bCanAttack = true;
@@ -226,7 +299,7 @@ public class Enemy : MonoBehaviour
                     else
                     {
                         bCanAttack = false;
-                        HelperFunctions.RotateTowardsTarget(transform, targetPlayer.transform.position, fROTATE_SPEED / 3f);
+                        HelpUtils.RotateTowardsTarget(transform, targetPlayer.transform.position, fROTATE_SPEED / 3f);
                     }
                 }
             }
@@ -243,164 +316,194 @@ public class Enemy : MonoBehaviour
         return bIsInvulnerable;
     }
 
-    /// <summary> //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// /Moving AIIII
-    /// </summary>
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        //Gizmos.DrawSphere(transform.position + transform.forward * 2, 0.7f);
-    }
-    public bool CheckObstaclesInPath()
-    {
-        CheckRaysSideways(true);
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Obstacle Crossing Super Fuddu Bakwas AI
+    //public bool CheckObstaclesInPath(Vector3 _targetPositin)
+    //{
+    //    CheckRaysSideways(_targetPositin, true);
+    //    DrawRaysLeftRight(_targetPositin, dirToObstacleCross, 9999, true);
 
-        if (!bForwardHit && !bRightHit && !bLeftHit)
-        {
-            fObstacleCheckTimer -= Time.deltaTime;
-            if (fObstacleCheckTimer <= 0)
-            {
-                bObstacleInMyWay = false; 
-                dirObstCross = Vector3.zero;
-                fObstacleCheckTimer = 0.4f;
-            }
-            return true;
-        }
-        else
-        {
-            fObstacleCheckTimer = 0.4f;
-        }
+    //    if (!bForwardHit && !bRightHit && !bLeftHit && !bTotalLeftHit && !bTotalRightHit)
+    //    {
+    //        fObstacleCheckTimer -= Time.deltaTime;
+    //        if (fObstacleCheckTimer <= 0)
+    //        {
+    //            bObstacleInMyWay = false;
+    //            dirToObstacleCross = Vector3.zero;
+    //            fObstacleCheckTimer = 0.4f;
+    //        }
+    //        return true;
+    //    }
+    //    else
+    //    {
+    //       // dirToObstacleCross = Vector3.zero;
+    //        fObstacleCheckTimer = 0.4f;
+    //    }
 
-        return false;
-    }
-    public void MoveWithAIRaycastMethod()
-    {
-        RaycastHit _hit;
-        Ray _rForward = new Ray(transform.position + tHeadOffset, transform.forward);
+    //    return false;
+    //}
+    //public void MoveWithAIRaycastMethod(Vector3 _targetPositin)
+    //{
+    //    RaycastHit _hit;
+    //    Ray _rForward = new Ray(transform.position + tHeadOffset, transform.forward);
 
-        if (Physics.Raycast(_rForward, out _hit, 2f, LayerMask.GetMask("Player", "Ground", "Item", "Weapon"))) // obstacle is in way
-        {
-            bForwardHit = false;
-        }
-        else if (Physics.Raycast(_rForward, out _hit, 2f)) // obstacle is in way
-        {
-            bForwardHit = true; bObstacleInMyWay = true;
+    //    if (Physics.BoxCast(transform.position + tHeadOffset, transform.localScale * 2, transform.forward, out _hit, Quaternion.identity, 3f, LayerMask.GetMask("Player", "Ground", "Item", "Weapon"))) // obstacle is in way
+    //    {
+    //        bForwardHit = false;
+    //    }
+    //    else if (Physics.BoxCast(transform.position + tHeadOffset, transform.localScale * 2, transform.forward, out _hit, Quaternion.identity, 3f)) // obstacle is in way
+    //    {
+    //        bForwardHit = true; 
+    //        bObstacleInMyWay = true;
 
-            if (dirObstCross == Vector3.zero)
-            {
-                dirObstCross = CheckRaysSideways();
-            }
-        }
-        else
-        {
-            bForwardHit = false;
-        }
-        if (bObstacleInMyWay)
-        {
-            transform.forward = dirObstCross; // Rotating causes error
-            //HelperFunctions.RotateTowardsTarget(transform, finalDir, fROTATE_SPEED); 
-        }
-       // Debug.DrawRay(transform.position + tHeadOffset, transform.forward * 2f);
-    }
-    public Vector3 CheckRaysSideways(bool _bRayCheckOnly = false)
-    {
-       // Debug.DrawRay(transform.position + tHeadOffset, (transform.forward + transform.right / 2) * 2f);
-       // Debug.DrawRay(transform.position + tHeadOffset, (transform.forward - transform.right / 2) * 2f);
-       
-        Ray _rRight = new Ray(transform.position + tHeadOffset, (transform.forward + transform.right / 2));
-        Ray _rLeft = new Ray(transform.position + tHeadOffset, (transform.forward - transform.right / 2));
+    //        if (dirToObstacleCross == Vector3.zero)
+    //        {
+    //            dirToObstacleCross = CheckRaysSideways(_targetPositin);
+    //        }
+    //    }
+    //    else
+    //    {
+    //        bForwardHit = false;
+    //    }
+    //    if (bObstacleInMyWay)
+    //    {
+    //        if(bForwardHit)
+    //            transform.forward = dirToObstacleCross; // Rotating causes error
+    //            //HelpUtils.RotateTowardsTarget(transform, dirToObstacleCross, fROTATE_SPEED); 
+    //    }
+    //    // Debug.DrawRay(transform.position + tHeadOffset, transform.forward * 2f);
+    //}
+    //public Vector3 CheckRaysSideways(Vector3 _targetPositin, bool _bRayCheckOnly = false)
+    //{
+    //    Debug.DrawRay(transform.position + tHeadOffset, (transform.forward + transform.right / 2) * 2f);
+    //    Debug.DrawRay(transform.position + tHeadOffset, (transform.forward - transform.right / 2) * 2f);
 
-        Vector3 _dirToMove = _rRight.direction;
-        float _fClosestAngle = 9999f;
+    //    Ray _rRight = new Ray(transform.position + tHeadOffset, (transform.forward + transform.right / 2));
+    //    Ray _rLeft = new Ray(transform.position + tHeadOffset, (transform.forward - transform.right / 2));
 
-        if (!Physics.Raycast(_rRight, 2f))
-        {
-            bRightHit = false;
-            if (!_bRayCheckOnly)
-            {
-                Vector3 targetDir = targetPlayer.transform.position - transform.position;
-                float angle = Vector3.Angle(targetDir, _rRight.GetPoint(1f));
+    //    Vector3 _dirToMove = _rRight.direction;
+    //    float _fClosestAngle = 9999f;
 
-                if (angle < _fClosestAngle)
-                {
-                    _fClosestAngle = angle;
-                }
-                _dirToMove = _rRight.direction;
-            }
-        }
-        else
-        {
-            bRightHit = true;
-        }
+    //    if (!Physics.Raycast(_rRight, 2f))
+    //    {
+    //        bRightHit = false;
+    //        if (!_bRayCheckOnly)
+    //        {
+    //            Vector3 targetDir = _targetPositin - transform.position;
+    //            float angle = Vector3.Angle(targetDir, _rRight.GetPoint(1f));
 
-        if (!Physics.Raycast(_rLeft, 2f))
-        {
-            bLeftHit = false;
-            if (!_bRayCheckOnly)
-            {
-                Vector3 targetDir = targetPlayer.transform.position - transform.position;
-                float angle = Vector3.Angle(targetDir, _rLeft.GetPoint(1f));
+    //            if (angle < _fClosestAngle)
+    //            {
+    //                _fClosestAngle = angle;
+    //            }
+    //            _dirToMove = _rRight.direction;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        bRightHit = true;
+    //    }
 
-                if (angle < _fClosestAngle)
-                {
-                    _fClosestAngle = angle;
-                    _dirToMove = _rLeft.direction;
-                }
-            }
-        }
-        else
-        {
-            bLeftHit = true; 
-        }
+    //    if (!Physics.Raycast(_rLeft, 2f))
+    //    {
+    //        bLeftHit = false;
+    //        if (!_bRayCheckOnly)
+    //        {
+    //            Vector3 targetDir = _targetPositin - transform.position;
+    //            float angle = Vector3.Angle(targetDir, _rLeft.GetPoint(1f));
 
-        if (!_bRayCheckOnly)
-        {
-            if(bLeftHit && bRightHit)
-            {
-                _dirToMove = DrawRaysLeftRight();
-            }
-        }
+    //            if (angle < _fClosestAngle)
+    //            {
+    //                _fClosestAngle = angle;
+    //                _dirToMove = _rLeft.direction;
+    //            }
+    //        }
+    //    }
+    //    else
+    //    {
+    //        bLeftHit = true;
+    //    }
 
-        return _dirToMove;
-    }
-    public Vector3 DrawRaysLeftRight()
-    {
-        //Debug.DrawRay(_posssTP, (_posssRT) * 2f);
-        //Debug.DrawRay(_posssTP, ( -_posssRT) * 2f);
+    //    if (!_bRayCheckOnly)
+    //    {
+    //       // if (bLeftHit && bRightHit)
+    //        {
+    //            _dirToMove = DrawRaysLeftRight(_targetPositin, _dirToMove, _fClosestAngle);
+    //        }
+    //    }
 
-        Ray _rTotalRight = new Ray(transform.position + tHeadOffset, (transform.right));
-        Ray _rTotalLeft = new Ray(transform.position + tHeadOffset, (-transform.right));
+    //    return _dirToMove;
+    //}
+    //public Vector3 DrawRaysLeftRight(Vector3 _targetPositin, Vector3 _defaultDirection, float _fClosestAngle = 9999f, bool _bCheckOnly = false)
+    //{
+    //    Ray _rTotalRight = new Ray(transform.position + tHeadOffset, (transform.right));
+    //    Ray _rTotalLeft = new Ray(transform.position + tHeadOffset, (-transform.right));
 
-        Vector3 _dirToMove = targetPlayer.transform.position;
-        float _fClosestAngle = 9999f;
+    //    Vector3 _dirToMove = _targetPositin;
+    //   // float _fClosestAngle = 9999f;
 
-        if (!Physics.Raycast(_rTotalLeft, 2f))
-        {
-            Vector3 targetDir = targetPlayer.transform.position - transform.position;
-            float angle = Vector3.Angle(targetDir, _rTotalLeft.GetPoint(1f));
+    //    if (!Physics.Raycast(_rTotalLeft, 2f))
+    //    {
+    //        bTotalLeftHit = false;
+    //        if (!_bCheckOnly)
+    //        {
+    //            Vector3 targetDir = _targetPositin - transform.position;
+    //            float angle = Vector3.Angle(targetDir, _rTotalLeft.GetPoint(1f));
 
-            if (angle < _fClosestAngle)
-            {
-                _fClosestAngle = angle;
-                _dirToMove = _rTotalLeft.direction;
-            }
-        }
-        if (!Physics.Raycast(_rTotalRight, 2f))
-        {
-            Vector3 targetDir = targetPlayer.transform.position - transform.position;
-            float angle = Vector3.Angle(targetDir, _rTotalRight.GetPoint(1f));
+    //            if (angle < _fClosestAngle)
+    //            {
+    //                _fClosestAngle = angle;
+    //                _dirToMove = _rTotalLeft.direction;
+    //            }
+    //            else
+    //                _dirToMove = _defaultDirection;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        bTotalLeftHit = true;
+    //    }
+    //    if (!Physics.Raycast(_rTotalRight, 2f))
+    //    {
+    //        bTotalRightHit = false;
+    //        if (!_bCheckOnly)
+    //        {
+    //            Vector3 targetDir = _targetPositin - transform.position;
+    //            float angle = Vector3.Angle(targetDir, _rTotalRight.GetPoint(1f));
 
-            if (angle < _fClosestAngle)
-            {
-                _fClosestAngle = angle;
-                _dirToMove = _rTotalRight.direction;
-            }
-        }
-        
-        return _dirToMove;
-    }
+    //            if (angle < _fClosestAngle)
+    //            {
+    //                _fClosestAngle = angle;
+    //                _dirToMove = _rTotalRight.direction;
+    //            }
+    //            else
+    //                _dirToMove = _defaultDirection;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        bTotalRightHit = true;
+    //    }
 
-    /// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //    return _dirToMove;
+    //}
+    //public void FollowTargetWithNoobAI(Vector3 _targetPos)
+    //{
+    //    if (!bIsAttacking)
+    //    {
+    //        MoveWithAIRaycastMethod(_targetPos);
+
+    //        if (!bObstacleInMyWay)
+    //        {
+    //            HelpUtils.RotateTowardsTarget(transform, _targetPos, fROTATE_SPEED);
+    //        }
+    //        else
+    //            CheckObstaclesInPath(_targetPos);
+
+    //        rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
+    //    }
+    //}
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void ApplyKnockback(Vector3 _sourcePosition, float _pushForce)
     {
@@ -419,5 +522,53 @@ public class Enemy : MonoBehaviour
     public bool EnemyDied()
     {
         return !bIsAlive;
+    }
+
+    //// Walk Area ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void CheckWalkingArea(Vector3 _targetPosition)
+    {
+        if ((transform.position - startPosition).sqrMagnitude > fMaxWalkingDistance)
+        {
+            RequestPath(_targetPosition);
+        }
+        if (bFollowPath)
+        {
+            FollowPath();
+        }
+    }
+    public void RequestPath(Vector3 _targetPos)
+    {
+        if (!bFollowPath)
+        {
+            PathFindingManager.RequestPath(new PathRequest(transform.position, _targetPos, OnPathRequest));
+            iPathIndex = 0;
+            bFollowPath = true;
+        }
+
+    }
+    public void FollowPath()
+    {
+        Debug.Log("I am Following");
+        if (pathToFollow != null)
+        {
+            if(iPathIndex < pathToFollow.Length)
+            {
+                Vector3 _nextPosition = new Vector3(pathToFollow[iPathIndex].x, transform.position.y, pathToFollow[iPathIndex].z);
+
+                HelpUtils.RotateTowardsTarget(transform, pathToFollow[iPathIndex], fROTATE_SPEED / 2);
+
+                if ((_nextPosition - transform.position).sqrMagnitude < 1)
+                {
+                    iPathIndex++;
+                }
+            }
+           
+            if (iPathIndex >= pathToFollow.Length - 1)
+            {
+                bFollowPath = false;
+                iPathIndex = 0;
+            }
+        }
+        rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
     }
 }

@@ -60,7 +60,7 @@ public class DamageTarget : MonoBehaviour, ICanDamage
         {
             if (bIsTypeOfEnemy)
             {
-                if (_other.gameObject.CompareTag("Player")) /// this is so that enemies ignore damaging each other
+                if (_other.gameObject.layer == LayerMask.NameToLayer("Player")) /// this is so that enemies ignore damaging each other
                 {
                     IHittable _hitTarget = _other.GetComponent<IHittable>();
 
@@ -74,36 +74,42 @@ public class DamageTarget : MonoBehaviour, ICanDamage
                     }
                     _hitTarget.ApplyDamage(Damage());
                 }
-                if (_other.gameObject.CompareTag("Shield"))
+                if (_other.gameObject.layer == LayerMask.NameToLayer("Weapon"))
                 {
-                    IHittable _hitTarget = _other.GetComponentInParent<IHittable>();
+                    if (_other.gameObject.GetComponent<Shield>())
+                    {
+                        IHittable _hitTarget = _other.GetComponentInParent<IHittable>();
 
-                    if (bIsProjectileAttack)
-                    {
-                        _hitTarget.ApplyKnockback(startPos, fKnockForce / 2f);
+                        if (bIsProjectileAttack)
+                        {
+                            _hitTarget.ApplyKnockback(startPos, fKnockForce / 2f);
+                        }
+                        else
+                        {
+                            _hitTarget.ApplyKnockback(transform.position, fKnockForce / 2f);
+                        }
+                        _hitTarget.ApplyDamage(0);
                     }
-                    else
-                    {
-                        _hitTarget.ApplyKnockback(transform.position, fKnockForce / 2f);
-                    }
-                    _hitTarget.ApplyDamage(0);
                 }
             }
             else 
             {
-                if (_other.gameObject.CompareTag("Shield"))
+                if (_other.gameObject.layer == LayerMask.NameToLayer("Weapon"))
                 {
-                    IHittable _hitTarget = _other.GetComponentInParent<IHittable>();
+                    if (_other.gameObject.GetComponent<Shield>())
+                    {
+                        IHittable _hitTarget = _other.GetComponentInParent<IHittable>();
 
-                    if (bIsProjectileAttack)
-                    {
-                        _hitTarget.ApplyKnockback(startPos, fKnockForce / 2f);
+                        if (bIsProjectileAttack)
+                        {
+                            _hitTarget.ApplyKnockback(startPos, fKnockForce / 2f);
+                        }
+                        else
+                        {
+                            _hitTarget.ApplyKnockback(transform.position, fKnockForce / 2f);
+                        }
+                        _hitTarget.ApplyDamage(0);
                     }
-                    else
-                    {
-                        _hitTarget.ApplyKnockback(transform.position, fKnockForce / 2f);
-                    }
-                    _hitTarget.ApplyDamage(0);
                 }
                 else
                 {

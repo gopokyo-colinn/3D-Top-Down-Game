@@ -21,7 +21,7 @@ public class Weapon : MonoBehaviour
         if (player.IsAttacking())
         {
             coli.enabled = true;
-            StartCoroutine(HelperFunctions.ChangeBoolAfter((bool b)=> { coli.enabled = b; }, false, player.GetAnimator().GetCurrentAnimatorStateInfo(player.GetAnimator().GetLayerIndex("SwordAnims(Right Hand)")).length));
+            StartCoroutine(HelpUtils.ChangeBoolAfter((bool b)=> { coli.enabled = b; }, false, player.GetAnimator().GetCurrentAnimatorStateInfo(player.GetAnimator().GetLayerIndex("SwordAnims(Right Hand)")).length));
         }
     }
 

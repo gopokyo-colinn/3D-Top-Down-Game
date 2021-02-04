@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using System.Linq;
 
-public static class HelperFunctions 
+public static class HelpUtils 
 {
     public static bool CheckAheadForColi(Transform _transform, float _distance)
     {
