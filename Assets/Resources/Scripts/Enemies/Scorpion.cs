@@ -46,7 +46,7 @@ public class Scorpion : Enemy, IHittable
             {
                 if (!bTargetFound)
                 {
-                    if(!bFollowPath)
+                    if(!bFollowingPath)
                         MovingRandomly();
                 }
                 else

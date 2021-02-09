@@ -13,6 +13,8 @@ public class AStarGrid : MonoBehaviour
     int iTotalNodesInY;
     float fNodeDiameter;
 
+    float worldMapSizeX;
+    float worldMapSizeZ;
     private void Awake()
     {
         fNodeDiameter = fNodeRadius * 2;
@@ -37,6 +39,9 @@ public class AStarGrid : MonoBehaviour
                 nodesGrid[x, y] = new Node(_bWalkable, _nodePositionInWorld, x, y);
             }
         }
+
+        worldMapSizeX = worldMap.bounds.size.x;
+        worldMapSizeZ = worldMap.bounds.size.z;
     }
     public bool CheckWalkable(Vector3 _position, float _fRadius)
     {
@@ -55,8 +60,8 @@ public class AStarGrid : MonoBehaviour
     {
         //float _fPercentX = (_worldPosition.x + worldMap.bounds.size.x / 2) / worldMap.bounds.size.x;
         //float _fPercentY = (_worldPosition.z + worldMap.bounds.size.z / 2) / worldMap.bounds.size.z;
-        float _fPercentX = (_worldPosition.x / worldMap.bounds.size.x) + 0.5f;// same as above, just calculations made easy for computers
-        float _fPercentY = (_worldPosition.z / worldMap.bounds.size.z) + 0.5f;// 
+        float _fPercentX = (_worldPosition.x / worldMapSizeX) + 0.5f;// same as above, just calculations made easy for computers
+        float _fPercentY = (_worldPosition.z / worldMapSizeZ) + 0.5f;// 
 
         _fPercentX = Mathf.Clamp01(_fPercentX);
         _fPercentY = Mathf.Clamp01(_fPercentY);
@@ -93,15 +98,15 @@ public class AStarGrid : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireCube(transform.position, new Vector3(worldMap.bounds.size.x, 1, worldMap.bounds.size.y));
-        if (nodesGrid != null)
-        {
-            foreach (Node _node in nodesGrid)
-            {
-                Gizmos.color = (_node.bWalkable) ? Color.blue : Color.red;
-                Gizmos.DrawCube(_node.nodeWorldPosition, Vector3.one * (fNodeDiameter - 0.2f));
-            }
-        }
+        //Gizmos.DrawWireCube(transform.position, new Vector3(worldMap.bounds.size.x, 1, worldMap.bounds.size.y));
+        //if (nodesGrid != null)
+        //{
+        //    foreach (Node _node in nodesGrid)
+        //    {
+        //        Gizmos.color = (_node.bWalkable) ? Color.blue : Color.red;
+        //        Gizmos.DrawCube(_node.nodeWorldPosition, Vector3.one * (fNodeDiameter - 0.2f));
+        //    }
+        //}
     }
 
 }

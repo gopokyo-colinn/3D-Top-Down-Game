@@ -40,7 +40,6 @@ public class NPCEntity : MonoBehaviour
     public float fMaxWalkingDistance = 20;
     private Vector3 startPosition;
 
-
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -53,7 +52,7 @@ public class NPCEntity : MonoBehaviour
             assignedQuestGoals = null;
         }
 
-        rbody.isKinematic = true;
+        //rbody.isKinematic = true;
         SetNPCBehaviour();
 
         if (string.IsNullOrEmpty(sNpcID))
@@ -65,9 +64,9 @@ public class NPCEntity : MonoBehaviour
     }
     void Update()
     {
-        SetRbodyAccToGroundCheck();
+       // SetRbodyAccToGroundCheck();
         CheckForDialogToFinish();
-        CheckWalkingArea();
+        StayInWalkingArea();
         SetAnimations();
     }
     private void FixedUpdate()
@@ -141,14 +140,14 @@ public class NPCEntity : MonoBehaviour
         {
             if (bIsMoving)
             {
-                CheckWalkingArea();
+                StayInWalkingArea();
                 if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
                 {
                     bIsMoving = false;
                     StartCoroutine(ChangeBoolAfter((bool b) => { bCanMove = b; }, false, fWaitTime));
                 }
 
-                rbody.MovePosition(transform.position + (transform.forward * fSpeed * Time.fixedDeltaTime));
+                rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
             }
         }
     }// TODO: Add Moving Area
@@ -196,7 +195,7 @@ public class NPCEntity : MonoBehaviour
             if (!HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
             {
                 transform.forward = new Vector3(lastDirection.x, transform.forward.y, lastDirection.z);
-                rbody.MovePosition(transform.position + (transform.forward * fSpeed * Time.fixedDeltaTime));
+                rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
             }
            
         }
@@ -214,6 +213,10 @@ public class NPCEntity : MonoBehaviour
             case NPCBehaviour.MERCHANT:
                 MerchantShop();
                 break;
+        }
+        if(npcActivity == NPCActivities.IDLE)
+        {
+            rbody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         }
     }
     public void SetDialogWithQuest()
@@ -326,7 +329,7 @@ public class NPCEntity : MonoBehaviour
     }
     public void SetAnimations()
     {
-        float _fWalking = (rbody.velocity == Vector3.zero) ? 0 : 1;
+        float _fWalking = (rbody.velocity.magnitude > (Vector3.one / 2).magnitude) ? 1 : 0;
         anim.SetFloat("m_speed", _fWalking);
     }
 
@@ -437,7 +440,7 @@ public class NPCEntity : MonoBehaviour
         int _iRandom = Random.Range(0, sRandomDialogs.Length);
         return sRandomDialogs[_iRandom].sDialogLines.ToArray();
     }
-    public void CheckWalkingArea()
+    public void StayInWalkingArea()
     {
         if ((transform.position - startPosition).sqrMagnitude > fMaxWalkingDistance)
         {

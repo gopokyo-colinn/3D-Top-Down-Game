@@ -510,7 +510,6 @@ GameObject:
   - component: {fileID: 2056732247125731383}
   - component: {fileID: 3712956889157687298}
   - component: {fileID: 7280549642554197085}
-  - component: {fileID: 4564874258165927642}
   m_Layer: 11
   m_Name: Player
   m_TagString: Player
@@ -574,7 +573,7 @@ MonoBehaviour:
   shield: {fileID: 6468401670978316539}
   primaryWeapon: {fileID: 0}
   secondaryWeapon: {fileID: 0}
-  trialEffects: {fileID: 7280549641695835818}
+  trialEffectContainer: {fileID: 7280549641695835818}
 --- !u!114 &2056732247125731383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -649,23 +648,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.16913041
-  m_Height: 0.53263164
+  m_Radius: 0.23804376
+  m_Height: 1.5045031
   m_Direction: 1
-  m_Center: {x: 0, y: 1.3065517, z: 0.009130395}
---- !u!65 &4564874258165927642
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2056732247125731381}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.3805118, y: 1.0324168, z: 0.22088513}
-  m_Center: {x: -0.009144117, y: 0.49085438, z: 0.03848952}
+  m_Center: {x: -0.003763282, y: 0.7469361, z: 0.11431155}
 --- !u!1 &2155171894488180639
 GameObject:
   m_ObjectHideFlags: 0
@@ -2228,7 +2214,7 @@ GameObject:
   - component: {fileID: 7280549641695835817}
   - component: {fileID: 7280549641695835816}
   m_Layer: 0
-  m_Name: TrailEffects
+  m_Name: TrailEffectsContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2626,6 +2612,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Sword
       objectReference: {fileID: 0}
+    - target: {fileID: 137455695499148879, guid: 30fd5ebced17cab48921a4ff35dcf847,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4013568060517665884, guid: 30fd5ebced17cab48921a4ff35dcf847,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2961,30 +2952,35 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4420549534943956692, guid: a46aa79c4e757c449af66e8213757792,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5044430458430083519, guid: a46aa79c4e757c449af66e8213757792,
         type: 3}
       propertyPath: m_Size.x
-      value: 1.0382689
+      value: 0.61758924
       objectReference: {fileID: 0}
     - target: {fileID: 5044430458430083519, guid: a46aa79c4e757c449af66e8213757792,
         type: 3}
       propertyPath: m_Size.y
-      value: 0.7977433
+      value: 0.5719592
       objectReference: {fileID: 0}
     - target: {fileID: 5044430458430083519, guid: a46aa79c4e757c449af66e8213757792,
         type: 3}
       propertyPath: m_Center.x
-      value: 0.0010705233
+      value: 0.0058736117
       objectReference: {fileID: 0}
     - target: {fileID: 5044430458430083519, guid: a46aa79c4e757c449af66e8213757792,
         type: 3}
       propertyPath: m_Center.y
-      value: 0.00047414887
+      value: 0.013046018
       objectReference: {fileID: 0}
     - target: {fileID: 5044430458430083519, guid: a46aa79c4e757c449af66e8213757792,
         type: 3}
       propertyPath: m_Center.z
-      value: 0.045561142
+      value: 0.04544811
       objectReference: {fileID: 0}
     - target: {fileID: 5044430458430083519, guid: a46aa79c4e757c449af66e8213757792,
         type: 3}

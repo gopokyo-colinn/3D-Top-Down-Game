@@ -19,6 +19,7 @@ public class AStarPathfinding : MonoBehaviour
 
         Node _startNode = nodesGrid.GetNodeFromWorldPosition(_pathRequest.pathStart);
         Node _targetNode = nodesGrid.GetNodeFromWorldPosition(_pathRequest.pathEnd);
+        _startNode.parentNode = _startNode;
 
         List<Node> _openNodesSet = new List<Node>();
         HashSet<Node> _closedNodesSet = new HashSet<Node>();
@@ -84,16 +85,16 @@ public class AStarPathfinding : MonoBehaviour
         if (_bPathFoundSuccess)
         {
             _wayPoints = RetracePath(_startNode, _targetNode); // If path is found then this returns the path to the pathfinding manager
+            _bPathFoundSuccess = _wayPoints.Length > 0;
         }
         _callBack(new PathResult(_wayPoints, _bPathFoundSuccess, _pathRequest.callBack));
-
     }
     public Vector3[] RetracePath(Node _startNode, Node _endNode) // Retracing path from the resulting node to the start node and reversing the direction.
     {
         List<Node> _finalPath = new List<Node>();
         Node _currentNode = _endNode;
 
-        while(_currentNode != _startNode)
+        while(_currentNode != null)
         {
             _finalPath.Add(_currentNode);
             _currentNode = _currentNode.parentNode;
@@ -128,5 +129,84 @@ public class AStarPathfinding : MonoBehaviour
            return 14 * distY + 10 * (distX - distY); // just a formula to assign costs to the nodes Formula: 14x + 10(x-y) and vice versa for opposite axis
         }
         return 14 * distX + 10 * (distY - distX);
+    }
+
+
+    public Vector3[] FindPathV2(Vector3 _startPos, Vector3 _endPos)
+    {
+        Vector3[] _wayPoints = new Vector3[0];
+        bool _bPathFoundSuccess = false;
+
+        Node _startNode = nodesGrid.GetNodeFromWorldPosition(_startPos);
+        Node _targetNode = nodesGrid.GetNodeFromWorldPosition(_endPos);
+
+        List<Node> _openNodesSet = new List<Node>();
+        HashSet<Node> _closedNodesSet = new HashSet<Node>();
+
+        _openNodesSet.Add(_startNode);
+
+        while (_openNodesSet.Count > 0)
+        {
+            Node _currentNode = _openNodesSet[0];
+            for (int i = 1; i < _openNodesSet.Count; i++) // i = 1 because 0 is already current node
+            {
+                if (_openNodesSet[i].iCombinedCost < _currentNode.iCombinedCost)
+                {
+                    _currentNode = _openNodesSet[i];
+                }
+                else if (_openNodesSet[i].iCombinedCost == _currentNode.iCombinedCost)
+                {
+                    if (_openNodesSet[i].iEndCost < _currentNode.iEndCost)
+                        _currentNode = _openNodesSet[i];
+                }
+            }
+            _openNodesSet.Remove(_currentNode);
+            _closedNodesSet.Add(_currentNode);
+
+            if (_currentNode == _targetNode)
+            {
+                _bPathFoundSuccess = true;
+                break;
+            }
+
+            List<Node> _neighboursNodesLst = nodesGrid.GetValidNeighbourNodes(_currentNode);
+
+            foreach (Node _neighbourNode in _neighboursNodesLst)
+            {
+                if (!_neighbourNode.bWalkable || _closedNodesSet.Contains(_neighbourNode))
+                    continue;
+
+                int _iNewMoveCostToNeighbour = _currentNode.iStartCost + GetDistance(_currentNode, _neighbourNode);
+
+                if (_iNewMoveCostToNeighbour < _neighbourNode.iStartCost || !_openNodesSet.Contains(_neighbourNode)) // opening neighbour for first time
+                {
+                    Node _oldNeighbourNode = new Node(_neighbourNode.bWalkable, _neighbourNode.nodeWorldPosition, _neighbourNode.iGridX, _neighbourNode.iGridY);
+
+                    _neighbourNode.iStartCost = _iNewMoveCostToNeighbour;
+                    _neighbourNode.iEndCost = GetDistance(_neighbourNode, _targetNode);
+                    _neighbourNode.parentNode = _currentNode;
+
+                    if (!_openNodesSet.Contains(_neighbourNode))
+                    {
+                        _openNodesSet.Add(_neighbourNode);
+                    }
+                    else // Updating existing item
+                    {
+                        for (int i = 0; i < _openNodesSet.Count; i++)
+                        {
+                            if (_openNodesSet[i] == _oldNeighbourNode)
+                                _openNodesSet[i] = _neighbourNode;
+                        }
+                    }
+                }
+            }
+        }
+        if (_bPathFoundSuccess)
+        {
+            _wayPoints = RetracePath(_startNode, _targetNode); // If path is found then this returns the path to the pathfinding manager
+        }
+
+        return _wayPoints;
+
     }
 }

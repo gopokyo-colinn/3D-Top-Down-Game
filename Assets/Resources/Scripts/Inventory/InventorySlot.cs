@@ -96,7 +96,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
             Debug.Log(item.sItemName + " used");
 
             if (item.bIsStackable)
-                item.SetQuantity(item.iQuantity - 1);
+                item.SetItemQuantity(item.iQuantity - 1);
            
             UpdatePlayerIventory(item); 
         }
@@ -117,7 +117,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 
         if (item.bIsStackable)
         {
-            item.SetQuantity(item.iQuantity - 1);
+            item.SetItemQuantity(item.iQuantity - 1);
         }
         else
         {
@@ -129,10 +129,10 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
                     PopupUIManager.Instance.msgBoxPopup.ShowTextMessage("Cannot Discard Equipped Item.", 1);
                 }
                 else
-                    item.SetQuantity(0);
+                    item.SetItemQuantity(0);
             }
             else
-                item.SetQuantity(0);
+                item.SetItemQuantity(0);
         }
         if (_bDropItem)
         {
@@ -157,7 +157,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
             _newDroppedItem.SetItem(item);
         }
 
-        item.SetQuantity(0); // that will make it equal to 0
+        item.SetItemQuantity(0); // that will make it equal to 0
 
         UpdatePlayerIventory(item);
         inventoryPopup.SetItemMenuOpenBool(false);

@@ -26,7 +26,7 @@ public class EnemySpawner : MonoBehaviour
         {
             for (int i = 0; i < enemiesLst.Count; i++)
             {
-                if (enemiesLst[i].EnemyDied())
+                if (enemiesLst[i].IsEnemyDead())
                 {
                     enemiesLst.Remove(enemiesLst[i]);
                 }

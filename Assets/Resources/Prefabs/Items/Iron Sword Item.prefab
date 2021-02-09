@@ -36,7 +36,6 @@ Transform:
   m_Children:
   - {fileID: 3034734362503387437}
   - {fileID: 2862274231635356217}
-  - {fileID: 7068207730414417015}
   - {fileID: 8344400442654567923}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -113,6 +112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50c2012b4f13fa142a0da80954435daa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponTrialEffect: {fileID: 3378810121357509769}
 --- !u!114 &5481862453454911414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,7 +179,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2862274231635356217
 Transform:
   m_ObjectHideFlags: 0
@@ -188,7 +188,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3759996336672375105}
   m_LocalRotation: {x: 0, y: 0, z: -0, w: 1}
-  m_LocalPosition: {x: -120, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.132, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4013568060517665884}
@@ -202,15 +202,15 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3759996336672375105}
   serializedVersion: 6
-  lengthInSec: 1
+  lengthInSec: 0.12
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   useRigidbodyForVelocity: 1
@@ -277,7 +277,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.8
+      scalar: 0.2
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -446,8 +446,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.2
-      minScalar: 0.1
+      scalar: 0.4
+      minScalar: 0.2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -762,7 +762,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 500
+    maxNumParticles: 10
     size3D: 0
     rotation3D: 0
     gravityModifier:
@@ -908,7 +908,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 0.5
+      value: 0.1
       mode: 0
       spread: 0
       speed:
@@ -1027,7 +1027,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 20
+      scalar: 100
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -1457,7 +1457,7 @@ ParticleSystem:
         m_RotationOrder: 4
     separateAxes: 0
   ColorModule:
-    enabled: 1
+    enabled: 0
     gradient:
       serializedVersion: 2
       minMaxState: 1
@@ -4045,7 +4045,7 @@ ParticleSystem:
     lifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.3
+      scalar: 0.8
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -4095,7 +4095,7 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    minVertexDistance: 0.2
+    minVertexDistance: 0.15
     textureMode: 2
     ribbonCount: 1
     shadowBias: 0.5
@@ -4173,8 +4173,8 @@ ParticleSystem:
     widthOverTrail:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.8
-      minScalar: 0.4
+      scalar: 0.4
+      minScalar: 0.2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -4227,7 +4227,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}
+      maxColor: {r: 0.99215686, g: 0.7921569, b: 0.4627451, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -9726,7 +9726,7 @@ Transform:
   m_Children:
   - {fileID: 4542311798026799245}
   m_Father: {fileID: 4013568060517665884}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &288097163360959152
 PrefabInstance:
@@ -9893,129 +9893,4 @@ Canvas:
   m_CorrespondingSourceObject: {fileID: 6625445528769801455, guid: 71aeb610f26c7ac44af0a129904df619,
     type: 3}
   m_PrefabInstance: {fileID: 288097163360959152}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &9198063135167437111
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 4013568060517665884}
-    m_Modifications:
-    - target: {fileID: 2139566938714549568, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -637
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549568, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -512.00006
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549568, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 189
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549568, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549568, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549568, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549568, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549568, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549568, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549568, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549568, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549581, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: m_Name
-      value: swordSlashPrticles
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549581, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549583, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: looping
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549583, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: InitialModule.startLifetime.scalar
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549583, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: moveWithTransform
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549583, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: ShapeModule.enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549583, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: ShapeModule.type
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549583, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: ShapeModule.radiusThickness
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549583, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: ShapeModule.m_Rotation.x
-      value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549583, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: ShapeModule.radius.value
-      value: 0.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 2139566938714549583, guid: 411356bc52720be47907b8745ed05cd8,
-        type: 3}
-      propertyPath: ShapeModule.arc.mode
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 411356bc52720be47907b8745ed05cd8, type: 3}
---- !u!4 &7068207730414417015 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2139566938714549568, guid: 411356bc52720be47907b8745ed05cd8,
-    type: 3}
-  m_PrefabInstance: {fileID: 9198063135167437111}
   m_PrefabAsset: {fileID: 0}

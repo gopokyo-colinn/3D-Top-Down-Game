@@ -6,6 +6,7 @@ public class Weapon : MonoBehaviour
 {
     Collider coli;
     PlayerController player;
+    public ParticleSystem weaponTrialEffect;
 
     //TODO: Add functionality to be used by enemies too...
 

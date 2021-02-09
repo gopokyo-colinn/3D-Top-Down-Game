@@ -41,6 +41,7 @@ public struct structItem
 {
     public string sID;
     public int iQuantity;
+    public bool bEquipped;
 }
 /// <summary>
 /// Quest Structs-------------------------------------------------------------------------------------------

@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
 
     const float fHEAD_OFFSET = 1f;
     const float fNPC_DISTANCE_CHECK = 0.8f;
-    const float fDISTANCE_TO_GROUND = 0.1f;
+    const float fDISTANCE_TO_GROUND = 0.2f;
     const float fINVULNERABILITY_TIME = 0.5f;
     const float fSTUN_TIME = 0.4f;
     const float fSPRINT_STAMINA_COST = 10f; // is multipleid by deltaTime
@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     private bool bDrawPrimaryWeapon;
     private bool bPrimaryWeaponEquipped;
     private bool bShieldEquipped;
-    private bool bCanAttack = true;
+  //  private bool bCanAttack = true;
     private bool bIsAttacking;
     private bool bIsInteracting;
     private bool bIsInvulnerable;
@@ -69,7 +69,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     {
         instance = this;
         rbody = GetComponent<Rigidbody>();
-        anim = GetComponentInChildren<Animator>();
+        anim = GetComponent<Animator>();
         fCurrentHitPoints = fMaxHitPoints;
         fCurrentStamina = fMaxStamina;
         bIsAlive = true;
@@ -253,17 +253,13 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             if (Input.GetButtonDown("Attack"))
             {
                 iAttackCombo++;
-                if(iAttackCombo > 0 && bCanAttack && fCurrentStamina > fATTACK_STAMINA_COST)
+                if(iAttackCombo > 0 && !bIsAttacking && fCurrentStamina > fATTACK_STAMINA_COST)
                 {
                     fCurrentStamina -= fATTACK_STAMINA_COST;
-                    bIsAttacking = true;
-                    bCanAttack = false;
+                    //bIsAttacking = true; // its set to true in animation
+                    //bCanAttack = false;
                     anim.SetTrigger("attack1");
                 }
-            }
-            else
-            {
-                bIsAttacking = !bCanAttack;
             }
         } 
     }
@@ -282,12 +278,6 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             rbody.velocity = new Vector3(horizontal * fSpeed * (sSpeedMultiplier / 1.5f) * Time.fixedDeltaTime, rbody.velocity.y, vertical * fSpeed * (sSpeedMultiplier / 1.5f) * Time.fixedDeltaTime);
         else
             rbody.velocity = new Vector3(horizontal * fSpeed * Time.fixedDeltaTime, rbody.velocity.y, vertical * fSpeed * Time.fixedDeltaTime);
-    }
-    // Gizmos
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawSphere(transform.position + transform.forward, 1f);
-        // Gizmo for below Function
     }
     public void CheckAheadForColliders()
     {
@@ -346,7 +336,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                 {
                     if (playerInventory.lstItems[i].iQuantity < playerInventory.lstItems[i].iStackLimit)
                     {
-                        playerInventory.lstItems[i].SetQuantity(playerInventory.lstItems[i].iQuantity + 1); // increase stack amount by 1
+                        playerInventory.lstItems[i].SetItemQuantity(playerInventory.lstItems[i].iQuantity + 1); // increase stack amount by 1
                         _bItemAlreadyInventory = true;
                         _collidedItemContainer.DestroySelf();
                         break;
@@ -389,7 +379,6 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         anim.SetFloat("moveVelocity", 0f);
         anim.SetBool("isShielding", false);
     }
-
    
     /// Health System
     public void ApplyKnockback(Vector3 _sourcePosition, float _pushForce)
@@ -565,9 +554,9 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         else
             pEquimentManager.SetShield(null);
     }
-    public void SetCanAttack(bool _bCanAttack)
+    public void SetIsAttacking(bool _bIsAttacking)
     {
-        bCanAttack = _bCanAttack;
+        bIsAttacking = _bIsAttacking;
     }
     public Animator GetAnimator()
     {
@@ -586,7 +575,6 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
 
         _saveData.playerSaveData = _playerSaveData;
     }
-
     public void LoadSaveData(SaveData _saveData)
     {
         structPlayerSaveData = new structGameSavePlayer();
@@ -599,11 +587,42 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         instance.lastFacinDirection = new Vector3(structPlayerSaveData.tRotation[0], structPlayerSaveData.tRotation[1], structPlayerSaveData.tRotation[2]); // 0 = x, 1 = y, 2 = z
 
         instance.playerInventory = new Inventory(structPlayerSaveData.playerInventory.iInventorySize);
-        instance.playerInventory.SetInventory(structPlayerSaveData.playerInventory);
+        instance.playerInventory.LoadInventory(structPlayerSaveData.playerInventory);
         PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(instance.playerInventory);
+        instance.EquipItems();
 
         instance.OnReciveDamageUI.Invoke();
         instance.OnStaminaChangeUI.Invoke();
+    }
+    public void EquipItems()
+    {
+        for (int i = 0; i < playerInventory.lstItems.Count; i++)
+        {
+            if (playerInventory.lstItems[i].bIsEquipable)
+            {
+                if (playerInventory.lstItems[i].bIsEquipped)
+                {
+                    switch (playerInventory.lstItems[i].eType)
+                    {
+                        case ItemType.Shield:
+                            SetShieldEquipped(playerInventory.lstItems[i]);
+                            break;
+                        case ItemType.PrimaryWeapon:
+                            SetPrimaryWeaponEquipped(playerInventory.lstItems[i]);
+                            break;
+                        case ItemType.SecondaryWeapon:
+                            SetSecondaryWeaponEquipped(playerInventory.lstItems[i]);
+                            break;
+                    }
+                }
+            }
+        }
+    }
+    // Gizmos
+    private void OnDrawGizmos()
+    {
+       // Gizmos.DrawSphere(transform.position + transform.forward, 1f);
+        // Gizmo for below Function
     }
 }
 

@@ -34,8 +34,9 @@ public static class HelpUtils
         _callBack(_setBool);
         //StopAllCoroutines();
     }
-    public static IEnumerator WaitForSeconds(float _time)
+    public static IEnumerator WaitForSeconds(System.Action _callBack, float _time)
     {
         yield return new WaitForSeconds(_time);
+        _callBack();
     }
 }

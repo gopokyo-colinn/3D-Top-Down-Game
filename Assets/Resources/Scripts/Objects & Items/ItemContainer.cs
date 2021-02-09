@@ -27,7 +27,7 @@ public class ItemContainer : MonoBehaviour
     public void SetItem(Item _item)
     {
         item = new Item(_item);
-        item.SetQuantity(1); // to make the amount 1
+        item.SetItemQuantity(1); // to make the amount 1
     }
     public void DestroySelf()
     {
@@ -53,6 +53,7 @@ public class ItemContainer : MonoBehaviour
         structThisItem = new structItem();
         structThisItem.sID = item.sID;
         structThisItem.iQuantity = item.iQuantity;
+        structThisItem.bEquipped = item.bIsEquipped;
 
         item.SetItem(structThisItem);
     }

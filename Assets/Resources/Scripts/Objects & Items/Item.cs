@@ -51,10 +51,18 @@ public class Item: ScriptableObject
         structThisItem = new structItem();
         structThisItem.sID = sID;
         structThisItem.iQuantity = iQuantity;
+        structThisItem.bEquipped = bIsEquipped;
     }
-    public void SetQuantity(int _amount)
+    public void SetItemVariables(structItem _structItem)
     {
-        iQuantity = _amount;
+        iQuantity = _structItem.iQuantity;
+        bIsEquipped = _structItem.bEquipped;
+        structThisItem.iQuantity = iQuantity;
+        structThisItem.bEquipped = bIsEquipped;
+    }
+    public void SetItemQuantity(int _iQuantity)
+    {
+        iQuantity = _iQuantity;
         structThisItem.iQuantity = iQuantity;
     }
     public bool UseItem(PlayerController _player)
@@ -80,8 +88,9 @@ public class Item: ScriptableObject
     {
         return itemIcon;
     }
-    public structItem GetItem()
+    public structItem GetItemStruct()
     {
+        structThisItem.bEquipped = bIsEquipped;
         return structThisItem;
     }
     public void SetItem(structItem _structItem)

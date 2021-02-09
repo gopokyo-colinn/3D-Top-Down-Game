@@ -20,18 +20,18 @@ public class PlayerEquipmentManager : MonoBehaviour
     public GameObject primaryWeapon;
     public GameObject secondaryWeapon;
     // Assigned Weapons and Equipment SFX
-    public GameObject trialEffects;
-    Animator trialEffectAnimator;
-    GameObject swish1;
+    public GameObject trialEffectContainer;
+    //GameObject swish1;
 
+    ParticleSystem trialEffectPrimaryWeapon;
     //public GameObject swordSlashParticles;
 
     private void Start()
     {
         player = GetComponent<PlayerController>();
-        trialEffectAnimator = trialEffects.GetComponent<Animator>();
-        swish1 = trialEffects.transform.GetChild(0).gameObject;
-        swish1.SetActive(false);
+        //trialEffectContainer = trialEffects.GetComponent<Animator>();
+       // swish1 = trialEffects.transform.GetChild(0).gameObject;
+       // swish1.SetActive(false);
     }
     public void ShieldActivate(BodyPartToAttachTo bodyPart)
     {
@@ -61,15 +61,25 @@ public class PlayerEquipmentManager : MonoBehaviour
 
     public void EnableSlashParticles()
     {
-        trialEffectAnimator.SetBool("slash_1b", player.IsAttacking());
+        //trialEffectAnimator.SetBool("slash_1b", player.IsAttacking());
+        trialEffectPrimaryWeapon.transform.parent = primaryWeapon.transform;
+        trialEffectPrimaryWeapon.transform.localPosition = new Vector3(0, -0.24f, 0);
+        trialEffectPrimaryWeapon.transform.localRotation = Quaternion.Euler( Vector3.zero);
+        trialEffectPrimaryWeapon.Play();
     }
     public void DisableSlashParticles()
     {
-        trialEffectAnimator.SetBool("slash_1b", false);
+        //trialEffectAnimator.SetBool("slash_1b", player.IsAttacking());
+        trialEffectPrimaryWeapon.Stop();
+        trialEffectPrimaryWeapon.transform.parent = trialEffectContainer.transform;
     }
-    public void SetAttackFalse()
+    public void SetAttackBool(int _bSetAttack)
     {
-       player.SetCanAttack(true);
+        if(_bSetAttack == 1)
+            player.SetIsAttacking(true);
+        else
+            player.SetIsAttacking(false);
+
     }
 
     IEnumerator disableGameObjectAfter(GameObject _go, bool _enableDisable)
@@ -85,12 +95,13 @@ public class PlayerEquipmentManager : MonoBehaviour
             Destroy(primaryWeapon);
         }
         primaryWeapon = _primaryWeapon;
+        trialEffectPrimaryWeapon = primaryWeapon.GetComponent<Weapon>().weaponTrialEffect;
     }
     public void SetSecondaryWeapon(GameObject _secondaryWeapon)
     {
         if (secondaryWeapon != null)
         {
-            Destroy(primaryWeapon);
+            Destroy(secondaryWeapon);
         }
         secondaryWeapon = _secondaryWeapon;
     }

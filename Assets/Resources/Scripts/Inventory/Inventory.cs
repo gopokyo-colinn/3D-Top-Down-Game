@@ -49,7 +49,7 @@ public class Inventory
         {
             if (lstItems[i].sID == _item.sID)
             {
-                lstItems[i].SetQuantity(lstItems[i].iQuantity - 1);
+                lstItems[i].SetItemQuantity(lstItems[i].iQuantity - 1);
             }
         }
     }
@@ -74,11 +74,11 @@ public class Inventory
 
         for (int i = 0; i < lstItems.Count; i++)
         {
-            structInventory.itemsLst.Add(lstItems[i].GetItem());
+            structInventory.itemsLst.Add(lstItems[i].GetItemStruct());
         }
         return structInventory;
     }
-    public void SetInventory(structInventory _structInventory)
+    public void LoadInventory(structInventory _structInventory)
     {
         structInventory = _structInventory;
         iInventorySize = structInventory.iInventorySize;
@@ -92,7 +92,7 @@ public class Inventory
             Item _newItem = new Item(ItemDatabaseManager.Instance.GetItemByID(_savedItemsLst[i].sID));
             if(_newItem != null)
             {
-                _newItem.SetQuantity(_savedItemsLst[i].iQuantity);
+                _newItem.SetItemVariables(_savedItemsLst[i]);
                 lstItems.Add(_newItem);
             }
         }
