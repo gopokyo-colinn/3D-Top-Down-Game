@@ -41,11 +41,19 @@ public class Enemy : MonoBehaviour
     public float fOnCollisionKnockBackForce = 5f;
     public Vector3 tHeadOffset = new Vector3(0, 0.5f, 0);
 
+    // Patrolling
+    // Patrolling
+    protected bool bIsPatroller;
+    private Vector3 lastFacingDirection;
+    private bool bDirReversing;
+    protected bool bReverseDirection;
+    private int iPatrolPos = 0;
+
     // Astar Pathfinding Variables
-    bool bPathSuccess;
-    protected bool bFollowingPath;
-    int iPathIndex = 0;
-    Vector3[] pathToFollow = new Vector3[0];
+    //   bool bPathSuccess;
+    //  protected bool bFollowingPath;
+    //  int iPathIndex = 0;
+    //   Vector3[] pathToFollow = new Vector3[0];
 
     //// Worst Obstacle Crossing Technique
     //bool bObstacleInMyWay;
@@ -71,6 +79,15 @@ public class Enemy : MonoBehaviour
         startPosition = transform.position;
         fAttackWaitTimeCounter = 0;
         bIsAlive = true;
+
+        // Just Randomiaing the stats a bit
+        fSpeed = Random.Range(fSpeed - 20f, fSpeed + 20f);
+        if (fWaitTime > 2)
+            fWaitTime = Random.Range(fWaitTime - 1f, fWaitTime + 1f);
+        if (fWalkTime > 2)
+            fWaitTime = Random.Range(fWalkTime - 1f, fWalkTime + 1f);
+
+        StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsMoving = b; }, true, fWaitTime));
     }
     public void Refresh()
     {
@@ -78,7 +95,7 @@ public class Enemy : MonoBehaviour
         {
             if (!bTargetFound) 
             {
-               //CheckWalkingAreaAStar(startPosition); 
+               CheckWalkingArea(startPosition); 
             }
         }
     }
@@ -123,7 +140,7 @@ public class Enemy : MonoBehaviour
             }
         }
     }
-    public void MovingRandomly()
+    public void MoveRandomly()
     {
         if (!bCanMove)
         {
@@ -146,9 +163,53 @@ public class Enemy : MonoBehaviour
             {
                 if (bCanRotate)
                 {
-                    HelpUtils.RotateTowardsTarget(transform, randomVector, Random.Range(80f, fROTATE_SPEED));
+                    HelpUtils.RotateTowardsTarget(transform, randomVector, fROTATE_SPEED);
                 }
             }
+        }
+    }
+    public void DoPatrolling(Transform[] _patrollingPoints)
+    {
+        Debug.Log(iPatrolPos);
+        if (bIsMoving)
+        {
+            lastFacingDirection = (_patrollingPoints[iPatrolPos].position - transform.position).normalized;
+
+            if ((transform.position - _patrollingPoints[iPatrolPos].position).sqrMagnitude <= 1f)
+            {
+                bIsMoving = false;
+                StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsMoving = b; }, true, fWaitTime));
+
+                if (bDirReversing)
+                    iPatrolPos--;
+                else
+                    iPatrolPos++;
+
+                if (iPatrolPos >= _patrollingPoints.Length)
+                {
+                    if (bReverseDirection)
+                    {
+                        iPatrolPos = _patrollingPoints.Length - 2;
+                        bDirReversing = true;
+                    }
+                    else
+                        iPatrolPos = 0;
+                }
+                else if (iPatrolPos == 0)
+                {
+                    if (bDirReversing)
+                    {
+                        bDirReversing = false;
+                    }
+                }
+            }
+           
+            transform.forward = lastFacingDirection;
+            rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
+        }
+        else
+        {
+            HelpUtils.RotateTowardsTarget(transform, _patrollingPoints[iPatrolPos].position, fROTATE_SPEED);
         }
     }
     public void CalculateInvulnerability(float _fStunTime)
@@ -216,7 +277,9 @@ public class Enemy : MonoBehaviour
     }
     IEnumerator SetRandomDirection()
     {
-        randomVector = transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(1f, -1f)); // added transform position for rotating correctly
+        randomVector = Random.insideUnitSphere * 100f;
+        randomVector.y = 0;
+        
         if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
         {
             transform.forward *= -1;// transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(1f, -1f)); //new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
@@ -241,222 +304,20 @@ public class Enemy : MonoBehaviour
             rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
         }
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// Obstacle Checking
-    public bool IsObstacleBetweenTargetAndMe(Vector3 _targetPosition)
+    public void CheckWalkingArea(Vector3 _targetPosition) // Walk Area Check 
     {
-        Ray _rayToPlayer = new Ray(transform.position + tHeadOffset, (_targetPosition - transform.position).normalized);
-        RaycastHit _hit;
-        Debug.DrawRay(transform.position, (_targetPosition - transform.position).normalized * 10f);
-
-        if (Physics.Raycast(_rayToPlayer, out _hit, 10f))
+        if (!bIsPatroller)
         {
-            if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("Player"))
-                return false;
-        }
-        return true;
-    }
-    public bool IsObstaclesInFront()
-    {
-        RaycastHit _hit;
-
-        if (Physics.BoxCast(transform.position  + tHeadOffset, transform.localScale / 2, transform.forward, out _hit, Quaternion.identity, 2f, LayerMask.GetMask("Default"), QueryTriggerInteraction.Ignore)) // obstacle is in way
-        {
-            //Debug.Log(_hit.collider.gameObject.name);
-            return true;
-        }
-        return false;
-    }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// Obstacle Crossing Super Fuddu Bakwas AI
-  /*  public bool CheckObstaclesInPath(Vector3 _targetPositin)
-    {
-        CheckRaysSideways(_targetPositin, true);
-        DrawRaysLeftRight(_targetPositin, dirToObstacleCross, 9999, true);
-
-        if (!bForwardHit && !bRightHit && !bLeftHit && !bTotalLeftHit && !bTotalRightHit)
-        {
-            fObstacleCheckTimer -= Time.deltaTime;
-            if (fObstacleCheckTimer <= 0)
+            if ((transform.position - _targetPosition).sqrMagnitude > fMaxWalkingDistance)
             {
-                bObstacleInMyWay = false;
-                dirToObstacleCross = Vector3.zero;
-                fObstacleCheckTimer = 0.4f;
-            }
-            return true;
-        }
-        else
-        {
-            // dirToObstacleCross = Vector3.zero;
-            fObstacleCheckTimer = 0.4f;
-        }
-
-        return false;
-    }
-    public void MoveWithAIRaycastMethod(Vector3 _targetPositin)
-    {
-        RaycastHit _hit;
-        Ray _rForward = new Ray(transform.position + tHeadOffset, transform.forward);
-
-        if (Physics.BoxCast(transform.position + tHeadOffset, transform.localScale * 2, transform.forward, out _hit, Quaternion.identity, 3f, LayerMask.GetMask("Player", "Ground", "Item", "Weapon"))) // obstacle is in way
-        {
-            bForwardHit = false;
-        }
-        else if (Physics.BoxCast(transform.position + tHeadOffset, transform.localScale * 2, transform.forward, out _hit, Quaternion.identity, 3f)) // obstacle is in way
-        {
-            bForwardHit = true;
-            bObstacleInMyWay = true;
-
-            if (dirToObstacleCross == Vector3.zero)
-            {
-                dirToObstacleCross = CheckRaysSideways(_targetPositin);
+                transform.forward = (_targetPosition - transform.position).normalized;
+                rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
             }
         }
-        else
-        {
-            bForwardHit = false;
-        }
-        if (bObstacleInMyWay)
-        {
-            if (bForwardHit)
-                transform.forward = dirToObstacleCross; // Rotating causes error
-                                                        //HelpUtils.RotateTowardsTarget(transform, dirToObstacleCross, fROTATE_SPEED); 
-        }
-        // Debug.DrawRay(transform.position + tHeadOffset, transform.forward * 2f);
     }
-    public Vector3 CheckRaysSideways(Vector3 _targetPositin, bool _bRayCheckOnly = false)
-    {
-        Debug.DrawRay(transform.position + tHeadOffset, (transform.forward + transform.right / 2) * 2f);
-        Debug.DrawRay(transform.position + tHeadOffset, (transform.forward - transform.right / 2) * 2f);
 
-        Ray _rRight = new Ray(transform.position + tHeadOffset, (transform.forward + transform.right / 2));
-        Ray _rLeft = new Ray(transform.position + tHeadOffset, (transform.forward - transform.right / 2));
-
-        Vector3 _dirToMove = _rRight.direction;
-        float _fClosestAngle = 9999f;
-
-        if (!Physics.Raycast(_rRight, 2f))
-        {
-            bRightHit = false;
-            if (!_bRayCheckOnly)
-            {
-                Vector3 targetDir = _targetPositin - transform.position;
-                float angle = Vector3.Angle(targetDir, _rRight.GetPoint(1f));
-
-                if (angle < _fClosestAngle)
-                {
-                    _fClosestAngle = angle;
-                }
-                _dirToMove = _rRight.direction;
-            }
-        }
-        else
-        {
-            bRightHit = true;
-        }
-
-        if (!Physics.Raycast(_rLeft, 2f))
-        {
-            bLeftHit = false;
-            if (!_bRayCheckOnly)
-            {
-                Vector3 targetDir = _targetPositin - transform.position;
-                float angle = Vector3.Angle(targetDir, _rLeft.GetPoint(1f));
-
-                if (angle < _fClosestAngle)
-                {
-                    _fClosestAngle = angle;
-                    _dirToMove = _rLeft.direction;
-                }
-            }
-        }
-        else
-        {
-            bLeftHit = true;
-        }
-
-        if (!_bRayCheckOnly)
-        {
-            // if (bLeftHit && bRightHit)
-            {
-                _dirToMove = DrawRaysLeftRight(_targetPositin, _dirToMove, _fClosestAngle);
-            }
-        }
-
-        return _dirToMove;
-    }
-    public Vector3 DrawRaysLeftRight(Vector3 _targetPositin, Vector3 _defaultDirection, float _fClosestAngle = 9999f, bool _bCheckOnly = false)
-    {
-        Ray _rTotalRight = new Ray(transform.position + tHeadOffset, (transform.right));
-        Ray _rTotalLeft = new Ray(transform.position + tHeadOffset, (-transform.right));
-
-        Vector3 _dirToMove = _targetPositin;
-        // float _fClosestAngle = 9999f;
-
-        if (!Physics.Raycast(_rTotalLeft, 2f))
-        {
-            bTotalLeftHit = false;
-            if (!_bCheckOnly)
-            {
-                Vector3 targetDir = _targetPositin - transform.position;
-                float angle = Vector3.Angle(targetDir, _rTotalLeft.GetPoint(1f));
-
-                if (angle < _fClosestAngle)
-                    //            {
-                    _fClosestAngle = angle;
-                _dirToMove = _rTotalLeft.direction;
-            }
-            else
-                _dirToMove = _defaultDirection;
-        }
-    }
-        else
-        {
-            bTotalLeftHit = true;
-        }
-        if (!Physics.Raycast(_rTotalRight, 2f))
-        {
-            bTotalRightHit = false;
-            if (!_bCheckOnly)
-            {
-                Vector3 targetDir = _targetPositin - transform.position;
-float angle = Vector3.Angle(targetDir, _rTotalRight.GetPoint(1f));
-
-                if (angle<_fClosestAngle)
-                {
-                    _fClosestAngle = angle;
-                    _dirToMove = _rTotalRight.direction;
-                }
-                else
-                    _dirToMove = _defaultDirection;
-            }
-        }
-        else
-        {
-            bTotalRightHit = true;
-        }
-
-        return _dirToMove;
-    }
-    public void FollowTargetWithNoobAI(Vector3 _targetPos)
-{
-    if (!bIsAttacking)
-    {
-        MoveWithAIRaycastMethod(_targetPos);
-
-        if (!bObstacleInMyWay)
-        {
-            HelpUtils.RotateTowardsTarget(transform, _targetPos, fROTATE_SPEED);
-        }
-        else
-            CheckObstaclesInPath(_targetPos);
-
-        rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
-    }
-}*/
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Damages and Health Effects
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Damages and Health Effects
     public void ApplyKnockback(Vector3 _sourcePosition, float _pushForce)
     {
         if (!bIsInvulnerable)
@@ -474,14 +335,18 @@ float angle = Vector3.Angle(targetDir, _rTotalRight.GetPoint(1f));
     public void Die()
     {
         bIsAlive = false;
-        rbody.isKinematic = true;
+        StartCoroutine(HelpUtils.WaitForSeconds(ClearEnemyStuff, 1f));
         Destroy(gameObject, 4f);
+    }
+    void ClearEnemyStuff()
+    {
+        rbody.isKinematic = true;
         Collider[] _colliders = GetComponents<Collider>();
         for (int i = 0; i < _colliders.Length; i++)
         {
             _colliders[i].enabled = false;
         }
-    }
+    }// MAKING IT KINEMETIC ON DEATH, AND REMOVING COLLIDERS
     public bool IsInvulnerable()
     {
         return bIsInvulnerable;
@@ -490,87 +355,113 @@ float angle = Vector3.Angle(targetDir, _rTotalRight.GetPoint(1f));
     {
         return !bIsAlive;
     }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Obstacle Checking
+    //public bool IsObstacleBetweenTargetAndMe(Vector3 _targetPosition)
+    //{
+    //    Ray _rayToPlayer = new Ray(transform.position + tHeadOffset, (_targetPosition - transform.position).normalized);
+    //    RaycastHit _hit;
+    //    Debug.DrawRay(transform.position, (_targetPosition - transform.position).normalized * 10f);
 
-    //// AStar Function for Walk Area and Target Follow ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //    if (Physics.Raycast(_rayToPlayer, out _hit, 10f))
+    //    {
+    //        if (_hit.collider.gameObject.layer == LayerMask.NameToLayer("Player"))
+    //            return false;
+    //    }
+    //    return true;
+    //}
+    //public bool IsObstaclesInFront()
+    //{
+    //    RaycastHit _hit;
 
-    public void FollowTargetAStar(Vector3 _targetPosition) // Right now Follow Target With AStar Algorithm (Gets too laggy sometimes)
-    {
-        if (!bIsAttacking && !bIsInvulnerable)
-        {
-            //            Debug.Log(bFollowingPath);
-            if (IsObstacleBetweenTargetAndMe(_targetPosition)) // obstacle is in way
-            {
-                // bFollowingPath = false;
-                RequestPath(_targetPosition);
-            }
-            else
-            {
-                HelpUtils.RotateTowardsTarget(transform, _targetPosition, fROTATE_SPEED);
-                rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
-            }
-            //else
-            if (bFollowingPath)
-            {
-                FollowPath();
-            }
-        }
-    }
-    public void CheckWalkingAreaAStar(Vector3 _targetPosition)
-    {
-        if ((transform.position - startPosition).sqrMagnitude > fMaxWalkingDistance)
-        {
-            RequestPath(_targetPosition);
-        }
-        if (bFollowingPath && !bTargetFound)
-        {
-            FollowPath();
-        }
-    }// Walk Area Check with AStar Algorithm (Too laggy with multiple units)
+    //    if (Physics.BoxCast(transform.position + tHeadOffset, transform.localScale / 2, transform.forward, out _hit, Quaternion.identity, 2f, LayerMask.GetMask("Default"), QueryTriggerInteraction.Ignore)) // obstacle is in way
+    //    {
+    //        //Debug.Log(_hit.collider.gameObject.name);
+    //        return true;
+    //    }
+    //    return false;
+    //}
+
+    /// AStar Function for Walk Area and Target Follow ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //public void FollowTargetAStar(Vector3 _targetPosition) // Right now Follow Target With AStar Algorithm (Gets too laggy sometimes)
+    //{
+    //    if (!bIsAttacking && !bIsInvulnerable)
+    //    {
+    //        //            Debug.Log(bFollowingPath);
+    //        if (IsObstacleBetweenTargetAndMe(_targetPosition)) // obstacle is in way
+    //        {
+    //            // bFollowingPath = false;
+    //            RequestPath(_targetPosition);
+    //        }
+    //        else
+    //        {
+    //            HelpUtils.RotateTowardsTarget(transform, _targetPosition, fROTATE_SPEED);
+    //            rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
+    //        }
+    //        //else
+    //        if (bFollowingPath)
+    //        {
+    //            FollowPath();
+    //        }
+    //    }
+    //}
+    //public void CheckWalkingAreaAStar(Vector3 _targetPosition)
+    //{
+    //    if ((transform.position - startPosition).sqrMagnitude > fMaxWalkingDistance)
+    //    {
+    //        RequestPath(_targetPosition);
+    //    }
+    //    if (bFollowingPath && !bTargetFound)
+    //    {
+    //        FollowPath();
+    //    }
+    //}// Walk Area Check with AStar Algorithm (Too laggy with multiple units)
 
     /// Pathfinding Requests
-    public void RequestPath(Vector3 _targetPos)
-    {
-        if (!bFollowingPath)
-        {
-            Debug.Log("Path Requested Complete");
-            bFollowingPath = true;
-            PathFindingManager.RequestPath(new PathRequest(transform.position, _targetPos, OnPathRequest));
-            iPathIndex = 0;
-        }
+    //public void RequestPath(Vector3 _targetPos)
+    //{
+    //    if (!bFollowingPath)
+    //    {
+    //        Debug.Log("Path Requested Complete");
+    //        bFollowingPath = true;
+    //        PathFindingManager.RequestPath(new PathRequest(transform.position, _targetPos, OnPathRequest));
+    //        iPathIndex = 0;
+    //    }
 
-    }
-    public void OnPathRequest(Vector3[] _path, bool _bSuccess)
-    {
-        if (_bSuccess)
-        {
-            pathToFollow = _path;
-        }
-    }
-    public void FollowPath()
-    {
-        if (pathToFollow != null)
-        {
-            if(pathToFollow.Length > 0)
-            {
-                if(iPathIndex < pathToFollow.Length)
-                {
-                    Vector3 _nextPosition = new Vector3(pathToFollow[iPathIndex].x, transform.position.y, pathToFollow[iPathIndex].z);
+    //}
+    //public void OnPathRequest(Vector3[] _path, bool _bSuccess)
+    //{
+    //    if (_bSuccess)
+    //    {
+    //        pathToFollow = _path;
+    //    }
+    //}
+    //public void FollowPath()
+    //{
+    //    if (pathToFollow != null)
+    //    {
+    //        if(pathToFollow.Length > 0)
+    //        {
+    //            if(iPathIndex < pathToFollow.Length)
+    //            {
+    //                Vector3 _nextPosition = new Vector3(pathToFollow[iPathIndex].x, transform.position.y, pathToFollow[iPathIndex].z);
 
-                   // transform.forward = (pathToFollow[iPathIndex] - transform.position).normalized;
-                    HelpUtils.RotateTowardsTarget(transform, pathToFollow[iPathIndex], fROTATE_SPEED / 2);
+    //               // transform.forward = (pathToFollow[iPathIndex] - transform.position).normalized;
+    //                HelpUtils.RotateTowardsTarget(transform, pathToFollow[iPathIndex], fROTATE_SPEED / 2);
 
-                    if ((_nextPosition - transform.position).sqrMagnitude < 1)
-                    {
-                        iPathIndex++;
-                    }
-                }
-           
-                if ((transform.position - new Vector3(pathToFollow[pathToFollow.Length - 1].x, transform.position.y, pathToFollow[pathToFollow.Length - 1].z)).sqrMagnitude < 4)//iPathIndex >= pathToFollow.Length)
-                {
-                    bFollowingPath = false;
-                }
-            }
-        }
-        rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
-    }
+    //                if ((_nextPosition - transform.position).sqrMagnitude < 1)
+    //                {
+    //                    iPathIndex++;
+    //                }
+    //            }
+
+    //            if ((transform.position - new Vector3(pathToFollow[pathToFollow.Length - 1].x, transform.position.y, pathToFollow[pathToFollow.Length - 1].z)).sqrMagnitude < 4)//iPathIndex >= pathToFollow.Length)
+    //            {
+    //                bFollowingPath = false;
+    //            }
+    //        }
+    //    }
+    //    rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
+    //}
 }

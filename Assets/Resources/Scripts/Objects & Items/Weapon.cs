@@ -15,6 +15,7 @@ public class Weapon : MonoBehaviour
         coli = GetComponent<Collider>();
         coli.enabled = false;
         player = PlayerController.Instance;
+        coli.isTrigger = true;
     }
 
     public void Update()

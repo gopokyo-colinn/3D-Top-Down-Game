@@ -140,5 +140,5 @@ MonoBehaviour:
   bIsProjectileAttack: 1
   bIsTypeOfEnemy: 1
   bIsPlayer: 0
-  fKnockForce: 7
+  fKnockForce: 8
   attackCollider: {fileID: 2409141566461220095}

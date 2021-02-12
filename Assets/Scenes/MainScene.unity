@@ -282,7 +282,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &27828294
 MonoBehaviour:
@@ -296,9 +296,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &27828295
@@ -479,7 +479,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17386
+  m_Name: pb_Mesh17396
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1078,6 +1078,36 @@ Transform:
   m_Father: {fileID: 788535367}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 44.690765, y: 46.120667, z: -52.50935}
+--- !u!1 &65132684
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 65132685}
+  m_Layer: 0
+  m_Name: Loc3 (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &65132685
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65132684}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -32.26, y: 0, z: 14.03}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 963876909}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &87144889
 GameObject:
   m_ObjectHideFlags: 0
@@ -1231,6 +1261,169 @@ Transform:
   m_Father: {fileID: 1227177653}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!43 &101536779
+Mesh:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: pb_Mesh18178
+  serializedVersion: 10
+  m_SubMeshes:
+  - serializedVersion: 2
+    firstByte: 0
+    indexCount: 36
+    topology: 0
+    baseVertex: 0
+    firstVertex: 0
+    vertexCount: 24
+    localAABB:
+      m_Center: {x: 0.5, y: 1.5, z: -0.5}
+      m_Extent: {x: 0.5, y: 1.5, z: 0.5}
+  m_Shapes:
+    vertices: []
+    shapes: []
+    channels: []
+    fullWeights: []
+  m_BindPose: []
+  m_BoneNameHashes: 
+  m_RootBoneNameHash: 0
+  m_BonesAABB: []
+  m_VariableBoneCountWeights:
+    m_Data: 
+  m_MeshCompression: 0
+  m_IsReadable: 1
+  m_KeepVertices: 1
+  m_KeepIndices: 1
+  m_IndexFormat: 0
+  m_IndexBuffer: 000001000200010003000200040005000600050007000600080009000a0009000b000a000c000d000e000d000f000e00100011001200110013001200140015001600150017001600
+  m_VertexData:
+    serializedVersion: 3
+    m_VertexCount: 24
+    m_Channels:
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 3
+    - stream: 0
+      offset: 12
+      format: 0
+      dimension: 3
+    - stream: 0
+      offset: 24
+      format: 0
+      dimension: 4
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 40
+      format: 0
+      dimension: 2
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    m_DataSize: 1152
+    _typelessdata: 00000000000000000000000000000000000000000000803f000080bf0000000000000000000080bf00000000000000000000803f000000000000000000000000000000000000803f000080bf0000000000000000000080bf000080bf0000000000000000000040400000000000000000000000000000803f000080bf0000000000000000000080bf00000000000040400000803f000040400000000000000000000000000000803f000080bf0000000000000000000080bf000080bf000040400000803f00000000000000000000803f000000000000000000000000000000000000803f000080bf00000000000000000000803f00000000000080bf0000803f000000000000000000000000000000000000803f000080bf000080bf000000000000803f00004040000000000000803f000000000000000000000000000000000000803f000080bf00000000000040400000803f00004040000080bf0000803f000000000000000000000000000000000000803f000080bf000080bf000040400000803f00000000000080bf0000000000000000000080bf0000803f0000000000000000000080bf0000803f000000000000000000000000000080bf0000000000000000000080bf0000803f0000000000000000000080bf00000000000000000000803f00004040000080bf0000000000000000000080bf0000803f0000000000000000000080bf0000803f000040400000000000004040000080bf0000000000000000000080bf0000803f0000000000000000000080bf00000000000040400000000000000000000080bf000080bf00000000000000000000000000000000000080bf000080bf0000803f00000000000000000000000000000000000080bf00000000000000000000000000000000000080bf000080bf00000000000000000000000000004040000080bf000080bf00000000000000000000000000000000000080bf000080bf0000803f00004040000000000000404000000000000080bf00000000000000000000000000000000000080bf000080bf0000000000004040000000000000404000000000000000000000803f000000000000803f0000000000000000000080bf00000000000000000000803f0000404000000000000000000000803f000000000000803f0000000000000000000080bf0000803f000000000000000000004040000080bf000000000000803f000000000000803f0000000000000000000080bf00000000000080bf0000803f00004040000080bf000000000000803f000000000000803f0000000000000000000080bf0000803f000080bf0000000000000000000080bf00000000000080bf00000000000080bf0000000000000000000080bf00000000000080bf0000803f00000000000080bf00000000000080bf00000000000080bf0000000000000000000080bf000080bf000080bf00000000000000000000000000000000000080bf00000000000080bf0000000000000000000080bf00000000000000000000803f000000000000000000000000000080bf00000000000080bf0000000000000000000080bf000080bf00000000
+  m_CompressedMesh:
+    m_Vertices:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_UV:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Normals:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Tangents:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Weights:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_NormalSigns:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_TangentSigns:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_FloatColors:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_BoneIndices:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Triangles:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_UVInfo: 0
+  m_LocalAABB:
+    m_Center: {x: 0.5, y: 1.5, z: -0.5}
+    m_Extent: {x: 0.5, y: 1.5, z: 0.5}
+  m_MeshUsageFlags: 0
+  m_BakedConvexCollisionMesh: 
+  m_BakedTriangleCollisionMesh: 
+  m_MeshMetrics[0]: 1
+  m_MeshMetrics[1]: 1
+  m_MeshOptimizationFlags: 1
+  m_StreamData:
+    offset: 0
+    size: 0
+    path: 
 --- !u!1 &102740165
 GameObject:
   m_ObjectHideFlags: 0
@@ -1267,7 +1460,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17546
+  m_Name: pb_Mesh17556
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -2197,7 +2390,7 @@ GameObject:
   m_Component:
   - component: {fileID: 227973799}
   m_Layer: 0
-  m_Name: KQ1 Location
+  m_Name: Loc1
   m_TagString: Untagged
   m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -2211,7 +2404,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 227973798}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20.77, y: 0, z: 9.75}
+  m_LocalPosition: {x: -20.77, y: 0, z: 3.34}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 963876909}
@@ -2297,7 +2490,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &245381013
 MonoBehaviour:
@@ -2311,9 +2504,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &245381014
@@ -2447,7 +2640,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sNpcID: 
   sNpcName: Barbarian the Brown
-  fSpeed: 120
+  fSpeed: 200
   sRandomDialogs:
   - sDialogLines:
     - "Hi, I am Barbarian the Brown.\t"
@@ -2460,14 +2653,14 @@ MonoBehaviour:
     - I guess he is really an extraordinary person.
   npcBehaviour: 1
   npcActivity: 1
-  tPatrolPoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   fWalkTime: 1
-  fWaitTime: 3
-  bReveseDirection: 1
-  fMaxWalkingDistance: 20
+  fWaitTime: 1
+  tPatrolPoints:
+  - {fileID: 227973799}
+  - {fileID: 710368288}
+  - {fileID: 972383174}
+  bReverseDirection: 0
+  fMaxWalkingDistance: 100
 --- !u!54 &246462380
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2477,8 +2670,8 @@ Rigidbody:
   m_GameObject: {fileID: 1964351213}
   serializedVersion: 2
   m_Mass: 10
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_Drag: 1
+  m_AngularDrag: 1
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -2563,9 +2756,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 120
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 150
+  fAvoidanceThreshold: 5
+  fDetectionRadius: 0.4
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 0
 --- !u!1 &258260379
@@ -2634,7 +2827,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17602
+  m_Name: pb_Mesh17612
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -2901,7 +3094,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &326269859
 MonoBehaviour:
@@ -2915,9 +3108,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &326269860
@@ -3052,7 +3245,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.7506485
+      value: 8.180649
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -3062,7 +3255,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -9.256201
+      value: -22.256199
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -3112,22 +3305,32 @@ PrefabInstance:
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fWaitTime
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fWalkTime
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fMaxHitPoints
       value: 21
       objectReference: {fileID: 0}
+    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: fSpeed
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: fMaxWalkingDistance
+      value: 142
+      objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243014, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_Drag
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243014, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -3142,12 +3345,17 @@ PrefabInstance:
     - target: {fileID: 2016155963780243018, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243018, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016155963780243019, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3789007393760869379, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -3205,7 +3413,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &343194345
 MonoBehaviour:
@@ -3219,9 +3427,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 60
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &343194346
@@ -3895,7 +4103,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &410729013
 MonoBehaviour:
@@ -3909,9 +4117,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &410729014
@@ -4085,7 +4293,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &422826582
 MonoBehaviour:
@@ -4099,9 +4307,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &422826583
@@ -4355,7 +4563,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &431441957
 MonoBehaviour:
@@ -4369,9 +4577,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &431441958
@@ -4586,6 +4794,7 @@ MonoBehaviour:
   fOnCollisionKnockBackForce: 4
   tHeadOffset: {x: 0, y: 0.5, z: 0}
   fMaxWalkingDistance: 40
+  travelPoints: []
 --- !u!65 &448127135
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4842,7 +5051,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &459809973
 MonoBehaviour:
@@ -4856,9 +5065,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &459809974
@@ -5103,13 +5312,13 @@ MonoBehaviour:
     - I have a lot of trees to plant to make this game look good.
   npcBehaviour: 0
   npcActivity: 0
+  fWalkTime: 1
+  fWaitTime: 1
   tPatrolPoints:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  fWalkTime: 1
-  fWaitTime: 1
-  bReveseDirection: 1
+  bReverseDirection: 0
   fMaxWalkingDistance: 20
 --- !u!114 &483113790
 MonoBehaviour:
@@ -5123,9 +5332,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 10
+  fSpeed: 1
   fAvoidanceThreshold: 4
-  fDetectionSize: 2
+  fDetectionRadius: 0.8
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 0
 --- !u!54 &483113791
@@ -5137,8 +5346,8 @@ Rigidbody:
   m_GameObject: {fileID: 483113787}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_Drag: 1
+  m_AngularDrag: 1
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -5401,7 +5610,7 @@ Transform:
   m_LocalScale: {x: 1.15, y: 0.95, z: 1.15}
   m_Children: []
   m_Father: {fileID: 2122414496}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &532517648
 BoxCollider:
@@ -5522,13 +5731,13 @@ MonoBehaviour:
     - Please don't disturb me I am too busy doing nothing.
   npcBehaviour: 1
   npcActivity: 0
+  fWalkTime: 1
+  fWaitTime: 1
   tPatrolPoints:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  fWalkTime: 1
-  fWaitTime: 1
-  bReveseDirection: 1
+  bReverseDirection: 0
   fMaxWalkingDistance: 20
 --- !u!114 &535594426
 MonoBehaviour:
@@ -5542,9 +5751,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 10
+  fSpeed: 1
   fAvoidanceThreshold: 2
-  fDetectionSize: 1
+  fDetectionRadius: 0.8
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 0
 --- !u!54 &535594427
@@ -5556,8 +5765,8 @@ Rigidbody:
   m_GameObject: {fileID: 535594423}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_Drag: 1
+  m_AngularDrag: 1
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -5833,7 +6042,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &563964708
 MonoBehaviour:
@@ -5847,9 +6056,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 60
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &563964709
@@ -6364,7 +6573,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &632962476
 MonoBehaviour:
@@ -6378,9 +6587,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 60
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &632962477
@@ -7044,9 +7253,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 120
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 150
+  fAvoidanceThreshold: 5
+  fDetectionRadius: 0.4
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 0
 --- !u!1 &691050678
@@ -7250,7 +7459,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &698324928
 MonoBehaviour:
@@ -7264,9 +7473,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &698324929
@@ -7477,7 +7686,7 @@ GameObject:
   m_Component:
   - component: {fileID: 710368288}
   m_Layer: 0
-  m_Name: KQ2 Location
+  m_Name: Loc2
   m_TagString: Untagged
   m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -7491,7 +7700,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 710368287}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -23.1, y: 0, z: 11.69}
+  m_LocalPosition: {x: -31.28, y: 0, z: 6.99}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 963876909}
@@ -7564,7 +7773,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &724270120
 MonoBehaviour:
@@ -7578,9 +7787,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &724270121
@@ -7736,7 +7945,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &738518789
 MonoBehaviour:
@@ -7750,9 +7959,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &738518790
@@ -7954,9 +8163,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 120
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 150
+  fAvoidanceThreshold: 5
+  fDetectionRadius: 0.4
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 0
 --- !u!1 &775922514
@@ -8484,7 +8693,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &801211667
 MonoBehaviour:
@@ -8498,9 +8707,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &801211668
@@ -8668,7 +8877,7 @@ Transform:
   m_LocalScale: {x: 1.15, y: 0.95, z: 1.15}
   m_Children: []
   m_Father: {fileID: 2122414496}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &831296756
 BoxCollider:
@@ -9225,7 +9434,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &856249677
 MonoBehaviour:
@@ -9239,9 +9448,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &856249678
@@ -9368,83 +9577,6 @@ Transform:
   m_Father: {fileID: 1620528727}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &877309067 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 100002, guid: e7e30e3d93b6ede419ee80f7211fcdc5,
-    type: 3}
-  m_PrefabInstance: {fileID: 1476207606}
-  m_PrefabAsset: {fileID: 0}
---- !u!64 &877309068
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 877309067}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
---- !u!4 &877309070 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 400002, guid: e7e30e3d93b6ede419ee80f7211fcdc5,
-    type: 3}
-  m_PrefabInstance: {fileID: 1476207606}
-  m_PrefabAsset: {fileID: 0}
---- !u!137 &877309071
-SkinnedMeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 877309067}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 0
-  m_ReflectionProbeUsage: 0
-  m_RayTracingMode: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: aad97a6770b752245a812fb7d634b907, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  serializedVersion: 2
-  m_Quality: 1
-  m_UpdateWhenOffscreen: 0
-  m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 4300000, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-  m_Bones: []
-  m_BlendShapeWeights: []
-  m_RootBone: {fileID: 0}
-  m_AABB:
-    m_Center: {x: 0.018188715, y: 4.014078, z: 0.035427094}
-    m_Extent: {x: 3.854328, y: 4.014078, z: 4.298296}
-  m_DirtyAABB: 0
 --- !u!1 &891100568
 GameObject:
   m_ObjectHideFlags: 0
@@ -9587,7 +9719,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &909833404
 MonoBehaviour:
@@ -9601,9 +9733,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &909833405
@@ -11007,7 +11139,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &938773941
 MonoBehaviour:
@@ -11021,9 +11153,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &938773942
@@ -11255,6 +11387,8 @@ Transform:
   m_Children:
   - {fileID: 227973799}
   - {fileID: 710368288}
+  - {fileID: 972383174}
+  - {fileID: 65132685}
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -11417,6 +11551,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 08c3a5ee5e4f47549884e078d3ce89fe, type: 3}
+--- !u!1 &972383173
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 972383174}
+  m_Layer: 0
+  m_Name: Loc3
+  m_TagString: Untagged
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &972383174
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 972383173}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -25.24, y: 0, z: 14.03}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 963876909}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &982085200
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12328,7 +12492,7 @@ Transform:
   m_LocalScale: {x: 1.15, y: 0.95, z: 1.15}
   m_Children: []
   m_Father: {fileID: 2122414496}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1034894529
 BoxCollider:
@@ -12469,7 +12633,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1039655542
 MonoBehaviour:
@@ -12483,9 +12647,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1039655543
@@ -13043,7 +13207,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1106701622
 MonoBehaviour:
@@ -13057,9 +13221,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1106701623
@@ -13282,12 +13446,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 08c3a5ee5e4f47549884e078d3ce89fe, type: 3}
---- !u!1 &1114794120 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1340825650192908980, guid: 0bd176d84d9f3b3408d09de614fa79c5,
-    type: 3}
-  m_PrefabInstance: {fileID: 5760500809691960991}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1118755154 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 871659886275840467, guid: 08c3a5ee5e4f47549884e078d3ce89fe,
@@ -13375,7 +13533,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1125688493
 MonoBehaviour:
@@ -13389,9 +13547,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1125688494
@@ -13676,7 +13834,7 @@ Transform:
   m_LocalScale: {x: 1.15, y: 0.95, z: 1.15}
   m_Children: []
   m_Father: {fileID: 2122414496}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1152827824
 BoxCollider:
@@ -13996,7 +14154,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17530
+  m_Name: pb_Mesh17540
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -14243,7 +14401,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1177619978
 MonoBehaviour:
@@ -14257,9 +14415,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1177619979
@@ -14597,7 +14755,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1184425500
 MonoBehaviour:
@@ -14611,9 +14769,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1184425501
@@ -15068,7 +15226,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1232592166
 MonoBehaviour:
@@ -15082,9 +15240,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1232592167
@@ -15393,7 +15551,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1299552483
 MonoBehaviour:
@@ -15407,9 +15565,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1299552484
@@ -15616,7 +15774,7 @@ Transform:
   m_LocalScale: {x: 1.15, y: 0.95, z: 1.15}
   m_Children: []
   m_Father: {fileID: 2122414496}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1336809669
 BoxCollider:
@@ -15688,7 +15846,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.952715
+      value: 6.382715
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -15698,7 +15856,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.722624
+      value: -18.722622
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -15748,22 +15906,32 @@ PrefabInstance:
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fWaitTime
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fWalkTime
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fMaxHitPoints
       value: 21
       objectReference: {fileID: 0}
+    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: fSpeed
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: fMaxWalkingDistance
+      value: 142
+      objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243014, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_Drag
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243014, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -15778,12 +15946,17 @@ PrefabInstance:
     - target: {fileID: 2016155963780243018, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243018, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016155963780243019, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3789007393760869379, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -16021,7 +16194,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 12.737434
+      value: -3.61
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -16031,7 +16204,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.3342247
+      value: -18.08
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -16081,22 +16254,32 @@ PrefabInstance:
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fWaitTime
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fWalkTime
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fMaxHitPoints
       value: 21
       objectReference: {fileID: 0}
+    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: fSpeed
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: fMaxWalkingDistance
+      value: 142
+      objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243014, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_Drag
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243014, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -16111,7 +16294,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243018, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243018, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -16291,7 +16474,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.57
+      value: -1.84
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -16301,7 +16484,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -10.59
+      value: -13.22
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -16351,22 +16534,32 @@ PrefabInstance:
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fWaitTime
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fWalkTime
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fMaxHitPoints
       value: 21
       objectReference: {fileID: 0}
+    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: fSpeed
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: fMaxWalkingDistance
+      value: 142
+      objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243014, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_Drag
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243014, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -16381,12 +16574,17 @@ PrefabInstance:
     - target: {fileID: 2016155963780243018, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243018, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016155963780243019, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3789007393760869379, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -16426,7 +16624,7 @@ Transform:
   m_LocalScale: {x: 1.15, y: 0.95, z: 1.15}
   m_Children: []
   m_Father: {fileID: 2122414496}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1365649576
 BoxCollider:
@@ -16637,7 +16835,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1399277580
 MonoBehaviour:
@@ -16651,9 +16849,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1399277581
@@ -17012,7 +17210,7 @@ Transform:
   m_LocalScale: {x: 1.15, y: 0.95, z: 1.15}
   m_Children: []
   m_Father: {fileID: 2122414496}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1428993137
 BoxCollider:
@@ -17283,7 +17481,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1468881584
 MonoBehaviour:
@@ -17297,9 +17495,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1468881585
@@ -17522,80 +17720,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 08c3a5ee5e4f47549884e078d3ce89fe, type: 3}
---- !u!1001 &1476207606
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 2122414496}
-    m_Modifications:
-    - target: {fileID: 100002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_Name
-      value: Hut 01
-      objectReference: {fileID: 0}
-    - target: {fileID: 400002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -15.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 400002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.85
-      objectReference: {fileID: 0}
-    - target: {fileID: 400002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.9012415
-      objectReference: {fileID: 0}
-    - target: {fileID: 400002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 400002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 400002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 400002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: 400002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 400002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 400002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 2300002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: aad97a6770b752245a812fb7d634b907, type: 2}
-    m_RemovedComponents:
-    - {fileID: 2300002, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
-  m_SourcePrefab: {fileID: 100100000, guid: e7e30e3d93b6ede419ee80f7211fcdc5, type: 3}
 --- !u!1 &1476837343
 GameObject:
   m_ObjectHideFlags: 0
@@ -17676,7 +17800,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1480170845
 MonoBehaviour:
@@ -17690,9 +17814,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1480170846
@@ -17984,7 +18108,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1499474062
 MonoBehaviour:
@@ -17998,9 +18122,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1499474063
@@ -18175,7 +18299,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1508292322
 MonoBehaviour:
@@ -18189,9 +18313,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1508292323
@@ -18350,7 +18474,7 @@ MeshCollider:
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 1598291249}
+  m_Mesh: {fileID: 101536779}
 --- !u!114 &1522581780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18612,7 +18736,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1522581778}
-  m_Mesh: {fileID: 1598291249}
+  m_Mesh: {fileID: 101536779}
 --- !u!4 &1522581783
 Transform:
   m_ObjectHideFlags: 0
@@ -18736,7 +18860,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1528624852
 MonoBehaviour:
@@ -18750,9 +18874,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1528624853
@@ -19049,7 +19173,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1562286208
 MonoBehaviour:
@@ -19063,9 +19187,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1562286209
@@ -19292,169 +19416,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!43 &1598291249
-Mesh:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh18170
-  serializedVersion: 10
-  m_SubMeshes:
-  - serializedVersion: 2
-    firstByte: 0
-    indexCount: 36
-    topology: 0
-    baseVertex: 0
-    firstVertex: 0
-    vertexCount: 24
-    localAABB:
-      m_Center: {x: 0.5, y: 1.5, z: -0.5}
-      m_Extent: {x: 0.5, y: 1.5, z: 0.5}
-  m_Shapes:
-    vertices: []
-    shapes: []
-    channels: []
-    fullWeights: []
-  m_BindPose: []
-  m_BoneNameHashes: 
-  m_RootBoneNameHash: 0
-  m_BonesAABB: []
-  m_VariableBoneCountWeights:
-    m_Data: 
-  m_MeshCompression: 0
-  m_IsReadable: 1
-  m_KeepVertices: 1
-  m_KeepIndices: 1
-  m_IndexFormat: 0
-  m_IndexBuffer: 000001000200010003000200040005000600050007000600080009000a0009000b000a000c000d000e000d000f000e00100011001200110013001200140015001600150017001600
-  m_VertexData:
-    serializedVersion: 3
-    m_VertexCount: 24
-    m_Channels:
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 12
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 24
-      format: 0
-      dimension: 4
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 40
-      format: 0
-      dimension: 2
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    m_DataSize: 1152
-    _typelessdata: 00000000000000000000000000000000000000000000803f000080bf0000000000000000000080bf00000000000000000000803f000000000000000000000000000000000000803f000080bf0000000000000000000080bf000080bf0000000000000000000040400000000000000000000000000000803f000080bf0000000000000000000080bf00000000000040400000803f000040400000000000000000000000000000803f000080bf0000000000000000000080bf000080bf000040400000803f00000000000000000000803f000000000000000000000000000000000000803f000080bf00000000000000000000803f00000000000080bf0000803f000000000000000000000000000000000000803f000080bf000080bf000000000000803f00004040000000000000803f000000000000000000000000000000000000803f000080bf00000000000040400000803f00004040000080bf0000803f000000000000000000000000000000000000803f000080bf000080bf000040400000803f00000000000080bf0000000000000000000080bf0000803f0000000000000000000080bf0000803f000000000000000000000000000080bf0000000000000000000080bf0000803f0000000000000000000080bf00000000000000000000803f00004040000080bf0000000000000000000080bf0000803f0000000000000000000080bf0000803f000040400000000000004040000080bf0000000000000000000080bf0000803f0000000000000000000080bf00000000000040400000000000000000000080bf000080bf00000000000000000000000000000000000080bf000080bf0000803f00000000000000000000000000000000000080bf00000000000000000000000000000000000080bf000080bf00000000000000000000000000004040000080bf000080bf00000000000000000000000000000000000080bf000080bf0000803f00004040000000000000404000000000000080bf00000000000000000000000000000000000080bf000080bf0000000000004040000000000000404000000000000000000000803f000000000000803f0000000000000000000080bf00000000000000000000803f0000404000000000000000000000803f000000000000803f0000000000000000000080bf0000803f000000000000000000004040000080bf000000000000803f000000000000803f0000000000000000000080bf00000000000080bf0000803f00004040000080bf000000000000803f000000000000803f0000000000000000000080bf0000803f000080bf0000000000000000000080bf00000000000080bf00000000000080bf0000000000000000000080bf00000000000080bf0000803f00000000000080bf00000000000080bf00000000000080bf0000000000000000000080bf000080bf000080bf00000000000000000000000000000000000080bf00000000000080bf0000000000000000000080bf00000000000000000000803f000000000000000000000000000080bf00000000000080bf0000000000000000000080bf000080bf00000000
-  m_CompressedMesh:
-    m_Vertices:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UV:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Normals:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Tangents:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Weights:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_NormalSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_TangentSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_FloatColors:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_BoneIndices:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Triangles:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UVInfo: 0
-  m_LocalAABB:
-    m_Center: {x: 0.5, y: 1.5, z: -0.5}
-    m_Extent: {x: 0.5, y: 1.5, z: 0.5}
-  m_MeshUsageFlags: 0
-  m_BakedConvexCollisionMesh: 
-  m_BakedTriangleCollisionMesh: 
-  m_MeshMetrics[0]: 1
-  m_MeshMetrics[1]: 1
-  m_MeshOptimizationFlags: 1
-  m_StreamData:
-    offset: 0
-    size: 0
-    path: 
 --- !u!1 &1618815834
 GameObject:
   m_ObjectHideFlags: 0
@@ -19486,7 +19447,7 @@ Transform:
   m_LocalScale: {x: 1.15, y: 0.95, z: 1.15}
   m_Children: []
   m_Father: {fileID: 2122414496}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1618815836
 BoxCollider:
@@ -19760,7 +19721,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1633302230
 MonoBehaviour:
@@ -19774,9 +19735,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1633302231
@@ -20279,7 +20240,7 @@ PrefabInstance:
     - target: {fileID: 137455695499148879, guid: f8e66db88511f6846a717951d887c832,
         type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 2185881881904918578, guid: f8e66db88511f6846a717951d887c832,
         type: 3}
@@ -20507,6 +20468,179 @@ Transform:
   m_Father: {fileID: 1621052332}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!43 &1700964493
+Mesh:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: pb_Mesh18430
+  serializedVersion: 10
+  m_SubMeshes:
+  - serializedVersion: 2
+    firstByte: 0
+    indexCount: 30
+    topology: 0
+    baseVertex: 0
+    firstVertex: 0
+    vertexCount: 20
+    localAABB:
+      m_Center: {x: 7.5, y: 1.25, z: -0.25}
+      m_Extent: {x: 7.5, y: 1.25, z: 0.25}
+  - serializedVersion: 2
+    firstByte: 60
+    indexCount: 6
+    topology: 0
+    baseVertex: 0
+    firstVertex: 20
+    vertexCount: 4
+    localAABB:
+      m_Center: {x: 7.5, y: 2.5, z: -0.25}
+      m_Extent: {x: 7.5, y: 0, z: 0.25}
+  m_Shapes:
+    vertices: []
+    shapes: []
+    channels: []
+    fullWeights: []
+  m_BindPose: []
+  m_BoneNameHashes: 
+  m_RootBoneNameHash: 0
+  m_BonesAABB: []
+  m_VariableBoneCountWeights:
+    m_Data: 
+  m_MeshCompression: 0
+  m_IsReadable: 1
+  m_KeepVertices: 1
+  m_KeepIndices: 1
+  m_IndexFormat: 0
+  m_IndexBuffer: 000001000200010003000200040005000600050007000600080009000a0009000b000a000c000d000e000d000f000e00100011001200110013001200140015001600150017001600
+  m_VertexData:
+    serializedVersion: 3
+    m_VertexCount: 24
+    m_Channels:
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 3
+    - stream: 0
+      offset: 12
+      format: 0
+      dimension: 3
+    - stream: 0
+      offset: 24
+      format: 0
+      dimension: 4
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 40
+      format: 0
+      dimension: 2
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    m_DataSize: 1152
+    _typelessdata: 00000000000000000000000000000000000000000000803f000080bf0000000000000000000080bf000000000000000000007041000000000000000000000000000000000000803f000080bf0000000000000000000080bf000070c10000000000000000000020400000000000000000000000000000803f000080bf0000000000000000000080bf000000000000204000007041000020400000000000000000000000000000803f000080bf0000000000000000000080bf000070c1000020400000704100000000000000000000803f000000000000000000000000000000000000803f000080bf00000000000000000000704100000000000000bf0000803f000000000000000000000000000000000000803f000080bf000000bf000000000000704100002040000000000000803f000000000000000000000000000000000000803f000080bf00000000000020400000704100002040000000bf0000803f000000000000000000000000000000000000803f000080bf000000bf000020400000704100000000000000bf0000000000000000000080bf0000803f0000000000000000000080bf00007041000000000000000000000000000000bf0000000000000000000080bf0000803f0000000000000000000080bf00000000000000000000704100002040000000bf0000000000000000000080bf0000803f0000000000000000000080bf00007041000020400000000000002040000000bf0000000000000000000080bf0000803f0000000000000000000080bf00000000000020400000000000000000000000bf000080bf00000000000000000000000000000000000080bf000080bf0000003f00000000000000000000000000000000000080bf00000000000000000000000000000000000080bf000080bf00000000000000000000000000002040000000bf000080bf00000000000000000000000000000000000080bf000080bf0000003f00002040000000000000204000000000000080bf00000000000000000000000000000000000080bf000080bf00000000000020400000000000000000000000bf00000000000080bf00000000000080bf0000000000000000000080bf00000000000000bf0000704100000000000000bf00000000000080bf00000000000080bf0000000000000000000080bf000070c1000000bf00000000000000000000000000000000000080bf00000000000080bf0000000000000000000080bf000000000000000000007041000000000000000000000000000080bf00000000000080bf0000000000000000000080bf000070c100000000000000000000204000000000000000000000803f000000000000803f0000000000000000000080bf0000000000000000000070410000204000000000000000000000803f000000000000803f0000000000000000000080bf00007041000000000000000000002040000000bf000000000000803f000000000000803f0000000000000000000080bf00000000000000bf0000704100002040000000bf000000000000803f000000000000803f0000000000000000000080bf00007041000000bf
+  m_CompressedMesh:
+    m_Vertices:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_UV:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Normals:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Tangents:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Weights:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_NormalSigns:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_TangentSigns:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_FloatColors:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_BoneIndices:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Triangles:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_UVInfo: 0
+  m_LocalAABB:
+    m_Center: {x: 7.5, y: 1.25, z: -0.25}
+    m_Extent: {x: 7.5, y: 1.25, z: 0.25}
+  m_MeshUsageFlags: 0
+  m_BakedConvexCollisionMesh: 
+  m_BakedTriangleCollisionMesh: 
+  m_MeshMetrics[0]: 1
+  m_MeshMetrics[1]: 1
+  m_MeshOptimizationFlags: 1
+  m_StreamData:
+    offset: 0
+    size: 0
+    path: 
 --- !u!1 &1721344955
 GameObject:
   m_ObjectHideFlags: 0
@@ -20556,7 +20690,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1721344958
 MonoBehaviour:
@@ -20570,9 +20704,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1721344959
@@ -20716,7 +20850,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1736624924
 MonoBehaviour:
@@ -20730,9 +20864,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 180
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1736624925
@@ -20845,7 +20979,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1745411116
 MonoBehaviour:
@@ -20859,9 +20993,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1745411117
@@ -21052,7 +21186,7 @@ MeshCollider:
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 2026541042}
+  m_Mesh: {fileID: 1700964493}
 --- !u!114 &1781912142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21315,7 +21449,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1781912140}
-  m_Mesh: {fileID: 2026541042}
+  m_Mesh: {fileID: 1700964493}
 --- !u!4 &1781912145
 Transform:
   m_ObjectHideFlags: 0
@@ -21518,7 +21652,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1787130349
 MonoBehaviour:
@@ -21533,8 +21667,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fSpeed: 120
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1787130350
@@ -21604,7 +21738,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17450
+  m_Name: pb_Mesh17460
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -21830,13 +21964,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1793497239}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 35.620003, y: 0.121, z: -1.4899988}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
+  m_LocalPosition: {x: 20.2, y: 0.121, z: -15.28}
   m_LocalScale: {x: 0.51885605, y: 0.5909815, z: 0.5318034}
   m_Children: []
   m_Father: {fileID: 423315010}
   m_RootOrder: 25
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
 --- !u!54 &1793497241
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -21851,7 +21985,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1793497242
 MonoBehaviour:
@@ -21865,9 +21999,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1793497243
@@ -22041,7 +22175,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1802051224
 MonoBehaviour:
@@ -22055,9 +22189,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1802051225
@@ -22509,7 +22643,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1821525400
 MonoBehaviour:
@@ -22523,9 +22657,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1821525401
@@ -22710,6 +22844,7 @@ MonoBehaviour:
   fOnCollisionKnockBackForce: 4
   tHeadOffset: {x: 0, y: 0.5, z: 0}
   fMaxWalkingDistance: 40
+  travelPoints: []
 --- !u!65 &1840673335
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22840,7 +22975,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1849399570
 MonoBehaviour:
@@ -22854,9 +22989,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1849399571
@@ -22969,7 +23104,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1859375932
 MonoBehaviour:
@@ -22983,9 +23118,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1859375933
@@ -23347,7 +23482,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1883577923
 MonoBehaviour:
@@ -23361,9 +23496,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1883577924
@@ -23491,8 +23626,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fSpeed: 80
-  fAvoidanceThreshold: 2
-  fDetectionSize: 0.47
+  fAvoidanceThreshold: 3
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 1
   bMakeThemWalkable: 0
 --- !u!136 &1889450761
@@ -23566,7 +23701,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 13.934856
+      value: 11.39
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -23576,7 +23711,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -10.564466
+      value: -14.01
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -23626,22 +23761,32 @@ PrefabInstance:
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fWaitTime
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fWalkTime
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fMaxHitPoints
       value: 21
       objectReference: {fileID: 0}
+    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: fSpeed
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: fMaxWalkingDistance
+      value: 142
+      objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243014, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_Drag
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243014, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -23656,12 +23801,27 @@ PrefabInstance:
     - target: {fileID: 2016155963780243018, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243018, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016155964542305407, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016155964542305407, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 11.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016155964542305407, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3789007393760869379, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -23676,7 +23836,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh16902
+  m_Name: pb_Mesh16910
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -24044,7 +24204,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1917100122
 MonoBehaviour:
@@ -24058,9 +24218,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1917100123
@@ -24154,29 +24314,6 @@ Transform:
   m_Father: {fileID: 358734528}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1921199354 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2016155963780243018, guid: 805b26f937cfafa4ca90e90185336518,
-    type: 3}
-  m_PrefabInstance: {fileID: 1989036045}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1921199360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1921199354}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fSpeed: 120
-  fAvoidanceThreshold: 12
-  fDetectionSize: 1.5
-  bCanAvoidLargeScaleObstacles: 0
-  bMakeThemWalkable: 0
 --- !u!1 &1922401568
 GameObject:
   m_ObjectHideFlags: 0
@@ -24269,7 +24406,7 @@ Transform:
   m_LocalScale: {x: 1.15, y: 0.95, z: 1.15}
   m_Children: []
   m_Father: {fileID: 2122414496}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1939662417
 BoxCollider:
@@ -24410,7 +24547,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1951554233
 MonoBehaviour:
@@ -24424,9 +24561,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &1951554234
@@ -24783,8 +24920,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1964351213}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -11.1834135, y: -0.68886006, z: 1.4178181}
+  m_LocalRotation: {x: -0, y: 0.9717199, z: -0, w: 0.23613636}
+  m_LocalPosition: {x: -10.36, y: -0.68886006, z: -2.34}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1964114639}
@@ -24794,7 +24931,7 @@ Transform:
   - {fileID: 1964114567}
   m_Father: {fileID: 423315010}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 152.68301, z: 0}
 --- !u!4 &1964114639
 Transform:
   m_ObjectHideFlags: 0
@@ -24803,7 +24940,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1964351215}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.000000010223107, y: 0, z: 0}
+  m_LocalPosition: {x: -0.000000010223107, y: -0, z: -5.69}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1964114637}
@@ -25794,10 +25931,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 60
-  fAvoidanceThreshold: 1
-  fDetectionSize: 1
-  bCanAvoidLargeScaleObstacles: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 4
+  fDetectionRadius: 0.8
+  bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 0
 --- !u!1 &1964351217
 GameObject:
@@ -25945,9 +26082,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 120
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 150
+  fAvoidanceThreshold: 5
+  fDetectionRadius: 0.4
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 0
 --- !u!4 &1968272060 stripped
@@ -26267,7 +26404,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.81
+      value: 17.4
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -26277,7 +26414,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -22.5
+      value: -17.5
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -26287,7 +26424,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: -0.6937839
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -26297,7 +26434,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7201833
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -26312,7 +26449,7 @@ PrefabInstance:
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -87.86101
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243008, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -26321,38 +26458,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
-      propertyPath: pathFinding
-      value: 
-      objectReference: {fileID: 1563360006}
+      propertyPath: travelPoints.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
-      propertyPath: m_Enabled
-      value: 1
+      propertyPath: travelPoints.Array.data[0]
+      value: 
+      objectReference: {fileID: 227973799}
+    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: travelPoints.Array.data[1]
+      value: 
+      objectReference: {fileID: 710368288}
+    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: travelPoints.Array.data[2]
+      value: 
+      objectReference: {fileID: 972383174}
+    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: travelPoints.Array.data[3]
+      value: 
+      objectReference: {fileID: 65132685}
+    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
+        type: 3}
+      propertyPath: fSpeed
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
       propertyPath: fWaitTime
-      value: 2222222
-      objectReference: {fileID: 0}
-    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
-        type: 3}
-      propertyPath: fWalkTime
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
-        type: 3}
-      propertyPath: fSpeed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2016155963780243012, guid: 805b26f937cfafa4ca90e90185336518,
-        type: 3}
-      propertyPath: fMaxHitPoints
-      value: 21
-      objectReference: {fileID: 0}
-    - target: {fileID: 2016155963780243014, guid: 805b26f937cfafa4ca90e90185336518,
-        type: 3}
-      propertyPath: m_Drag
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243018, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
@@ -26361,23 +26498,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2016155963780243018, guid: 805b26f937cfafa4ca90e90185336518,
         type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 2016155963780243018, guid: 805b26f937cfafa4ca90e90185336518,
-        type: 3}
       propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2016155963780243019, guid: 805b26f937cfafa4ca90e90185336518,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3789007393760869379, guid: 805b26f937cfafa4ca90e90185336518,
-        type: 3}
-      propertyPath: m_Material
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 805b26f937cfafa4ca90e90185336518, type: 3}
@@ -26589,7 +26711,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &2023608459
 MonoBehaviour:
@@ -26603,9 +26725,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &2023608460
@@ -26700,179 +26822,6 @@ Transform:
   m_Father: {fileID: 799814691}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!43 &2026541042
-Mesh:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh18422
-  serializedVersion: 10
-  m_SubMeshes:
-  - serializedVersion: 2
-    firstByte: 0
-    indexCount: 30
-    topology: 0
-    baseVertex: 0
-    firstVertex: 0
-    vertexCount: 20
-    localAABB:
-      m_Center: {x: 7.5, y: 1.25, z: -0.25}
-      m_Extent: {x: 7.5, y: 1.25, z: 0.25}
-  - serializedVersion: 2
-    firstByte: 60
-    indexCount: 6
-    topology: 0
-    baseVertex: 0
-    firstVertex: 20
-    vertexCount: 4
-    localAABB:
-      m_Center: {x: 7.5, y: 2.5, z: -0.25}
-      m_Extent: {x: 7.5, y: 0, z: 0.25}
-  m_Shapes:
-    vertices: []
-    shapes: []
-    channels: []
-    fullWeights: []
-  m_BindPose: []
-  m_BoneNameHashes: 
-  m_RootBoneNameHash: 0
-  m_BonesAABB: []
-  m_VariableBoneCountWeights:
-    m_Data: 
-  m_MeshCompression: 0
-  m_IsReadable: 1
-  m_KeepVertices: 1
-  m_KeepIndices: 1
-  m_IndexFormat: 0
-  m_IndexBuffer: 000001000200010003000200040005000600050007000600080009000a0009000b000a000c000d000e000d000f000e00100011001200110013001200140015001600150017001600
-  m_VertexData:
-    serializedVersion: 3
-    m_VertexCount: 24
-    m_Channels:
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 12
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 24
-      format: 0
-      dimension: 4
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 40
-      format: 0
-      dimension: 2
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    m_DataSize: 1152
-    _typelessdata: 00000000000000000000000000000000000000000000803f000080bf0000000000000000000080bf000000000000000000007041000000000000000000000000000000000000803f000080bf0000000000000000000080bf000070c10000000000000000000020400000000000000000000000000000803f000080bf0000000000000000000080bf000000000000204000007041000020400000000000000000000000000000803f000080bf0000000000000000000080bf000070c1000020400000704100000000000000000000803f000000000000000000000000000000000000803f000080bf00000000000000000000704100000000000000bf0000803f000000000000000000000000000000000000803f000080bf000000bf000000000000704100002040000000000000803f000000000000000000000000000000000000803f000080bf00000000000020400000704100002040000000bf0000803f000000000000000000000000000000000000803f000080bf000000bf000020400000704100000000000000bf0000000000000000000080bf0000803f0000000000000000000080bf00007041000000000000000000000000000000bf0000000000000000000080bf0000803f0000000000000000000080bf00000000000000000000704100002040000000bf0000000000000000000080bf0000803f0000000000000000000080bf00007041000020400000000000002040000000bf0000000000000000000080bf0000803f0000000000000000000080bf00000000000020400000000000000000000000bf000080bf00000000000000000000000000000000000080bf000080bf0000003f00000000000000000000000000000000000080bf00000000000000000000000000000000000080bf000080bf00000000000000000000000000002040000000bf000080bf00000000000000000000000000000000000080bf000080bf0000003f00002040000000000000204000000000000080bf00000000000000000000000000000000000080bf000080bf00000000000020400000000000000000000000bf00000000000080bf00000000000080bf0000000000000000000080bf00000000000000bf0000704100000000000000bf00000000000080bf00000000000080bf0000000000000000000080bf000070c1000000bf00000000000000000000000000000000000080bf00000000000080bf0000000000000000000080bf000000000000000000007041000000000000000000000000000080bf00000000000080bf0000000000000000000080bf000070c100000000000000000000204000000000000000000000803f000000000000803f0000000000000000000080bf0000000000000000000070410000204000000000000000000000803f000000000000803f0000000000000000000080bf00007041000000000000000000002040000000bf000000000000803f000000000000803f0000000000000000000080bf00000000000000bf0000704100002040000000bf000000000000803f000000000000803f0000000000000000000080bf00007041000000bf
-  m_CompressedMesh:
-    m_Vertices:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UV:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Normals:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Tangents:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Weights:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_NormalSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_TangentSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_FloatColors:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_BoneIndices:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Triangles:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UVInfo: 0
-  m_LocalAABB:
-    m_Center: {x: 7.5, y: 1.25, z: -0.25}
-    m_Extent: {x: 7.5, y: 1.25, z: 0.25}
-  m_MeshUsageFlags: 0
-  m_BakedConvexCollisionMesh: 
-  m_BakedTriangleCollisionMesh: 
-  m_MeshMetrics[0]: 1
-  m_MeshMetrics[1]: 1
-  m_MeshOptimizationFlags: 1
-  m_StreamData:
-    offset: 0
-    size: 0
-    path: 
 --- !u!1 &2030309259
 GameObject:
   m_ObjectHideFlags: 0
@@ -27255,7 +27204,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &2094780801
 MonoBehaviour:
@@ -27269,9 +27218,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &2094780802
@@ -27386,9 +27335,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 120
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 150
+  fAvoidanceThreshold: 5
+  fDetectionRadius: 0.4
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 0
 --- !u!1 &2122414495
@@ -27420,7 +27369,6 @@ Transform:
   m_Children:
   - {fileID: 1397382855}
   - {fileID: 1481079684}
-  - {fileID: 877309070}
   - {fileID: 532517647}
   - {fileID: 1428993136}
   - {fileID: 1365649575}
@@ -27641,7 +27589,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &2134622936
 MonoBehaviour:
@@ -27655,9 +27603,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 80
-  fAvoidanceThreshold: 4
-  fDetectionSize: 1
+  fSpeed: 120
+  fAvoidanceThreshold: 6
+  fDetectionRadius: 0.5
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 1
 --- !u!136 &2134622937
@@ -28325,17 +28273,17 @@ PrefabInstance:
     - target: {fileID: 4185601837462471057, guid: a9f723d960da7414cb6e567593b126fa,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.1572711
+      value: -10.847269
       objectReference: {fileID: 0}
     - target: {fileID: 4185601837462471057, guid: a9f723d960da7414cb6e567593b126fa,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 12.014817
+      value: 12.014814
       objectReference: {fileID: 0}
     - target: {fileID: 4185601837462471057, guid: a9f723d960da7414cb6e567593b126fa,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.5893207
+      value: 20.390675
       objectReference: {fileID: 0}
     - target: {fileID: 4185601837462471057, guid: a9f723d960da7414cb6e567593b126fa,
         type: 3}
@@ -28598,7 +28546,7 @@ PrefabInstance:
     - target: {fileID: 1576221639, guid: 0bd176d84d9f3b3408d09de614fa79c5, type: 3}
       propertyPath: primaryWeapon
       value: 
-      objectReference: {fileID: 1114794120}
+      objectReference: {fileID: 0}
     - target: {fileID: 1576221639, guid: 0bd176d84d9f3b3408d09de614fa79c5, type: 3}
       propertyPath: shield
       value: 
@@ -28615,7 +28563,7 @@ PrefabInstance:
     - target: {fileID: 2056732247125731377, guid: 0bd176d84d9f3b3408d09de614fa79c5,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.1
+      value: -10.79
       objectReference: {fileID: 0}
     - target: {fileID: 2056732247125731377, guid: 0bd176d84d9f3b3408d09de614fa79c5,
         type: 3}
@@ -28625,7 +28573,7 @@ PrefabInstance:
     - target: {fileID: 2056732247125731377, guid: 0bd176d84d9f3b3408d09de614fa79c5,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -16.61
+      value: 8.37
       objectReference: {fileID: 0}
     - target: {fileID: 2056732247125731377, guid: 0bd176d84d9f3b3408d09de614fa79c5,
         type: 3}
@@ -28730,7 +28678,7 @@ PrefabInstance:
     - target: {fileID: 3712956889157687298, guid: 0bd176d84d9f3b3408d09de614fa79c5,
         type: 3}
       propertyPath: m_Drag
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3712956889157687298, guid: 0bd176d84d9f3b3408d09de614fa79c5,
         type: 3}
@@ -28760,7 +28708,7 @@ PrefabInstance:
     - target: {fileID: 5088127794419329541, guid: 0bd176d84d9f3b3408d09de614fa79c5,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 14.55
+      value: -25.3
       objectReference: {fileID: 0}
     - target: {fileID: 6468401670978316539, guid: 0bd176d84d9f3b3408d09de614fa79c5,
         type: 3}
@@ -28869,7 +28817,7 @@ PrefabInstance:
     - target: {fileID: 2325893144698732514, guid: 82985cfe36759c945b8432b194a28987,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2325893144698732514, guid: 82985cfe36759c945b8432b194a28987,
         type: 3}
@@ -29435,17 +29383,17 @@ PrefabInstance:
     - target: {fileID: 7334448684759623403, guid: 0be8da676cf61a0419a90842f118efc4,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.1572711
+      value: -10.847269
       objectReference: {fileID: 0}
     - target: {fileID: 7334448684759623403, guid: 0be8da676cf61a0419a90842f118efc4,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 12.014817
+      value: 12.014814
       objectReference: {fileID: 0}
     - target: {fileID: 7334448684759623403, guid: 0be8da676cf61a0419a90842f118efc4,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.5893207
+      value: 20.390675
       objectReference: {fileID: 0}
     - target: {fileID: 7334448684759623403, guid: 0be8da676cf61a0419a90842f118efc4,
         type: 3}

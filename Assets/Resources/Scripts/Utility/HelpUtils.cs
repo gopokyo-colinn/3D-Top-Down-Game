@@ -20,6 +20,7 @@ public static class HelpUtils
     }
     public static void RotateTowardsTarget(Transform _transform, Vector3 _target, float _rotationSpeed)
     {
+        _target.y = _transform.position.y;
         Vector3 _directionToPlayer = (_target - _transform.position).normalized;
         _directionToPlayer.y = 0;
         _transform.rotation = Quaternion.RotateTowards(_transform.rotation, Quaternion.LookRotation(_directionToPlayer), _rotationSpeed * Time.fixedDeltaTime);

@@ -49,12 +49,14 @@ public class NPCScriptEditor : Editor
                     EditorGUIUtility.labelWidth = 60f;
                     npc.fWaitTime = EditorGUILayout.FloatField("Wait Time", npc.fWaitTime);
                     EditorGUILayout.EndHorizontal();
+                    EditorGUIUtility.labelWidth = 140f;
+                    npc.fMaxWalkingDistance = EditorGUILayout.FloatField("Max Walking Distance", npc.fMaxWalkingDistance);
                     break;
                 case NPCActivities.PATROLLING:
                     npc.fWaitTime = EditorGUILayout.FloatField("Wait Time", npc.fWaitTime);
                     EditorGUILayout.PropertyField(patrolPointsArray, true);
                     EditorGUIUtility.labelWidth = 150f;
-                    npc.bReveseDirection = EditorGUILayout.Toggle("Reverse Direction At End", npc.bReveseDirection);
+                    npc.bReverseDirection = EditorGUILayout.Toggle("Reverse Direction At End", npc.bReverseDirection);
                     break;
             }
         }

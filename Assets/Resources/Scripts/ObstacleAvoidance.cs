@@ -6,13 +6,13 @@ public class ObstacleAvoidance : MonoBehaviour
 {
     Rigidbody rb;
     public float fSpeed = 10;
-    GameObject go;
+    List<GameObject> objectsInCollisionRangeLst; // if it takes more performance then make it just one single object to check for.
     bool bIsHit;
-    public float fAvoidanceThreshold = 4f;
-    public float fDetectionSize = 2f;
+    public float fAvoidanceThreshold = 2f;
+    public float fDetectionRadius = 1f;
     public bool bCanAvoidLargeScaleObstacles;
     Vector3 direction;
-    Vector3 newVelocity = Vector3.zero;
+    Vector3 steerVelocity = Vector3.zero;
     Vector3 tHeadOffset = new Vector3(0,.5f,0);
     public bool bMakeThemWalkable;
     bool bIsEnemy;
@@ -20,6 +20,7 @@ public class ObstacleAvoidance : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        objectsInCollisionRangeLst = new List<GameObject>();
         rb = GetComponent<Rigidbody>();
         if(bMakeThemWalkable)
             fSpeed = Random.Range(90, 180);
@@ -29,7 +30,6 @@ public class ObstacleAvoidance : MonoBehaviour
     private void Update()
     {
         bIsHit = GetObjectHit();
-        
     }
     // Update is called once per frame
     void FixedUpdate()
@@ -40,17 +40,24 @@ public class ObstacleAvoidance : MonoBehaviour
         }
         if (bIsHit)
         {
-            if (go != null)
-                CollisionAvoidance(go.transform.position);
+           if (objectsInCollisionRangeLst != null)
+           {
+                foreach (var _go in objectsInCollisionRangeLst)
+                {
+                    CollisionAvoidance(_go.transform.position);
+                }
+           }
         }
     }
 
     bool GetObjectHit()
     {
         if(bIsEnemy) // if its enemy then it should not avoid collision with player
-            _colliders = Physics.OverlapSphere(transform.position + tHeadOffset + transform.forward / 2, fDetectionSize, LayerMask.GetMask("Default", "Enemy", "NPC"));
+            _colliders = Physics.OverlapCapsule(transform.position + tHeadOffset + transform.forward / 2, transform.position + tHeadOffset + transform.forward * fAvoidanceThreshold /* detectionLength */, fDetectionRadius, LayerMask.GetMask("Default", "Enemy", "Npc"), QueryTriggerInteraction.Ignore);
+            //_colliders = Physics.OverlapSphere(transform.position + tHeadOffset + transform.forward / 2, fDetectionSize, LayerMask.GetMask("Default", "Enemy", "Npc"));
         else
-            _colliders = Physics.OverlapSphere(transform.position + tHeadOffset + transform.forward / 2, fDetectionSize, LayerMask.GetMask("Default", "Player", "Enemy", "NPC"));
+            _colliders = Physics.OverlapCapsule(transform.position + tHeadOffset + transform.forward / 2, transform.position + tHeadOffset + transform.forward * fAvoidanceThreshold, fDetectionRadius, LayerMask.GetMask("Default", "Player", "Enemy", "Npc"), QueryTriggerInteraction.Ignore);
+        //_colliders = Physics.OverlapSphere(transform.position + tHeadOffset + transform.forward / 2, fDetectionSize, LayerMask.GetMask("Default", "Player", "Enemy", "Npc"));
 
         foreach (var _coli in _colliders)
         {
@@ -60,11 +67,12 @@ public class ObstacleAvoidance : MonoBehaviour
             }
             else
             {
-                if(go != _coli.gameObject)
-                    go = _coli.gameObject;
+                if(!objectsInCollisionRangeLst.Contains(_coli.gameObject))
+                    objectsInCollisionRangeLst.Add(_coli.gameObject);
                 return true;
             }
         }
+        objectsInCollisionRangeLst.Clear();
         return false;
     }
     void CollisionAvoidance(Vector3 _targetPosition)
@@ -75,44 +83,32 @@ public class ObstacleAvoidance : MonoBehaviour
         if (fLength < fAvoidanceThreshold)
         {
             Vector3 adjVector = distanceVector.normalized;
+            adjVector.y = 0;
             float difference = fAvoidanceThreshold - fLength;
             adjVector = adjVector * difference;
-            newVelocity = (rb.velocity - adjVector).normalized;
-            //newVelocity.y = 0;
+            steerVelocity = (rb.velocity - adjVector).normalized;
+            steerVelocity.y = 0;
 
-            if (bCanAvoidLargeScaleObstacles)
-            {
-                float xVel = transform.InverseTransformDirection(newVelocity).x;
-                if (xVel > 0)
-                    rb.velocity = newVelocity + transform.right * fSpeed * Time.fixedDeltaTime;
-                else
-                    rb.velocity = newVelocity - transform.right * fSpeed  * Time.fixedDeltaTime;
-            }
-            else
-            {
-                rb.velocity = newVelocity * fSpeed * Time.fixedDeltaTime;
-            }
+            //if (bCanAvoidLargeScaleObstacles)
+            //{
+            //    float xVel = transform.InverseTransformDirection(newVelocity).x;
 
-            if (!bIsEnemy) // if its a enemy then it should not rotate on closing gap, enemies have their own ways to look at player
-                HelpUtils.RotateTowardsTarget(transform, _targetPosition, 180f);
-        }
-        else
-        {
-            if (bCanAvoidLargeScaleObstacles)
-            {
-                if (bIsHit)
-                {
-                  //  float xVel = transform.InverseTransformDirection(rb.velocity).x;
-                  //  if (xVel > 0)
-                        rb.velocity = transform.right * fSpeed * Time.fixedDeltaTime;
-                  //  else
-                   //     rb.velocity = -transform.right * fSpeed * Time.fixedDeltaTime;
-                }
-            }
+            //    if (xVel > 0)
+            //        rb.velocity = newVelocity + transform.right * (fSpeed / 1.2f) * Time.fixedDeltaTime;
+            //    else
+            //        rb.velocity = newVelocity - transform.right * (fSpeed / 1.2f)  * Time.fixedDeltaTime;
+            //}
+
+            // TODO: Do Something to make the character look in the direction of facing the steerVelocity
+
+            rb.velocity = steerVelocity * fSpeed * Time.fixedDeltaTime; // normal avoidance, it even stop object if there is no forward motion            
+
+            if (!bIsEnemy && !bMakeThemWalkable) // if its a enemy then it should not rotate on closing gap, enemies have their own ways to look at player
+                HelpUtils.RotateTowardsTarget(transform, _targetPosition, 240f);
         }
     }
     private void OnDrawGizmos()
     {
-        Gizmos.DrawSphere(transform.position + tHeadOffset + transform.forward / 2, fDetectionSize);
+        Gizmos.DrawSphere(transform.position + tHeadOffset + transform.forward / 2, fDetectionRadius);
     }
 }

@@ -7,6 +7,7 @@ public class Scorpion : Enemy, IHittable
     private bool bRotateAnims = true;
     float fSTUN_TIME = 0f; // this is extra time after the animation
 
+    public Transform[] travelPoints;
     void Start()
     {
         base.Initialize();
@@ -46,8 +47,7 @@ public class Scorpion : Enemy, IHittable
             {
                 if (!bTargetFound)
                 {
-                    if(!bFollowingPath)
-                        MovingRandomly();
+                    MoveRandomly();
                 }
                 else
                 {

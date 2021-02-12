@@ -35,9 +35,6 @@ public class ItemContainer : MonoBehaviour
     }
     private void UIActivator()
     {
-        //Collider[] _hitColliders = Physics.OverlapSphere(transform.position, 3f, LayerMask.GetMask("Player"));
-
-       // if (_hitColliders.Length > 0)
         if((transform.position - player.transform.position).sqrMagnitude < 12)
         {
             uiCanvas.gameObject.SetActive(true);
@@ -78,9 +75,12 @@ public class ItemContainer : MonoBehaviour
     public void SetItemEquipable()
     {
         Weapon _weapon = GetComponent<Weapon>();
+        Shield _shield = GetComponent<Shield>();
         DamageTarget _dmgTargetScript = GetComponent<DamageTarget>();
         if (_weapon)
             _weapon.enabled = true;
+        if (_shield)
+            _shield.enabled = true;
         if (_dmgTargetScript)
         {
             _dmgTargetScript.enabled = true;

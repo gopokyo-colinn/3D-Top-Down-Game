@@ -48,7 +48,7 @@ public class SpittyPlant : Enemy, IHittable
             {
                 if (!bTargetFound)
                 {
-                    MovingRandomly(); // This is moves look direction and not move itself, coz this is a plant.
+                    MoveRandomly(); // This is moves look direction and not move itself, coz this is a plant.
                 }
                 else
                 {

@@ -40,9 +40,9 @@ GameObject:
   m_Component:
   - component: {fileID: 793666772179664071}
   - component: {fileID: 5044430458430083519}
+  - component: {fileID: 8431676751601257842}
   - component: {fileID: 1700291349633910992}
   - component: {fileID: 1839001767607195005}
-  - component: {fileID: 8431676751601257842}
   m_Layer: 12
   m_Name: Wooden_Shield_Item
   m_TagString: Untagged
@@ -80,6 +80,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.6161749, y: 0.6085381, z: 0.14984748}
   m_Center: {x: -0.0039707124, y: -0.006169915, z: 0.045702174}
+--- !u!114 &8431676751601257842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4420549534943956692}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ba3c8019d51462478d0189f0f71f661, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1700291349633910992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,18 +122,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8431676751601257842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4420549534943956692}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ba3c8019d51462478d0189f0f71f661, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6164124445133429346
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ public class NPCEntity : MonoBehaviour
 {
     const float fDISTANCE_TO_GROUND = 0.2f;
     const float fDISTANCE_TO_COLIS = 1.2f;
+    const float fROTATE_SPEED = 240f;
     //public static List<NPCEntity> npcList;
     [HideInInspector]
     public string sNpcID = System.Guid.NewGuid().ToString();
@@ -18,26 +19,29 @@ public class NPCEntity : MonoBehaviour
 
     public NPCBehaviour npcBehaviour;
     public NPCActivities npcActivity;
-    public Transform[] tPatrolPoints;
     private Animator anim;
     private Rigidbody rbody;
     public float fWalkTime;
     public float fWaitTime;
     private Vector3 randomVector;
-    private Vector3 lastDirection;
     private bool bCanMove;
-    private bool bIsMoving = true;
+    private bool bIsMoving;
     private bool bIsInteracting;
+    private bool bOutOfBoundary;
+    private bool bCanRotate;
     private bool bDialogCheck;
-    private bool bDirReverse;
-    public bool bReveseDirection;
+    // Patrolling
+    private Vector3 lastDirection;
+    public Transform[] tPatrolPoints;
+    public bool bReverseDirection; // it is to enable or disable reverse direction
+    private bool bDirReversing; // it is actually reversing direction if the npc reaches the end point
     private int iPatrolPos = 0;
     // Quest Variables
     private Quest myActiveQuest;
     private AddNewQuest[] myQuestsLst;
     private NPCAssignedQuestGoal[] assignedQuestGoals;
     // Walk Area Variables
-    public float fMaxWalkingDistance = 20;
+    public float fMaxWalkingDistance = 60;
     private Vector3 startPosition;
 
     void Start()
@@ -61,6 +65,8 @@ public class NPCEntity : MonoBehaviour
         startPosition = transform.position;
 
         gameObject.layer = LayerMask.NameToLayer("Npc");
+
+        StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsMoving = b; }, true, fWaitTime));
     }
     void Update()
     {
@@ -71,18 +77,7 @@ public class NPCEntity : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        switch (npcBehaviour)
-        {
-            case NPCBehaviour.SIMPLE:
-                DoActivity(npcActivity);
-                break;
-            case NPCBehaviour.QUEST_GIVER:
-                DoActivity(npcActivity);
-                break;
-            case NPCBehaviour.MERCHANT:
-                DoActivity(npcActivity);
-                break;
-        }
+        DoActivity(npcActivity);
     }
 
     /// Behaviours
@@ -149,55 +144,55 @@ public class NPCEntity : MonoBehaviour
 
                 rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
             }
+            else
+            {
+                if (bCanRotate)
+                {
+                    HelpUtils.RotateTowardsTarget(transform, randomVector, fROTATE_SPEED);
+                }
+            }
         }
     }// TODO: Add Moving Area
     public void Patrolling()
     {
         if (bIsMoving)
         {
-            lastDirection = (tPatrolPoints[iPatrolPos].position - transform.position).normalized;
-
-            //HelperFunctions.RotateTowardsTarget(transform, lastDirection);
-
-            if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
-            {
-                bIsMoving = false;
-                StartCoroutine(ChangeBoolAfter((bool b) => { bIsMoving = b; }, true, fWaitTime));
-            }
+           lastDirection = (tPatrolPoints[iPatrolPos].position - transform.position).normalized;
 
             if ((transform.position - tPatrolPoints[iPatrolPos].position).sqrMagnitude <= 1f)
             {
                 bIsMoving = false;
-                StartCoroutine(ChangeBoolAfter((bool b) => { bIsMoving = b; }, true, fWaitTime));
+                StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsMoving = b; }, true, fWaitTime));
 
-                if (bDirReverse)
+                if (bDirReversing)
                     iPatrolPos--;
                 else
                     iPatrolPos++;
-            }
-            if(iPatrolPos >= tPatrolPoints.Length)
-            {
-                if (bReveseDirection)
+
+                if (iPatrolPos >= tPatrolPoints.Length)
                 {
-                    iPatrolPos--;
-                    bDirReverse = true;
+                    if (bReverseDirection)
+                    {
+                        iPatrolPos = tPatrolPoints.Length - 2;
+                        bDirReversing = true;
+                    }
+                    else
+                        iPatrolPos = 0;
                 }
-                else
-                    iPatrolPos = 0;
-            }
-            else if(iPatrolPos == 0)
-            {
-                if (bDirReverse)
+                else if (iPatrolPos == 0)
                 {
-                    bDirReverse = false;
+                    if (bDirReversing)
+                    {
+                        bDirReversing = false;
+                    }
                 }
             }
-            if (!HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
-            {
-                transform.forward = new Vector3(lastDirection.x, transform.forward.y, lastDirection.z);
-                rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
-            }
-           
+            transform.forward = lastDirection;
+            rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
+        }
+        else
+        {
+            HelpUtils.RotateTowardsTarget(transform, tPatrolPoints[iPatrolPos].position, fROTATE_SPEED);
         }
     }
     // Setter Functions
@@ -329,7 +324,7 @@ public class NPCEntity : MonoBehaviour
     }
     public void SetAnimations()
     {
-        float _fWalking = (rbody.velocity.magnitude > (Vector3.one / 2).magnitude) ? 1 : 0;
+        float _fWalking = (rbody.velocity.magnitude > 0.1f) ? 1 : 0;
         anim.SetFloat("m_speed", _fWalking);
     }
 
@@ -398,25 +393,23 @@ public class NPCEntity : MonoBehaviour
     }
     IEnumerator SetRandomDirection()
     {
-        randomVector = new Vector3(Random.Range(1f, -1f), 0, Random.Range(1f, -1f)); // For transfom forward without rotation
+        randomVector = Random.insideUnitSphere * 100f;
+        randomVector.y = 0;
 
         if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
         {
             transform.forward *= -1;
-        }
-        else
-        {
-            if (randomVector != Vector3.zero)
-                transform.forward = randomVector;
-            else
-                transform.forward = new Vector3(0.1f, randomVector.y, 0.1f); // Fixed bug for look rotation (and speedy or no movement)
         }
 
         bIsMoving = true;
         bCanMove = true;
         yield return new WaitForSeconds(fWalkTime);
         bIsMoving = false;
-        yield return new WaitForSeconds(fWaitTime);
+        yield return new WaitForSeconds(fWaitTime / 3);
+        bCanRotate = true;
+        yield return new WaitForSeconds(fWaitTime / 3);
+        bCanRotate = false;
+        yield return new WaitForSeconds(fWaitTime / 3);
         bCanMove = false;
     }
     IEnumerator ChangeBoolAfter(System.Action<bool> _callBack,bool _setBool , float _time)
@@ -442,10 +435,14 @@ public class NPCEntity : MonoBehaviour
     }
     public void StayInWalkingArea()
     {
-        if ((transform.position - startPosition).sqrMagnitude > fMaxWalkingDistance)
+        if(npcActivity != NPCActivities.PATROLLING)
         {
-            transform.forward = (startPosition - transform.position).normalized;
-           // HelpUtils.RotateTowardsTarget(transform, startPosition, Random.Range(80f, 120));
+            if ((transform.position - startPosition).sqrMagnitude > fMaxWalkingDistance)
+            {
+                transform.forward = (startPosition - transform.position).normalized;
+                rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
+               // HelpUtils.RotateTowardsTarget(transform, startPosition, Random.Range(80f, 120));
+            }
         }
     }
 }

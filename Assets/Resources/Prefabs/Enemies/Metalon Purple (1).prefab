@@ -736,6 +736,7 @@ GameObject:
   - component: {fileID: 3789007393760869379}
   - component: {fileID: 2016155963780243012}
   - component: {fileID: 2016155963780243019}
+  - component: {fileID: 1921199360}
   m_Layer: 0
   m_Name: Metalon Purple (1)
   m_TagString: Untagged
@@ -804,12 +805,12 @@ Rigidbody:
   m_GameObject: {fileID: 2016155963780243018}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_Drag: 1
+  m_AngularDrag: 1
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!136 &3789007393760869379
 CapsuleCollider:
@@ -838,7 +839,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fMaxHitPoints: 21
-  fSpeed: 155
+  fSpeed: 200
   iCollisionDamage: 5
   fWalkTime: 2
   fWaitTime: 2
@@ -862,8 +863,25 @@ MonoBehaviour:
   bIsProjectileAttack: 0
   bIsTypeOfEnemy: 1
   bIsPlayer: 0
-  fKnockForce: 5
+  fKnockForce: 10
   attackCollider: {fileID: 2016155963506862487}
+--- !u!114 &1921199360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016155963780243018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fSpeed: 150
+  fAvoidanceThreshold: 5
+  fDetectionRadius: 0.4
+  bCanAvoidLargeScaleObstacles: 0
+  bMakeThemWalkable: 0
 --- !u!1 &2016155963809532510
 GameObject:
   m_ObjectHideFlags: 0
