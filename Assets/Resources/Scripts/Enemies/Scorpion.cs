@@ -43,7 +43,7 @@ public class Scorpion : Enemy, IHittable
         base.FixedRefresh();
         if (bIsAlive)
         {
-            if (HelpUtils.Grounded(transform, 0.2f))
+            if (HelpUtils.Grounded(transform, 0.3f))
             {
                 if (!bTargetFound)
                 {

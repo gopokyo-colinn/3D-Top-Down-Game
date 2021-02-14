@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
 
     const float fHEAD_OFFSET = 1f;
     const float fNPC_DISTANCE_CHECK = 0.8f;
-    const float fDISTANCE_TO_GROUND = 0.2f;
+    const float fDISTANCE_TO_GROUND = 0.3f;
     const float fINVULNERABILITY_TIME = 0.5f;
     const float fSTUN_TIME = 0.4f;
     const float fSPRINT_STAMINA_COST = 10f; // is multipleid by deltaTime
@@ -49,12 +49,14 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     private bool bDrawPrimaryWeapon;
     private bool bPrimaryWeaponEquipped;
     private bool bShieldEquipped;
-  //  private bool bCanAttack = true;
+    //  private bool bCanAttack = true;
     private bool bIsAttacking;
     private bool bIsInteracting;
     private bool bIsInvulnerable;
     private bool bIsStun;
-    
+    private bool bIsOnSlope;
+    private bool bIsGrounded;
+
     int iAttackCombo = -1;
 
     public UnityEvent OnReciveDamageUI;
@@ -64,7 +66,12 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     public int iStartInventorySize;
 
     PlayerEquipmentManager pEquimentManager;
+    public float fMinDepth;
+    public float fMaxDepth;
+    public float fMultUp;
+    public float fMultDown;
 
+    RaycastHit hitGround;
     void Awake()
     {
         instance = this;
@@ -81,19 +88,28 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     void Update()
     {
+        //////////////////////////////////////////
+        /// TODO: Jump is good other than when facing right, it gets a lots of velocity fix it
+        Debug.Log(bIsOnSlope);
+        
+        ///////////////////////////////////
         if (GameController.inPlayMode)
         {
             if (bIsAlive && !bIsStun)
             {
-                if(Grounded())
+                if (bIsGrounded)
                     GetDirectionalInput();
 
                 StaminaCheck();
                 UseShield();
-                DrawSheathPrimaryWeapon();
                 SwordAttacks();
+                CheckGrounded();
+                CheckOnSlope();
                 CheckAheadForColliders();
-                Jumping();
+                DrawSheathPrimaryWeapon();
+                // All jumping Stuff is just experimental
+                if (!bJumpPressed)
+                    JumpPressed();
             }
         }
     }
@@ -103,9 +119,16 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         {
             if (bIsAlive && !bIsStun)
             {
-                if (Grounded())
+                if (bIsGrounded)
                 {
                     DirectionalMovement();
+                    if (bJumpPressed)
+                    {
+                        if (bIsOnSlope)
+                            rbody.AddForce(new Vector3(0, fJumpForce / 1.5f, 0), ForceMode.Impulse);
+                        else
+                            rbody.AddForce(new Vector3(0, fJumpForce, 0), ForceMode.Impulse);
+                    }
                 }
                 else // for natural jumping, can't change direction in mid air
                 {
@@ -131,7 +154,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             {
                 if (!bIsShielding && bCanSprint)
                 {
-                    if(fCurrentStamina > fSPRINT_STAMINA_COST * Time.deltaTime)
+                    if (fCurrentStamina > fSPRINT_STAMINA_COST * Time.deltaTime)
                     {
                         fCurrentStamina -= fSPRINT_STAMINA_COST * Time.deltaTime;
                         bIsSprinting = true;
@@ -143,7 +166,6 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                     }
                 }
             }
-            
             else
             {
                 if (fCurrentStamina > 5f)
@@ -153,7 +175,15 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                 bIsSprinting = false;
             }
 
-            lastFacinDirection = new Vector3(horizontal, 0f, vertical);
+            lastFacinDirection = new Vector3(horizontal, 0, vertical);
+
+            if (!bIsAttacking)
+            {
+                if (lastFacinDirection != Vector3.zero)
+                {
+                    transform.forward = lastFacinDirection;
+                }
+            }
 
             //It is for keeping the direction while shielding
             //if (!bIsShielding)
@@ -161,35 +191,32 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             //    if (Mathf.Abs(horizontal) > 0.2f || Mathf.Abs(vertical) > 0.2f)
             //        lastFacinDirection = new Vector3(horizontal, 0f, vertical);
             //}
+            ////// mOVEMENT cONTROLLER //////////////////////////
+
+            Vector3 movementVector = new Vector3(horizontal, rbody.velocity.y, vertical).normalized;
+
+            if (movementVector != Vector3.zero)
+            {
+                if (bIsSprinting)
+                {
+                    if (bIsAttacking)
+                        bIsSprinting = false;
+                    else
+                        rbody.velocity = movementVector * fSpeed * sSpeedMultiplier * Time.fixedDeltaTime;
+                }
+                else if (bIsShielding || bIsAttacking)
+                    rbody.velocity = movementVector * fSPEED_DIVISION * fSpeed * Time.fixedDeltaTime;
+                else
+                    rbody.velocity = movementVector * fSpeed * Time.fixedDeltaTime;
+            }
+
+            ///////////////////////////////////////////////////
         }
         else
         {
             anim.SetFloat("moveVelocity", 0f);
+            rbody.velocity = HelpUtils.VectorZero(rbody);
             bIsSprinting = false;
-        }
-        if (!bIsAttacking)
-        {
-            if(lastFacinDirection != Vector3.zero) // 
-            {
-                transform.forward = lastFacinDirection.normalized;
-            }
-        }
-
-        Vector3 movementVector = new Vector3(horizontal, rbody.velocity.y, vertical);
-
-        if (movementVector.magnitude > 0.1f)
-        { 
-            if (bIsSprinting)
-            {
-                if (bIsAttacking)
-                    bIsSprinting = false;
-                else
-                    rbody.velocity = movementVector.normalized * fSpeed * sSpeedMultiplier * Time.fixedDeltaTime;
-            }
-            else if (bIsShielding || bIsAttacking)
-                rbody.velocity = movementVector.normalized * fSPEED_DIVISION * fSpeed * Time.fixedDeltaTime;
-            else
-                rbody.velocity = movementVector.normalized * fSpeed * Time.fixedDeltaTime;
         }
     }
     void UseShield()
@@ -213,7 +240,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
 
             anim.SetBool("isShielding", bIsShielding);
         }
-        
+
     }
     void DrawSheathPrimaryWeapon()
     {
@@ -239,7 +266,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     void SheathWeapon(bool _bIsRemoved = false)
     {
         anim.ResetTrigger("weapon_removed");
-        if(_bIsRemoved)
+        if (_bIsRemoved)
             anim.SetTrigger("weapon_removed");
 
         bDrawPrimaryWeapon = false;
@@ -253,7 +280,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             if (Input.GetButtonDown("Attack"))
             {
                 iAttackCombo++;
-                if(iAttackCombo > 0 && !bIsAttacking && fCurrentStamina > fATTACK_STAMINA_COST)
+                if (iAttackCombo > 0 && !bIsAttacking && fCurrentStamina > fATTACK_STAMINA_COST)
                 {
                     fCurrentStamina -= fATTACK_STAMINA_COST;
                     //bIsAttacking = true; // its set to true in animation
@@ -261,29 +288,60 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                     anim.SetTrigger("attack1");
                 }
             }
-        } 
+        }
     }
-    public void Jumping()
+    bool bJumpPressed;
+    public void JumpPressed()
     {
         /// For Jumping
-        if (Grounded())
+        if (bIsGrounded)
         {
             if (Input.GetKeyDown(KeyCode.Space))
-                rbody.AddForce(new Vector3( rbody.velocity.x, fJumpForce, rbody.velocity.z) * Time.fixedDeltaTime, ForceMode.Impulse);
+            {
+                bJumpPressed = true;
+                StartCoroutine(HelpUtils.WaitForSeconds(delegate { bJumpPressed = false; }, 0.4f));
+            }
         }
     }
     void JumpControlling()
     {
-        if (bIsSprinting)
-            rbody.velocity = new Vector3(horizontal * fSpeed * (sSpeedMultiplier / 1.5f) * Time.fixedDeltaTime, rbody.velocity.y, vertical * fSpeed * (sSpeedMultiplier / 1.5f) * Time.fixedDeltaTime);
-        else
-            rbody.velocity = new Vector3(horizontal * fSpeed * Time.fixedDeltaTime, rbody.velocity.y, vertical * fSpeed * Time.fixedDeltaTime);
+        //if (bIsSprinting)
+        //    rbody.velocity = new Vector3(horizontal * fSpeed / 1.5f * Time.fixedDeltaTime, rbody.velocity.y, vertical * fSpeed  / 1.5f * Time.fixedDeltaTime);
+        //else
+        //    rbody.velocity = new Vector3(horizontal * fSpeed / 3 * Time.fixedDeltaTime, rbody.velocity.y, vertical * fSpeed / 3 * Time.fixedDeltaTime);
+       
+    }
+    public void DisablePlayerMoveActions()
+    {
+        //rbody.velocity = new Vector3(0, rbody.velocity.y, 0);
+        anim.SetTrigger("idle");
+        anim.SetFloat("moveVelocity", 0f);
+        anim.SetBool("isShielding", false);
+    }
+    public void CheckGrounded()
+    {
+        Debug.DrawRay(transform.position + new Vector3(0, 0.2f, 0), Vector3.down * fDISTANCE_TO_GROUND, Color.red);
+        bIsGrounded = Physics.Raycast(transform.position + new Vector3(0, 0.2f, 0), Vector3.down, out hitGround, fDISTANCE_TO_GROUND, LayerMask.GetMask("Ground","Slope","Default"));
+
+        if (bIsGrounded) 
+        {
+            if (hitGround.normal != Vector3.up)
+            {
+                bIsOnSlope = true;
+            }
+            else
+            {
+                bIsOnSlope = false;
+            }
+        }
+        
+        //return Physics.CheckSphere(transform.position, fDISTANCE_TO_GROUND, LayerMask.GetMask("Ground", "Default", "Slope"));
     }
     public void CheckAheadForColliders()
     {
         if (Input.GetButtonDown("Interact"))
         {
-            Collider[] _hitColliders = Physics.OverlapSphere(transform.position + transform.forward, 1f, LayerMask.GetMask("Npc","Item"));
+            Collider[] _hitColliders = Physics.OverlapSphere(transform.position + transform.forward, 1f, LayerMask.GetMask("Npc", "Item"));
             foreach (var _collider in _hitColliders)
             {
                 Debug.Log(_collider.gameObject.name);
@@ -372,14 +430,49 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         }
         PopupUIManager.Instance.inventoryPopup.UpdateInventoryUI(playerInventory);
     }
-    public void DisablePlayerMoveActions()
+    public void CheckOnSlope()
     {
-        rbody.velocity = new Vector3(0, rbody.velocity.y, 0);
-        anim.SetTrigger("idle");
-        anim.SetFloat("moveVelocity", 0f);
-        anim.SetBool("isShielding", false);
+       // if (!bJumped)
+        {
+            if (bIsGrounded)
+            {
+                if (bIsOnSlope)
+                {
+                    if (bJumpPressed)
+                    {
+                        if (rbody.velocity.y > fMinDepth && rbody.velocity.y < (fJumpForce / 2) - 1)
+                        {
+                            rbody.velocity = new Vector3(rbody.velocity.x, fMinDepth, rbody.velocity.z);// new Vector3(rbody.velocity.x, -fMaxDepth * fMult, rbody.velocity.z);
+                        }
+                    }
+                    else
+                    {
+                        if (rbody.velocity.y > fMinDepth)
+                        {
+                            rbody.velocity = new Vector3(rbody.velocity.x, fMinDepth, rbody.velocity.z);// new Vector3(rbody.velocity.x, -fMaxDepth * fMult, rbody.velocity.z);
+                        }
+                    }
+                    
+                    if (rbody.velocity.y < fMaxDepth)
+                    {
+                        rbody.velocity = new Vector3(rbody.velocity.x, fMaxDepth, rbody.velocity.z) * 1.2f;// new Vector3(rbody.velocity.x, -fMaxDepth * fMult, rbody.velocity.z);
+                    }
+                }
+                else
+                {
+                    if (!bJumpPressed)
+                    {
+                        if (rbody.velocity.y > fMinDepth && rbody.velocity.y < fJumpForce - 1)
+                        {
+                            rbody.velocity = new Vector3(rbody.velocity.x, fMinDepth, rbody.velocity.z);// new Vector3(rbody.velocity.x, -fMaxDepth * fMult, rbody.velocity.z);
+                        }
+                    }
+                }
+               
+            }
+        }
     }
-   
+
     /// Health System
     public void ApplyKnockback(Vector3 _sourcePosition, float _pushForce)
     {
@@ -402,9 +495,9 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             bIsInvulnerable = true;
             fCurrentHitPoints -= _damage;
             OnReciveDamageUI.Invoke();
-            StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsInvulnerable = b;}, false, fINVULNERABILITY_TIME));
+            StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsInvulnerable = b; }, false, fINVULNERABILITY_TIME));
         }
-        if(fCurrentHitPoints <= 0)
+        if (fCurrentHitPoints <= 0)
         {
             Die();
         }
@@ -423,39 +516,39 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     public void StaminaCheck()
     {
-        if(fCurrentStamina < 0)
+        if (fCurrentStamina < 0)
         {
             fCurrentStamina = 0;
         }
 
-        if(bIsSprinting || bIsAttacking)
+        if (bIsSprinting || bIsAttacking)
         {
             OnStaminaChangeUI.Invoke();
             bStaminaUsed = true;
         }
         if (!bCanSprint)
         {
-            if((fCurrentStamina >= fMaxStamina / 2f))
+            if ((fCurrentStamina >= fMaxStamina / 2f))
             {
                 bCanSprint = true;
             }
         }
 
-        if(!bIsSprinting && !bIsAttacking)
+        if (!bIsSprinting && !bIsAttacking)
         {
-            if((int)fCurrentStamina <= (int)fMaxStamina + 10)
+            if ((int)fCurrentStamina <= (int)fMaxStamina + 10)
             {
                 OnStaminaChangeUI.Invoke();
                 if (bStaminaUsed)
                 {
                     fStaminaTimeCounter += Time.deltaTime;
-                    if(fStaminaTimeCounter >= fSTAMINA_RECOVER_START_TIME)
+                    if (fStaminaTimeCounter >= fSTAMINA_RECOVER_START_TIME)
                     {
                         bStaminaUsed = false;
                         fStaminaTimeCounter = 0;
                     }
                 }
-                if(fStaminaTimeCounter <= 0)
+                if (fStaminaTimeCounter <= 0)
                 {
                     if (bIsShielding)
                     {
@@ -466,7 +559,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                         fCurrentStamina += fSTAMINA_RECOVERY_RATE * Time.deltaTime;
                     }
 
-                    if(fCurrentStamina > fMaxStamina)
+                    if (fCurrentStamina > fMaxStamina)
                     {
                         fCurrentStamina = fMaxStamina;
                     }
@@ -481,7 +574,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         bIsStun = true;
         if (bIsStun)
         {
-           StartCoroutine(HelpUtils.ChangeBoolAfter((bool b)=> { bIsStun = b; }, false, fSTUN_TIME)); // Replace stun time with stun animation
+            StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsStun = b; }, false, fSTUN_TIME)); // Replace stun time with stun animation
         }
     }
 
@@ -497,11 +590,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         return playerInventory;
     }
     /// Bools Getter And Setters
-    public bool Grounded()
-    {
-        // use a spherecast instead
-        return Physics.Raycast(transform.position, Vector3.down, fDISTANCE_TO_GROUND);
-    }
+ 
     public bool IsInteracting()
     {
         return bIsInteracting;
@@ -540,7 +629,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     public void SetSecondaryWeaponEquipped(Item _swordToEquip)
     {
-        
+
 
     }
     public void SetShieldEquipped(Item _shieldToEquip)
@@ -568,8 +657,8 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         structGameSavePlayer _playerSaveData = new structGameSavePlayer();
         _playerSaveData.fCurrentHitPoints = instance.fCurrentHitPoints;
         _playerSaveData.fCurrentStamina = instance.fCurrentStamina;
-        _playerSaveData.tPosition = new float[3] { instance.transform.position.x, instance.transform.position.y, instance.transform.position.z};
-        _playerSaveData.tRotation = new float[3] {lastFacinDirection.x, lastFacinDirection.y, lastFacinDirection.z};
+        _playerSaveData.tPosition = new float[3] { instance.transform.position.x, instance.transform.position.y, instance.transform.position.z };
+        _playerSaveData.tRotation = new float[3] { lastFacinDirection.x, lastFacinDirection.y, lastFacinDirection.z };
         _playerSaveData.playerInventory = instance.playerInventory.GetInventory();
         //_playerSaveData.tRotation = new float[3] { transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z};
 
@@ -621,8 +710,9 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     // Gizmos
     private void OnDrawGizmos()
     {
-       // Gizmos.DrawSphere(transform.position + transform.forward, 1f);
+        // Gizmos.DrawSphere(transform.position + transform.forward, 1f);
         // Gizmo for below Function
+        //Gizmos.DrawSphere(transform.position, fDISTANCE_TO_GROUND);
     }
 }
 

@@ -6,7 +6,7 @@ PhysicsManager:
   serializedVersion: 13
   m_Gravity: {x: 0, y: -9.81, z: 0}
   m_DefaultMaterial: {fileID: 13400000, guid: 145cfd14613da47419d3abd960c238f4, type: 2}
-  m_BounceThreshold: 5
+  m_BounceThreshold: 50
   m_SleepThreshold: 0.005
   m_DefaultContactOffset: 0.01
   m_DefaultSolverIterations: 6
@@ -33,4 +33,4 @@ PhysicsManager:
   m_EnableEnhancedDeterminism: 0
   m_EnableUnifiedHeightmaps: 1
   m_SolverType: 0
-  m_DefaultMaxAngularSpeed: 7
+  m_DefaultMaxAngularSpeed: 1

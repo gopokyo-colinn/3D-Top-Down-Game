@@ -40,7 +40,7 @@ public class Enemy : MonoBehaviour
     private Vector3 randomVector;
     public float fOnCollisionKnockBackForce = 5f;
     public Vector3 tHeadOffset = new Vector3(0, 0.5f, 0);
-
+    Vector3 moveVector;
     // Patrolling
     // Patrolling
     protected bool bIsPatroller;
@@ -93,9 +93,12 @@ public class Enemy : MonoBehaviour
     {
         if (bIsAlive)
         {
-            if (!bTargetFound) 
+            if (HelpUtils.Grounded(transform, 0.4f))
             {
-               CheckWalkingArea(startPosition); 
+                if (!bTargetFound)
+                {
+                    CheckWalkingArea(startPosition);
+                }
             }
         }
     }
@@ -156,8 +159,8 @@ public class Enemy : MonoBehaviour
                     bIsMoving = false;
                     StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bCanMove = b; }, false, fWaitTime));
                 }
-
-                rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
+                moveVector = new Vector3(transform.forward.x, rbody.velocity.y, transform.forward.z).normalized;
+                rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
             }
             else
             {
@@ -174,6 +177,7 @@ public class Enemy : MonoBehaviour
         if (bIsMoving)
         {
             lastFacingDirection = (_patrollingPoints[iPatrolPos].position - transform.position).normalized;
+            lastFacingDirection.y = 0;
 
             if ((transform.position - _patrollingPoints[iPatrolPos].position).sqrMagnitude <= 1f)
             {
@@ -205,7 +209,8 @@ public class Enemy : MonoBehaviour
             }
            
             transform.forward = lastFacingDirection;
-            rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
+            moveVector = new Vector3(lastFacingDirection.x, rbody.velocity.y, lastFacingDirection.z);
+            rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
         }
         else
         {
@@ -301,7 +306,8 @@ public class Enemy : MonoBehaviour
         if (!bIsAttacking && !bIsInvulnerable)
         {
             HelpUtils.RotateTowardsTarget(transform, _targetPosition, fROTATE_SPEED);
-            rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
+            moveVector = new Vector3(transform.forward.x, rbody.velocity.y, transform.forward.z);
+            rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
         }
     }
     public void CheckWalkingArea(Vector3 _targetPosition) // Walk Area Check 
@@ -310,8 +316,10 @@ public class Enemy : MonoBehaviour
         {
             if ((transform.position - _targetPosition).sqrMagnitude > fMaxWalkingDistance)
             {
-                transform.forward = (_targetPosition - transform.position).normalized;
-                rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
+                Vector3 _targetPos = (_targetPosition - transform.position).normalized;
+                transform.forward = _targetPos;
+                moveVector = new Vector3(_targetPos.x, rbody.velocity.y, _targetPos.z);
+                rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
             }
         }
     }

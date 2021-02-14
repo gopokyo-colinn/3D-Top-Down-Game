@@ -43,6 +43,7 @@ public class NPCEntity : MonoBehaviour
     // Walk Area Variables
     public float fMaxWalkingDistance = 60;
     private Vector3 startPosition;
+    Vector3 moveVector;
 
     void Start()
     {
@@ -67,6 +68,7 @@ public class NPCEntity : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("Npc");
 
         StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsMoving = b; }, true, fWaitTime));
+
     }
     void Update()
     {
@@ -77,7 +79,15 @@ public class NPCEntity : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        DoActivity(npcActivity);
+        if(HelpUtils.Grounded(transform, 0.25f))
+        {
+            DoActivity(npcActivity);
+
+            if(rbody.velocity.y > 0)
+            {
+                rbody.velocity = new Vector3(rbody.velocity.x, 0, rbody.velocity.z);
+            }
+        }
     }
 
     /// Behaviours
@@ -142,7 +152,9 @@ public class NPCEntity : MonoBehaviour
                     StartCoroutine(ChangeBoolAfter((bool b) => { bCanMove = b; }, false, fWaitTime));
                 }
 
-                rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
+                moveVector = new Vector3(transform.forward.x, rbody.velocity.y, transform.forward.z);
+               
+                rbody.velocity = moveVector.normalized * fSpeed * Time.fixedDeltaTime;
             }
             else
             {
@@ -157,8 +169,8 @@ public class NPCEntity : MonoBehaviour
     {
         if (bIsMoving)
         {
-           lastDirection = (tPatrolPoints[iPatrolPos].position - transform.position).normalized;
-
+            lastDirection = (tPatrolPoints[iPatrolPos].position - transform.position).normalized;
+            lastDirection.y = 0;
             if ((transform.position - tPatrolPoints[iPatrolPos].position).sqrMagnitude <= 1f)
             {
                 bIsMoving = false;
@@ -187,8 +199,10 @@ public class NPCEntity : MonoBehaviour
                     }
                 }
             }
+
             transform.forward = lastDirection;
-            rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
+            moveVector = new Vector3(lastDirection.x, rbody.velocity.y, lastDirection.z);
+            rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
         }
         else
         {
@@ -324,7 +338,7 @@ public class NPCEntity : MonoBehaviour
     }
     public void SetAnimations()
     {
-        float _fWalking = (rbody.velocity.magnitude > 0.1f) ? 1 : 0;
+        float _fWalking = (rbody.velocity.sqrMagnitude > 0.1f) ? 1 : 0;
         anim.SetFloat("m_speed", _fWalking);
     }
 
@@ -401,8 +415,8 @@ public class NPCEntity : MonoBehaviour
             transform.forward *= -1;
         }
 
-        bIsMoving = true;
         bCanMove = true;
+        bIsMoving = true;
         yield return new WaitForSeconds(fWalkTime);
         bIsMoving = false;
         yield return new WaitForSeconds(fWaitTime / 3);
@@ -439,8 +453,10 @@ public class NPCEntity : MonoBehaviour
         {
             if ((transform.position - startPosition).sqrMagnitude > fMaxWalkingDistance)
             {
-                transform.forward = (startPosition - transform.position).normalized;
-                rbody.velocity = transform.forward * fSpeed * Time.fixedDeltaTime;
+                Vector3 _targetPos = (startPosition - transform.position).normalized;
+                transform.forward = _targetPos;
+                moveVector = new Vector3(_targetPos.x, rbody.velocity.y, _targetPos.z);
+                rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
                // HelpUtils.RotateTowardsTarget(transform, startPosition, Random.Range(80f, 120));
             }
         }
