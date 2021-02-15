@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1b9ef3cafdb713f41a1ba12ec95836f4
+guid: 7e8fb3f611f137c44a1b3fc76ff9cb17
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable:
@@ -17,13 +17,13 @@ ModelImporter:
     second: //RootNode
   - first:
       43: 4300000
-    second: Mushroom_3
+    second: Crystal_3
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Material #33
-    second: {fileID: 2100000, guid: db54f89cf058b2d4087e5d14833c58ea, type: 2}
+      name: Material #30
+    second: {fileID: 2100000, guid: 2da0d9a944cbb1449a867cbc484d0dde, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -100,7 +100,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1
+    globalScale: 0.001
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

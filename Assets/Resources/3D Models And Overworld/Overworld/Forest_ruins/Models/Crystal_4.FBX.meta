@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0c4c8423bd6fca6438a0a7ab3fb32e3d
+guid: 993972d40ab25c54598140af0762788d
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable:
@@ -17,16 +17,13 @@ ModelImporter:
     second: //RootNode
   - first:
       43: 4300000
-    second: Column
-  - first:
-      43: 4300002
-    second: Pillar
+    second: Crystal_4
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Material #285
-    second: {fileID: 2100000, guid: 524d91987fc13134983b730457763174, type: 2}
+      name: Material #30
+    second: {fileID: 2100000, guid: 2da0d9a944cbb1449a867cbc484d0dde, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -46,7 +43,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -103,7 +100,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1
+    globalScale: 0.001
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

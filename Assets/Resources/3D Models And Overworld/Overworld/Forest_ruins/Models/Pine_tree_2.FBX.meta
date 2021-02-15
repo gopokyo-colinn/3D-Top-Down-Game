@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 32ef1f7e8ff91234ca1f096a23630e1b
+guid: 1a79ce00a837cd043bbcb4ef0e0e3b49
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable:
@@ -17,13 +17,13 @@ ModelImporter:
     second: //RootNode
   - first:
       43: 4300000
-    second: Flower
+    second: Pine_tree_2
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Material #31
-    second: {fileID: 2100000, guid: 7128941fccbc4b64fb30186ac61f5ff9, type: 2}
+      name: Material #7649
+    second: {fileID: 2100000, guid: bb1c1ca58460f704fba19f76392d96ed, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -64,7 +64,7 @@ ModelImporter:
     importCameras: 0
     importLights: 0
     swapUVChannels: 0
-    generateSecondaryUV: 1
+    generateSecondaryUV: 0
     useFileUnits: 1
     keepQuads: 0
     weldVertices: 1
@@ -100,7 +100,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1
+    globalScale: 0.001
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

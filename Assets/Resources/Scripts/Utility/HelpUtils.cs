@@ -25,7 +25,7 @@ public static class HelpUtils
         _directionToPlayer.y = 0;
         _transform.rotation = Quaternion.RotateTowards(_transform.rotation, Quaternion.LookRotation(_directionToPlayer), _rotationSpeed * Time.fixedDeltaTime);
     }
-    public static Vector3 VectorZero(Rigidbody _rb)
+    public static Vector3 VectorZeroWithY(Rigidbody _rb)
     {
         return new Vector3(0, _rb.velocity.y, 0);
     }

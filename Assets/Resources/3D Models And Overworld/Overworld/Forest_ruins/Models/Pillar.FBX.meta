@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1a79ce00a837cd043bbcb4ef0e0e3b49
+guid: 0c4c8423bd6fca6438a0a7ab3fb32e3d
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable:
@@ -17,13 +17,16 @@ ModelImporter:
     second: //RootNode
   - first:
       43: 4300000
-    second: Pine_tree_2
+    second: Column
+  - first:
+      43: 4300002
+    second: Pillar
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Material #7649
-    second: {fileID: 2100000, guid: bb1c1ca58460f704fba19f76392d96ed, type: 2}
+      name: Material #285
+    second: {fileID: 2100000, guid: 524d91987fc13134983b730457763174, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -64,7 +67,7 @@ ModelImporter:
     importCameras: 0
     importLights: 0
     swapUVChannels: 0
-    generateSecondaryUV: 0
+    generateSecondaryUV: 1
     useFileUnits: 1
     keepQuads: 0
     weldVertices: 1
@@ -100,7 +103,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1
+    globalScale: 0.001
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

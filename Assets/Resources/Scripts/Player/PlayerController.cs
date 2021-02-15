@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
 
     const float fHEAD_OFFSET = 1f;
     const float fNPC_DISTANCE_CHECK = 0.8f;
-    const float fDISTANCE_TO_GROUND = 0.3f;
+    const float fDISTANCE_TO_GROUND = 0.30f;
     const float fINVULNERABILITY_TIME = 0.5f;
     const float fSTUN_TIME = 0.4f;
     const float fSPRINT_STAMINA_COST = 10f; // is multipleid by deltaTime
@@ -37,25 +37,24 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
 
     public float fSpeed;
     public float fJumpForce;
-    public float sSpeedMultiplier = 1.5f;
+    public float fSpeedMultiplier = 1.5f;
     float horizontal;
     float vertical;
     Vector3 lastFacinDirection;
+    Vector3 movementVector;
 
     private bool bIsAlive;
     private bool bIsShielding;
     private bool bIsSprinting;
     private bool bCanSprint = true;
     private bool bDrawPrimaryWeapon;
-    private bool bPrimaryWeaponEquipped;
-    private bool bShieldEquipped;
-    //  private bool bCanAttack = true;
     private bool bIsAttacking;
     private bool bIsInteracting;
     private bool bIsInvulnerable;
     private bool bIsStun;
     private bool bIsOnSlope;
     private bool bIsGrounded;
+    private bool bJumpPressed;
 
     int iAttackCombo = -1;
 
@@ -66,10 +65,12 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     public int iStartInventorySize;
 
     PlayerEquipmentManager pEquimentManager;
-    public float fMinDepth;
-    public float fMaxDepth;
-    public float fMultUp;
-    public float fMultDown;
+
+    // Experimental floats
+    //public float fMinDepth;
+   // public float fMaxDepth;
+  //  public float fMultUp;
+    //public float fMultDown;
 
     RaycastHit hitGround;
     void Awake()
@@ -85,31 +86,29 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     private void Start()
     {
+
     }
     void Update()
     {
-        //////////////////////////////////////////
-        /// TODO: Jump is good other than when facing right, it gets a lots of velocity fix it
-        Debug.Log(bIsOnSlope);
-        
-        ///////////////////////////////////
         if (GameController.inPlayMode)
         {
             if (bIsAlive && !bIsStun)
             {
-                if (bIsGrounded)
-                    GetDirectionalInput();
-
+                CheckGrounded();
                 StaminaCheck();
                 UseShield();
                 SwordAttacks();
-                CheckGrounded();
-                CheckOnSlope();
-                CheckAheadForColliders();
                 DrawSheathPrimaryWeapon();
-                // All jumping Stuff is just experimental
-                if (!bJumpPressed)
+
+                if (bIsGrounded)
+                {
+                    GetDirectionalInput();
+                    CheckAheadForColliders();
+                    CheckOnSlope();
+                    // All jumping Stuff is just experimental
                     JumpPressed();
+                }
+
             }
         }
     }
@@ -119,21 +118,14 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         {
             if (bIsAlive && !bIsStun)
             {
+                Jump();
+
                 if (bIsGrounded)
                 {
                     DirectionalMovement();
-                    if (bJumpPressed)
-                    {
-                        if (bIsOnSlope)
-                            rbody.AddForce(new Vector3(0, fJumpForce / 1.5f, 0), ForceMode.Impulse);
-                        else
-                            rbody.AddForce(new Vector3(0, fJumpForce, 0), ForceMode.Impulse);
-                    }
                 }
-                else // for natural jumping, can't change direction in mid air
-                {
+                else
                     JumpControlling();
-                }
             }
         }
     }
@@ -193,7 +185,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             //}
             ////// mOVEMENT cONTROLLER //////////////////////////
 
-            Vector3 movementVector = new Vector3(horizontal, rbody.velocity.y, vertical).normalized;
+            movementVector = new Vector3(horizontal, 0, vertical).normalized;
 
             if (movementVector != Vector3.zero)
             {
@@ -202,20 +194,20 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                     if (bIsAttacking)
                         bIsSprinting = false;
                     else
-                        rbody.velocity = movementVector * fSpeed * sSpeedMultiplier * Time.fixedDeltaTime;
+                        rbody.velocity = (movementVector * fSpeed * fSpeedMultiplier * Time.fixedDeltaTime) + HelpUtils.VectorZeroWithY(rbody); //rbody.AddForce(movementVector * fSpeed * fSpeedMultiplier * Time.fixedDeltaTime, ForceMode.VelocityChange); ////;
                 }
                 else if (bIsShielding || bIsAttacking)
-                    rbody.velocity = movementVector * fSPEED_DIVISION * fSpeed * Time.fixedDeltaTime;
+                    rbody.velocity = (movementVector * fSPEED_DIVISION * fSpeed * Time.fixedDeltaTime) + HelpUtils.VectorZeroWithY(rbody); //rbody.AddForce(movementVector * fSpeed * fSPEED_DIVISION * Time.fixedDeltaTime, ForceMode.VelocityChange); ////
                 else
-                    rbody.velocity = movementVector * fSpeed * Time.fixedDeltaTime;
-            }
+                    rbody.velocity = (movementVector * fSpeed * Time.fixedDeltaTime) + HelpUtils.VectorZeroWithY(rbody);// rbody.AddForce(movementVector * fSpeed * Time.fixedDeltaTime, ForceMode.VelocityChange);
 
+            }
             ///////////////////////////////////////////////////
         }
         else
         {
+           // rbody.velocity =//Vector3.zero;// HelpUtils.VectorZero(rbody);
             anim.SetFloat("moveVelocity", 0f);
-            rbody.velocity = HelpUtils.VectorZero(rbody);
             bIsSprinting = false;
         }
     }
@@ -290,26 +282,47 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             }
         }
     }
-    bool bJumpPressed;
     public void JumpPressed()
     {
         /// For Jumping
-        if (bIsGrounded)
+        if (!bJumpPressed)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 bJumpPressed = true;
-                StartCoroutine(HelpUtils.WaitForSeconds(delegate { bJumpPressed = false; }, 0.4f));
             }
+        }
+    }
+    public void Jump()
+    {
+        if (bJumpPressed)
+        {
+            if (bIsOnSlope) // when on slope 
+            {
+                if(rbody.velocity != Vector3.zero)
+                    rbody.AddForce(new Vector3(0, fJumpForce * 2f, 0), ForceMode.Impulse); // on slope increaing jump force
+                else
+                    rbody.AddForce(new Vector3(0, fJumpForce, 0), ForceMode.Impulse);
+
+                bJumpPressed = false;
+            }
+            else // normal jumping on ground
+            {
+                rbody.AddForce(new Vector3(0, fJumpForce, 0), ForceMode.Impulse);
+                bJumpPressed = false;
+            }
+
         }
     }
     void JumpControlling()
     {
-        //if (bIsSprinting)
-        //    rbody.velocity = new Vector3(horizontal * fSpeed / 1.5f * Time.fixedDeltaTime, rbody.velocity.y, vertical * fSpeed  / 1.5f * Time.fixedDeltaTime);
-        //else
-        //    rbody.velocity = new Vector3(horizontal * fSpeed / 3 * Time.fixedDeltaTime, rbody.velocity.y, vertical * fSpeed / 3 * Time.fixedDeltaTime);
-       
+        if (rbody.velocity.x != 0 || rbody.velocity.z != 0)
+        {
+            if (rbody.velocity.y >= fJumpForce)
+            {
+                rbody.velocity = new Vector3(rbody.velocity.x, fJumpForce / 1.2f, rbody.velocity.z);
+            }
+        }
     }
     public void DisablePlayerMoveActions()
     {
@@ -320,21 +333,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     public void CheckGrounded()
     {
-        Debug.DrawRay(transform.position + new Vector3(0, 0.2f, 0), Vector3.down * fDISTANCE_TO_GROUND, Color.red);
         bIsGrounded = Physics.Raycast(transform.position + new Vector3(0, 0.2f, 0), Vector3.down, out hitGround, fDISTANCE_TO_GROUND, LayerMask.GetMask("Ground","Slope","Default"));
-
-        if (bIsGrounded) 
-        {
-            if (hitGround.normal != Vector3.up)
-            {
-                bIsOnSlope = true;
-            }
-            else
-            {
-                bIsOnSlope = false;
-            }
-        }
-        
         //return Physics.CheckSphere(transform.position, fDISTANCE_TO_GROUND, LayerMask.GetMask("Ground", "Default", "Slope"));
     }
     public void CheckAheadForColliders()
@@ -432,43 +431,20 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     public void CheckOnSlope()
     {
-       // if (!bJumped)
+        if (hitGround.normal != Vector3.up)
+            bIsOnSlope = true;
+        else
+            bIsOnSlope = false;
+
+        if(rbody.velocity != Vector3.zero)
         {
-            if (bIsGrounded)
+            if (rbody.velocity.y > 0.1f && rbody.velocity.y < fJumpForce - 1) // going up, 0.1f is if the velocity is increasing means there is a slope
             {
-                if (bIsOnSlope)
-                {
-                    if (bJumpPressed)
-                    {
-                        if (rbody.velocity.y > fMinDepth && rbody.velocity.y < (fJumpForce / 2) - 1)
-                        {
-                            rbody.velocity = new Vector3(rbody.velocity.x, fMinDepth, rbody.velocity.z);// new Vector3(rbody.velocity.x, -fMaxDepth * fMult, rbody.velocity.z);
-                        }
-                    }
-                    else
-                    {
-                        if (rbody.velocity.y > fMinDepth)
-                        {
-                            rbody.velocity = new Vector3(rbody.velocity.x, fMinDepth, rbody.velocity.z);// new Vector3(rbody.velocity.x, -fMaxDepth * fMult, rbody.velocity.z);
-                        }
-                    }
-                    
-                    if (rbody.velocity.y < fMaxDepth)
-                    {
-                        rbody.velocity = new Vector3(rbody.velocity.x, fMaxDepth, rbody.velocity.z) * 1.2f;// new Vector3(rbody.velocity.x, -fMaxDepth * fMult, rbody.velocity.z);
-                    }
-                }
-                else
-                {
-                    if (!bJumpPressed)
-                    {
-                        if (rbody.velocity.y > fMinDepth && rbody.velocity.y < fJumpForce - 1)
-                        {
-                            rbody.velocity = new Vector3(rbody.velocity.x, fMinDepth, rbody.velocity.z);// new Vector3(rbody.velocity.x, -fMaxDepth * fMult, rbody.velocity.z);
-                        }
-                    }
-                }
-               
+                rbody.velocity = new Vector3(rbody.velocity.x, 0.1f, rbody.velocity.z); // 0.1f is setting velocity.y to slope travel speed
+            }
+            if (rbody.velocity.y < -0.1f) // going down, -0.2f means if the player is moving down with atleast -0.2f velovity.y
+            {
+                rbody.velocity = new Vector3(rbody.velocity.x, -2.5f, rbody.velocity.z); // then setting velovity.y to -2.5f so that there are no bounces
             }
         }
     }

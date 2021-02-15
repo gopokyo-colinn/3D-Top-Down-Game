@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 993972d40ab25c54598140af0762788d
+guid: 32ef1f7e8ff91234ca1f096a23630e1b
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable:
@@ -17,13 +17,13 @@ ModelImporter:
     second: //RootNode
   - first:
       43: 4300000
-    second: Crystal_4
+    second: Flower
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Material #30
-    second: {fileID: 2100000, guid: 2da0d9a944cbb1449a867cbc484d0dde, type: 2}
+      name: Material #31
+    second: {fileID: 2100000, guid: 7128941fccbc4b64fb30186ac61f5ff9, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -54,7 +54,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 2
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -100,7 +100,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1
+    globalScale: 0.002
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
