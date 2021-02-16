@@ -131,6 +131,9 @@ MonoBehaviour:
   bIsPlayer: 0
   fKnockForce: 4
   attackCollider: {fileID: 2185881881904918578}
+  particleEffectPrefab: {fileID: 5197014519659287536, guid: b864dc263467e1f4799c3ecae74ed1a1,
+    type: 3}
+  particleEffect: {fileID: 0}
 --- !u!114 &783734976286468353
 MonoBehaviour:
   m_ObjectHideFlags: 0

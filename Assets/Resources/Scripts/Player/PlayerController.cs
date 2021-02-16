@@ -272,7 +272,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             if (Input.GetButtonDown("Attack"))
             {
                 iAttackCombo++;
-                if (iAttackCombo > 0 && !bIsAttacking && fCurrentStamina > fATTACK_STAMINA_COST)
+                if (iAttackCombo >= 0 && !bIsAttacking && fCurrentStamina > fATTACK_STAMINA_COST)
                 {
                     fCurrentStamina -= fATTACK_STAMINA_COST;
                     //bIsAttacking = true; // its set to true in animation
