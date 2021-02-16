@@ -93,9 +93,9 @@ public class PlayerEquipmentManager : MonoBehaviour
         if(primaryWeapon != null)
         {
             Destroy(primaryWeapon);
+            trialEffectPrimaryWeapon = primaryWeapon.GetComponent<Weapon>().weaponTrialEffect;
         }
         primaryWeapon = _primaryWeapon;
-        trialEffectPrimaryWeapon = primaryWeapon.GetComponent<Weapon>().weaponTrialEffect;
     }
     public void SetSecondaryWeapon(GameObject _secondaryWeapon)
     {
