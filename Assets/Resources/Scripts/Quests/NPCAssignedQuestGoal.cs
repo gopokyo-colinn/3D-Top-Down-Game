@@ -22,9 +22,18 @@ public class NPCAssignedQuestGoal : MonoBehaviour
                     {
                         if (_quest.Value.qGoals[i].eGoalType == QuestGoalType.GO_TO_NPC)
                         {
-                            if (_quest.Value.sQuestID == this.sQuestID)
+                            if (_quest.Value.qGoals[i].taskNPC == this)
                             {
                                 _quest.Value.SetGoToNPCGoal(_quest.Value.qGoals[i], true);
+                                bIsFinished = true;
+                                return bIsFinished;
+                            }
+                        }
+                        else if(_quest.Value.qGoals[i].eGoalType == QuestGoalType.DELIVER)
+                        {
+                            if (_quest.Value.qGoals[i].taskNPC == this)
+                            {
+                                _quest.Value.DeliverItemGoal(_quest.Value.qGoals[i], true);
                                 bIsFinished = true;
                                 return bIsFinished;
                             }
@@ -44,9 +53,18 @@ public class NPCAssignedQuestGoal : MonoBehaviour
                     {
                         if (_quest.Value.qGoals[i].eGoalType == QuestGoalType.GO_TO_NPC)
                         {
-                            if (_quest.Value.sQuestID == this.sQuestID)
+                            if (_quest.Value.qGoals[i].taskNPC == this)
                             {
                                 _quest.Value.SetGoToNPCGoal(_quest.Value.qGoals[i], true);
+                                bIsFinished = true;
+                                return bIsFinished;
+                            }
+                        }
+                        else if (_quest.Value.qGoals[i].eGoalType == QuestGoalType.DELIVER)
+                        {
+                            if (_quest.Value.qGoals[i].taskNPC == this)
+                            {
+                                _quest.Value.DeliverItemGoal(_quest.Value.qGoals[i], true);
                                 bIsFinished = true;
                                 return bIsFinished;
                             }

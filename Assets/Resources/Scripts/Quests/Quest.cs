@@ -83,9 +83,6 @@ public class Quest
             {
                 switch (qGoal.eGoalType)
                 {
-                    case QuestGoalType.DELIVER:
-                        DeliverItemGoal(qGoal);
-                        break;
                     case QuestGoalType.GATHER:
                         GatherItemGoal(qGoal);
                         break;
@@ -194,7 +191,6 @@ public class Quest
                 }
             }
         }
-
     }
     public void SetGoToNPCGoal(QuestGoal _qGoal, bool _isCompleted) // This will be directly used by the NPC's
     {
@@ -217,15 +213,59 @@ public class Quest
                 ActivateNextGoal();
             }
         }
-
     }
     public void GatherItemGoal(QuestGoal _qGoal)
     {
-
+        if (bQuestInAnyOrder)
+        {
+            if (player.GetInventory().HasItem(_qGoal.itemToGatherOrDeliver.item.sID))
+            {
+                _qGoal.SetIsFinished(true);
+            }
+        }
+        else
+        {
+            if (_qGoal.GetIsActive())
+            {
+                if (player.GetInventory().HasItem(_qGoal.itemToGatherOrDeliver.item.sID))
+                {
+                    _qGoal.SetIsFinished(true);
+                    ActivateNextGoal();
+                }
+            }
+        }
     }// Not yet Done
-    public void DeliverItemGoal(QuestGoal _qGoal)
+    public void DeliverItemGoal(QuestGoal _qGoal, bool _bIsCompleted)
     {
-
+        if (bQuestInAnyOrder)
+        {
+            if (_bIsCompleted)
+            {
+                if (!_qGoal.GetIsFinished()) // this is to show the popup message only once
+                {
+                    Item _itemToRemove = new Item(_qGoal.itemToGatherOrDeliver.item);
+                    _itemToRemove.eType = ItemType.QuestItem;
+                    player.GetInventory().RemoveQuestItem(_itemToRemove);
+                    PopupUIManager.Instance.msgBoxPopup.ShowMessageAfterDialog(sQuestUpdated, 1);
+                }
+                _qGoal.SetIsFinished(_bIsCompleted);
+            }
+        }
+        else
+        {
+            if (_bIsCompleted)
+            {
+                if (!_qGoal.GetIsFinished()) // this is to show the popup message only once
+                {
+                    Item _itemToRemove = new Item(_qGoal.itemToGatherOrDeliver.item);
+                    _itemToRemove.eType = ItemType.QuestItem;
+                    player.GetInventory().RemoveQuestItem(_itemToRemove);
+                    PopupUIManager.Instance.msgBoxPopup.ShowMessageAfterDialog(sQuestUpdated, 1);
+                }
+                _qGoal.SetIsFinished(_bIsCompleted);
+                ActivateNextGoal();
+            }
+        }
     } // Not Yet Done
     public bool AllGoalsCompleted()
     {

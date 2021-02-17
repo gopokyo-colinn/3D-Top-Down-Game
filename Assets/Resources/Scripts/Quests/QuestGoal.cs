@@ -14,6 +14,9 @@ public class QuestGoal
     [Tooltip("Set Spawn Location for these Enemies in KillQuestManager")]
     public EnemySpawner enemiesSpawner;
     public NPCAssignedQuestGoal taskNPC;
+    public ItemContainer itemToGatherOrDeliver;
+
+
     [SerializeField]
     private bool bIsActive;
     [SerializeField]
@@ -21,21 +24,30 @@ public class QuestGoal
 
     public void InitializeGoal(string _sID)
     {
-        if (bIsActive)
+        if (bIsActive && !bIsFinished)
         {
-            if (eGoalType == QuestGoalType.GO_TO_NPC)
+            switch (eGoalType)
             {
-                taskNPC.SetQuestID(_sID);
-                taskNPC.SetIsFinished(bIsFinished);
-            }
-            else if (eGoalType == QuestGoalType.KILL)
-            {
-                if (bIsActive && !bIsFinished)
-                {
+                case QuestGoalType.GO_TO_NPC:
+                    taskNPC.SetQuestID(_sID);
+                    taskNPC.SetIsFinished(bIsFinished);
+                    break;
+                case QuestGoalType.KILL:
                     enemiesSpawner.SetID(_sID);
                     enemiesSpawner.SetActive(true);
                     enemiesSpawner.SpawnEnemies();
-                }
+                    break;
+                case QuestGoalType.GATHER:
+                    itemToGatherOrDeliver.gameObject.SetActive(true);
+                    break;
+                case QuestGoalType.DELIVER:
+                    taskNPC.SetQuestID(_sID); // this task npc is to whom you are delivering the item
+                    taskNPC.SetIsFinished(bIsFinished);
+                    Item _itemToAdd = new Item(itemToGatherOrDeliver.item);
+                    _itemToAdd.eType = ItemType.QuestItem;
+                    if(!PlayerController.Instance.GetInventory().HasQuestItem(_itemToAdd))
+                        PlayerController.Instance.GetInventory().AddItem(_itemToAdd);
+                    break;
             }
         }
     }

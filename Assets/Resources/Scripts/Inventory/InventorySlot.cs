@@ -35,6 +35,10 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
             if (item.bIsEquipped)
                 equippedText.text = "E";
         }
+        if(item.eType == ItemType.QuestItem)
+        {
+            equippedText.text = "Q";
+        }
 
         if (item.iQuantity > 1)
         {
@@ -44,6 +48,13 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     public void OnPointerClick(PointerEventData eventData)
     {
         OpenItemMenu();
+        if(item != null)
+        {
+            if(item.eType == ItemType.QuestItem)
+            {
+                PopupUIManager.Instance.msgBoxPopup.ShowTextMessage("Can't use a Quest Item..");
+            }
+        }
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -51,7 +62,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     }
     public void OpenItemMenu()
     {
-        if(item != null)
+        if(item != null && item.eType != ItemType.QuestItem)
         {
             inventoryPopup.SetItemMenuOpenBool(true);
             List<structSubMenu> _lstSubMenu = new List<structSubMenu>();

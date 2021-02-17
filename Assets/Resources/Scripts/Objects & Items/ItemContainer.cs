@@ -5,6 +5,7 @@ using UnityEngine;
 public class ItemContainer : MonoBehaviour
 {
     public Item item;
+    public bool bIsQuestItem;
    // string sItemContainerID;
     structItem structThisItem;
     public Canvas uiCanvas;
@@ -19,6 +20,11 @@ public class ItemContainer : MonoBehaviour
         uiCanvas.gameObject.SetActive(false);
         player = PlayerController.Instance;
         gameObject.layer = LayerMask.NameToLayer("Item");
+
+        if (bIsQuestItem)
+        {
+            gameObject.SetActive(false);
+        }
     }
     public void Update()
     {

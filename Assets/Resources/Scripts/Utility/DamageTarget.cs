@@ -63,6 +63,7 @@ public class DamageTarget : MonoBehaviour, ICanDamage
                             }
                         }
                     }
+                    break;
                 }
             }
         }

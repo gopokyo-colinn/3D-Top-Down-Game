@@ -28,13 +28,42 @@ public class Inventory
             Debug.Log("Your Inventory is full.");
         }
     }
-    public void RemoveItem(Item _item)
+    public bool HasItem(string _sId)
+    {
+        for (int i = 0; i < lstItems.Count; i++)
+        {
+            if (lstItems[i].sID == _sId)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    public bool HasQuestItem(Item _item)
     {
         for (int i = 0; i < lstItems.Count; i++)
         {
             if (lstItems[i].sID == _item.sID)
             {
-                lstItems.Remove(lstItems[i]);
+                if (lstItems[i].eType == _item.eType)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public void RemoveQuestItem(Item _item)
+    {
+        for (int i = 0; i < lstItems.Count; i++)
+        {
+            if (lstItems[i].sID == _item.sID)
+            {
+                if(lstItems[i].eType == _item.eType)
+                {
+                    lstItems.Remove(lstItems[i]);
+                    break;
+                }
             }
         }
     }
