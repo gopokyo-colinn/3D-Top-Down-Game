@@ -33,6 +33,7 @@ public class Enemy : MonoBehaviour
     protected bool bTargetFound;
     protected bool bCanAttack;
     protected bool bCanFollow;
+    protected bool bIsGrounded;
     public float fWalkTime;
     public float fWaitTime;
     public float fAttackWaitTime = 1.5f;
@@ -48,22 +49,14 @@ public class Enemy : MonoBehaviour
     private bool bDirReversing;
     protected bool bReverseDirection;
     private int iPatrolPos = 0;
-
+    // Material Dissolve Variables
+    private Material rndMaterial;
+    float fMatDissolveAlpha = -0.8f;
     // Astar Pathfinding Variables
     //   bool bPathSuccess;
     //  protected bool bFollowingPath;
     //  int iPathIndex = 0;
     //   Vector3[] pathToFollow = new Vector3[0];
-
-    //// Worst Obstacle Crossing Technique
-    //bool bObstacleInMyWay;
-    //bool bForwardHit;
-    //bool bLeftHit;
-    //bool bRightHit;
-    //bool bTotalRightHit;
-    //bool bTotalLeftHit;
-    //Vector3 dirToObstacleCross = Vector3.zero;
-    //float fObstacleCheckTimer = 0.3f;
 
     // Walk Area Variables
     public float fMaxWalkingDistance = 40;
@@ -87,13 +80,23 @@ public class Enemy : MonoBehaviour
         if (fWalkTime > 2)
             fWaitTime = Random.Range(fWalkTime - 1f, fWalkTime + 1f);
 
+        rndMaterial = GetComponentInChildren<Renderer>().material;
+
         StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsMoving = b; }, true, fWaitTime));
     }
     public void Refresh()
     {
+        bIsGrounded = Grounded(transform, 0.4f);
+        if (!bIsAlive)
+        {
+            DissolveOnDeath(0.6f);
+        }
+    }
+    public void FixedRefresh()
+    {
         if (bIsAlive)
         {
-            if (HelpUtils.Grounded(transform, 0.4f))
+            if (bIsGrounded)
             {
                 if (!bTargetFound)
                 {
@@ -101,10 +104,6 @@ public class Enemy : MonoBehaviour
                 }
             }
         }
-    }
-    public void FixedRefresh()
-    {
-
     }
 
     private void OnCollisionEnter(Collision _collision)
@@ -129,6 +128,10 @@ public class Enemy : MonoBehaviour
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// Movements and Target Checks
+    public bool Grounded(Transform _transform, float _distanceToGround)
+    {
+        return Physics.Raycast(_transform.position + new Vector3(0, 0.2f, 0), Vector3.down, _distanceToGround);
+    }
     public void FindingTarget()
     {
         RaycastHit hit;
@@ -343,10 +346,10 @@ public class Enemy : MonoBehaviour
     public void Die()
     {
         bIsAlive = false;
-        StartCoroutine(HelpUtils.WaitForSeconds(ClearEnemyStuff, 1f));
+        StartCoroutine(HelpUtils.WaitForSeconds(OnDeathStuff, 1f));
         Destroy(gameObject, 4f);
     }
-    void ClearEnemyStuff()
+    void OnDeathStuff()
     {
         rbody.isKinematic = true;
         Collider[] _colliders = GetComponents<Collider>();
@@ -355,6 +358,11 @@ public class Enemy : MonoBehaviour
             _colliders[i].enabled = false;
         }
     }// MAKING IT KINEMETIC ON DEATH, AND REMOVING COLLIDERS
+    void DissolveOnDeath(float _fDissolveSpeed)
+    {
+        fMatDissolveAlpha += _fDissolveSpeed * Time.deltaTime;
+        rndMaterial.SetFloat("_alpha", fMatDissolveAlpha);
+    }
     public bool IsInvulnerable()
     {
         return bIsInvulnerable;

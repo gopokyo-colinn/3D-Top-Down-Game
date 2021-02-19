@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7302346328881043488}
   - component: {fileID: 7224138948893886452}
   m_Layer: 0
-  m_Name: HitParticles
+  m_Name: HitParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -121,5 +121,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2249f2be6c5a2a94eab291152c6ba54a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fDeactivateAfter: 0.5
+  fDeactivateAfter: 0.4
   bDestroyIt: 0

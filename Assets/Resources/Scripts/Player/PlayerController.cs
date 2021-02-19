@@ -54,7 +54,14 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     private bool bIsStun;
     private bool bIsOnSlope;
     private bool bIsGrounded;
+   
+    //Keys Input
     private bool bJumpPressed;
+    private bool bSprintPressed;
+    private bool bAttackPressed;
+    private bool bShieldPressed;
+    private bool bInteractPressed;
+    private bool bSheathWeaponPressed;
 
     int iAttackCombo = -1;
 
@@ -94,6 +101,8 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         {
             if (bIsAlive && !bIsStun)
             {
+                PlayerAnimations();
+                PlayerInputs();
                 CheckGrounded();
                 StaminaCheck();
                 UseShield();
@@ -102,11 +111,8 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
 
                 if (bIsGrounded)
                 {
-                    GetDirectionalInput();
                     CheckAheadForColliders();
                     CheckOnSlope();
-                    // All jumping Stuff is just experimental
-                    JumpPressed();
                 }
 
             }
@@ -118,10 +124,10 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         {
             if (bIsAlive && !bIsStun)
             {
-                Jump();
 
                 if (bIsGrounded)
                 {
+                    Jump();
                     DirectionalMovement();
                 }
                 else
@@ -129,20 +135,11 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             }
         }
     }
-    void GetDirectionalInput()
-    {
-        horizontal = -Input.GetAxis("Horizontal");
-        vertical = -Input.GetAxis("Vertical");
-    }
     void DirectionalMovement()
     {
-        anim.SetBool("isSprinting", bIsSprinting);
-
         if (horizontal != 0 || vertical != 0)
         {
-            anim.SetFloat("moveVelocity", 1f);
-
-            if (Input.GetButton("Sprint"))
+            if (bSprintPressed)
             {
                 if (!bIsShielding && bCanSprint)
                 {
@@ -206,8 +203,6 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         }
         else
         {
-           // rbody.velocity =//Vector3.zero;// HelpUtils.VectorZero(rbody);
-            anim.SetFloat("moveVelocity", 0f);
             bIsSprinting = false;
         }
     }
@@ -215,7 +210,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     {
         if (pEquimentManager.shield != null)
         {
-            if (Input.GetButton("Shield"))
+            if (bShieldPressed)
             {
                 if (fCurrentStamina > fSHIELD_STAMINA_COST)
                 {
@@ -229,10 +224,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             }
             else
                 bIsShielding = false;
-
-            anim.SetBool("isShielding", bIsShielding);
         }
-
     }
     void DrawSheathPrimaryWeapon()
     {
@@ -240,20 +232,19 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         {
             if (!bDrawPrimaryWeapon)
             {
-                if (Input.GetButton("Attack"))
+                if (bAttackPressed)
                 {
                     bDrawPrimaryWeapon = true;
                 }
             }
             else
             {
-                if (Input.GetKeyDown(KeyCode.T))
+                if (bSheathWeaponPressed)
                 {
                     SheathWeapon();
                 }
             }
         }
-        anim.SetBool("draw_Weapon", bDrawPrimaryWeapon);
     }
     void SheathWeapon(bool _bIsRemoved = false)
     {
@@ -269,27 +260,14 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     {
         if (bDrawPrimaryWeapon)
         {
-            if (Input.GetButtonDown("Attack"))
+            if (bAttackPressed)
             {
                 iAttackCombo++;
                 if (iAttackCombo >= 0 && !bIsAttacking && fCurrentStamina > fATTACK_STAMINA_COST)
                 {
                     fCurrentStamina -= fATTACK_STAMINA_COST;
-                    //bIsAttacking = true; // its set to true in animation
-                    //bCanAttack = false;
                     anim.SetTrigger("attack1");
                 }
-            }
-        }
-    }
-    public void JumpPressed()
-    {
-        /// For Jumping
-        if (!bJumpPressed)
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                bJumpPressed = true;
             }
         }
     }
@@ -338,7 +316,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     public void CheckAheadForColliders()
     {
-        if (Input.GetButtonDown("Interact"))
+        if (bInteractPressed)
         {
             Collider[] _hitColliders = Physics.OverlapSphere(transform.position + transform.forward, 1f, LayerMask.GetMask("Npc", "Item"));
             foreach (var _collider in _hitColliders)
@@ -566,7 +544,29 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         return playerInventory;
     }
     /// Bools Getter And Setters
- 
+    public void PlayerInputs()
+    {
+        if (bIsGrounded)
+        {
+            horizontal = -Input.GetAxis("Horizontal");
+            vertical = -Input.GetAxis("Vertical");
+        }
+        bSheathWeaponPressed = Input.GetKeyDown(KeyCode.T);
+        bSprintPressed = Input.GetButton("Sprint");
+        bShieldPressed = Input.GetButton("Shield");
+        bAttackPressed = Input.GetButtonDown("Attack");
+        bInteractPressed = Input.GetButtonDown("Interact");
+        
+        if(Input.GetKeyDown(KeyCode.Space))
+            bJumpPressed = true;
+    }
+    public void PlayerAnimations()
+    {
+        anim.SetBool("isSprinting", bIsSprinting);
+        anim.SetBool("isShielding", bIsShielding);
+        anim.SetBool("draw_Weapon", bDrawPrimaryWeapon);
+        anim.SetFloat("moveVelocity", rbody.velocity.sqrMagnitude);
+    }
     public bool IsInteracting()
     {
         return bIsInteracting;

@@ -4,54 +4,51 @@ using UnityEngine;
 
 public class DestructableObject : MonoBehaviour, IHittable
 {
-    public float health = 1;
+    public float fHealth = 1;
     public ParticleSystem destroyParticleEffect;
     Collider coli;
 
-    bool destroyed = false;
+    bool bDestroyed = false;
+    bool bTookDamage;
     // Start is called before the first frame update
     void Start()
     {
-        destroyed = false;
+        bDestroyed = false;
         coli = GetComponent<Collider>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(health <= 0)
+      
+    }
+
+    public void ApplyDamage(float _fDamage)
+    {
+        if (!bTookDamage)
+        {
+            fHealth -= _fDamage;
+            bTookDamage = true;
+            StartCoroutine(HelpUtils.WaitForSeconds(delegate { bTookDamage = false; }, 0.5f));
+        }
+        if (fHealth <= 0)
         {
             DestroyObject();
         }
     }
 
-    public void ApplyDamage(float _damage)
-    {
-        health -= _damage;
-    }
-
     public void DestroyObject()
     {
-        if (!destroyed)
+        if (!bDestroyed)
         {
             coli.enabled = false;
             ParticleSystem particle = Instantiate(destroyParticleEffect, transform.position + new Vector3(0,0.4f,0), transform.rotation, transform);
             gameObject.GetComponentInChildren<Renderer>().enabled = false;
-            destroyed = true;
+            bDestroyed = true;
             Destroy(gameObject, 2f);
         }
     }
 
-    private void OnTriggerEnter(Collider _collider)
-    {
-        if (_collider)
-        {
-            if (_collider.gameObject.GetComponent<ICanDamage>() != null)
-            {
-                ApplyDamage(_collider.gameObject.GetComponent<ICanDamage>().Damage());
-            }
-        }
-    }
 
     public bool IsInvulnerable()
     {

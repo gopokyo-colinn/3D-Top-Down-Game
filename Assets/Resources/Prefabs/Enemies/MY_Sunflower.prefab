@@ -409,7 +409,7 @@ GameObject:
   - component: {fileID: 6009726511435969608}
   - component: {fileID: 2325893144698732515}
   - component: {fileID: 2325893144698732512}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: MY_Sunflower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -425,7 +425,7 @@ Transform:
   m_GameObject: {fileID: 2325893144698732514}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -4.527962, y: -0.059999943, z: 7.79}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_LocalScale: {x: 0.6999999, y: 0.7, z: 0.6999999}
   m_Children:
   - {fileID: 6009726510008239269}
   - {fileID: 6009726510342597377}
@@ -441,7 +441,7 @@ Rigidbody:
   m_GameObject: {fileID: 2325893144698732514}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 0
+  m_Drag: 1
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -474,12 +474,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fff5d8fc33c4ece44a853335c61effb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fMaxHitPoints: 20
+  fMaxHitPoints: 200
   fSpeed: 0
   iCollisionDamage: 5
   fWalkTime: 1
   fWaitTime: 1
   fAttackWaitTime: 1
+  fOnCollisionKnockBackForce: 4
+  tHeadOffset: {x: 0, y: 0.5, z: 0}
+  fMaxWalkingDistance: 40
 --- !u!114 &2325893144698732515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -496,7 +499,7 @@ MonoBehaviour:
     type: 3}
   attackPos: {fileID: 6009726510008239269}
   fSpeed: 8
-  fParabolicForce: 0.5
+  fParabolicForce: 0.3
   bCanAttack: 0
   userCollider: {fileID: 6009726511435969606}
 --- !u!95 &2325893144698732512
@@ -734,7 +737,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 290822956e2f3b349a298fe5a259c1d9, type: 2}
+  - {fileID: 2100000, guid: f09485315bf785e46b6c83c41a529d40, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

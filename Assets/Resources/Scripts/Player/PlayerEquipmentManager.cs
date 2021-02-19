@@ -20,7 +20,7 @@ public class PlayerEquipmentManager : MonoBehaviour
     public GameObject primaryWeapon;
     public GameObject secondaryWeapon;
     // Assigned Weapons and Equipment SFX
-    public GameObject trialEffectContainer;
+   // public GameObject trialEffectContainer;
     //GameObject swish1;
 
     ParticleSystem trialEffectPrimaryWeapon;
@@ -63,7 +63,7 @@ public class PlayerEquipmentManager : MonoBehaviour
     {
         //trialEffectAnimator.SetBool("slash_1b", player.IsAttacking());
         trialEffectPrimaryWeapon.transform.parent = primaryWeapon.transform;
-        trialEffectPrimaryWeapon.transform.localPosition = new Vector3(0, -0.24f, 0);
+        trialEffectPrimaryWeapon.transform.localPosition = new Vector3(0, -0.2f, 0);
         trialEffectPrimaryWeapon.transform.localRotation = Quaternion.Euler( Vector3.zero);
         trialEffectPrimaryWeapon.Play();
     }
@@ -71,7 +71,7 @@ public class PlayerEquipmentManager : MonoBehaviour
     {
         //trialEffectAnimator.SetBool("slash_1b", player.IsAttacking());
         trialEffectPrimaryWeapon.Stop();
-        trialEffectPrimaryWeapon.transform.parent = trialEffectContainer.transform;
+        trialEffectPrimaryWeapon.transform.parent = null;// trialEffectContainer.transform;
     }
     public void SetAttackBool(int _bSetAttack)
     {

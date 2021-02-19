@@ -138,7 +138,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fDamage: 10
   bIsProjectileAttack: 1
-  bIsTypeOfEnemy: 1
+  bIsTypeOfEnemy: 0
   bIsPlayer: 0
   fKnockForce: 8
   attackCollider: {fileID: 2409141566461220095}

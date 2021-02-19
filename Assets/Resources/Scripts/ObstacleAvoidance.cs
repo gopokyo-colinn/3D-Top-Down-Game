@@ -44,7 +44,8 @@ public class ObstacleAvoidance : MonoBehaviour
            {
                 foreach (var _go in objectsInCollisionRangeLst)
                 {
-                    CollisionAvoidance(_go.transform.position);
+                    if(_go != null)
+                        CollisionAvoidance(_go.transform.position);
                 }
            }
         }
