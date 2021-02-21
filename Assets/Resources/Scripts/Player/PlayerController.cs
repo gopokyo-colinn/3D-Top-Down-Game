@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
 
     const float fHEAD_OFFSET = 1f;
     const float fNPC_DISTANCE_CHECK = 0.8f;
-    const float fDISTANCE_TO_GROUND = 0.30f;
+    const float fDISTANCE_TO_GROUND = 0.12f;
     const float fINVULNERABILITY_TIME = 0.5f;
     const float fSTUN_TIME = 0.4f;
     const float fSPRINT_STAMINA_COST = 10f; // is multipleid by deltaTime
@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                 if (bIsGrounded)
                 {
                     CheckAheadForColliders();
-                    //CheckOnSlope();
+                    CheckOnSlope();
                 }
 
             }
@@ -197,12 +197,13 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                     rbody.velocity = (movementVector * fSPEED_DIVISION * fSpeed * Time.fixedDeltaTime) + HelpUtils.VectorZeroWithY(rbody); //rbody.AddForce(movementVector * fSpeed * fSPEED_DIVISION * Time.fixedDeltaTime, ForceMode.VelocityChange); ////
                 else
                     rbody.velocity = (movementVector * fSpeed * Time.fixedDeltaTime) + HelpUtils.VectorZeroWithY(rbody);// rbody.AddForce(movementVector * fSpeed * Time.fixedDeltaTime, ForceMode.VelocityChange);
-
+                    //rbody.MovePosition(transform.position + movementVector * fSpeed * Time.fixedDeltaTime);
             }
-            ///////////////////////////////////////////////////
+                ///////////////////////////////////////////////////
         }
         else
         {
+            rbody.velocity = HelpUtils.VectorZeroWithY(rbody);
             bIsSprinting = false;
         }
     }
@@ -273,7 +274,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     public void Jump()
     {
-        if (bJumpPressed)
+        if (bJumpPressed && fCurrentStamina > 11f)
         {
             if (bIsOnSlope) // when on slope 
             {
@@ -289,7 +290,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                 rbody.AddForce(new Vector3(0, fJumpForce, 0), ForceMode.Impulse);
                 bJumpPressed = false;
             }
-
+            fCurrentStamina -= 10f;
         }
     }
     void JumpControlling()
@@ -311,8 +312,8 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     public void CheckGrounded()
     {
-        bIsGrounded = Physics.Raycast(transform.position + new Vector3(0, 0.2f, 0), Vector3.down, out hitGround, fDISTANCE_TO_GROUND, LayerMask.GetMask("Ground","Slope","Default"));
-        //return Physics.CheckSphere(transform.position, fDISTANCE_TO_GROUND, LayerMask.GetMask("Ground", "Default", "Slope"));
+        //bIsGrounded = Physics.Raycast(transform.position + new Vector3(0, 0.2f, 0), Vector3.down, out hitGround, fDISTANCE_TO_GROUND, LayerMask.GetMask("Ground","Slope","Default"));
+        bIsGrounded = Physics.CheckSphere(transform.position, fDISTANCE_TO_GROUND, LayerMask.GetMask("Ground", "Default", "Slope"));
     }
     public void CheckAheadForColliders()
     {
@@ -409,12 +410,12 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     public void CheckOnSlope()
     {
-        if (hitGround.normal != Vector3.up)
-            bIsOnSlope = true;
-        else
-            bIsOnSlope = false;
+        //if (hitGround.normal != Vector3.up)
+        //    bIsOnSlope = true;
+        //else
+        //    bIsOnSlope = false;
 
-        if(rbody.velocity != Vector3.zero)
+        if (rbody.velocity != Vector3.zero)
         {
             if (rbody.velocity.y > 0.1f && rbody.velocity.y < fJumpForce - 1) // going up, 0.1f is if the velocity is increasing means there is a slope
             {

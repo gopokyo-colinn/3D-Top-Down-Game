@@ -22,10 +22,6 @@ public class DamageTarget : MonoBehaviour, ICanDamage
 
     Vector3 startPos;
 
-    public void OnEnable()
-    {
-        Debug.Log("I am enabled");
-    }
     public void Start()
     {
         if (GetComponentInParent<PlayerController>())

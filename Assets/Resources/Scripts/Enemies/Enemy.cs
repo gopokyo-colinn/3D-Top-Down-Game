@@ -8,7 +8,7 @@ public class Enemy : MonoBehaviour
     float fInvulnerableCounter;
 
     //const float fDISTANCE_TO_GROUND = 0.1f;
-    const float fDISTANCE_TO_COLIS = 1.2f;
+    const float fDISTANCE_TO_COLIS = 1.6f;
     const float fVISION_RANGE = 5f;
 
     protected const float fROTATE_SPEED = 240f;
@@ -41,7 +41,7 @@ public class Enemy : MonoBehaviour
     private Vector3 randomVector;
     public float fOnCollisionKnockBackForce = 5f;
     public Vector3 tHeadOffset = new Vector3(0, 0.5f, 0);
-    Vector3 moveVector;
+    protected Vector3 moveVector;
     // Patrolling
     // Patrolling
     protected bool bIsPatroller;
@@ -74,7 +74,7 @@ public class Enemy : MonoBehaviour
         bIsAlive = true;
 
         // Just Randomiaing the stats a bit
-        fSpeed = Random.Range(fSpeed - 20f, fSpeed + 20f);
+        fSpeed = Random.Range(fSpeed - .5f, fSpeed + 1f);
         if (fWaitTime > 2)
             fWaitTime = Random.Range(fWaitTime - 1f, fWaitTime + 1f);
         if (fWalkTime > 2)
@@ -97,7 +97,7 @@ public class Enemy : MonoBehaviour
         if (bIsAlive)
         {
             if (bIsGrounded)
-            {
+            { 
                 if (!bTargetFound)
                 {
                     CheckWalkingArea(startPosition);
@@ -162,8 +162,9 @@ public class Enemy : MonoBehaviour
                     bIsMoving = false;
                     StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bCanMove = b; }, false, fWaitTime));
                 }
-                moveVector = new Vector3(transform.forward.x, rbody.velocity.y, transform.forward.z).normalized;
-                rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
+                moveVector = new Vector3(transform.forward.x, 0, transform.forward.z).normalized;
+                rbody.MovePosition(transform.position + moveVector * fSpeed * Time.fixedDeltaTime);
+               // rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
             }
             else
             {
@@ -212,8 +213,9 @@ public class Enemy : MonoBehaviour
             }
            
             transform.forward = lastFacingDirection;
-            moveVector = new Vector3(lastFacingDirection.x, rbody.velocity.y, lastFacingDirection.z);
-            rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
+            moveVector = new Vector3(lastFacingDirection.x, 0, lastFacingDirection.z);
+            rbody.MovePosition(transform.position + moveVector * fSpeed * Time.fixedDeltaTime);
+            //rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
         }
         else
         {
@@ -285,7 +287,7 @@ public class Enemy : MonoBehaviour
     }
     IEnumerator SetRandomDirection()
     {
-        randomVector = Random.insideUnitSphere * 100f;
+        randomVector = transform.position + Random.insideUnitSphere * 100f;
         randomVector.y = 0;
         
         if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
@@ -309,8 +311,9 @@ public class Enemy : MonoBehaviour
         if (!bIsAttacking && !bIsInvulnerable)
         {
             HelpUtils.RotateTowardsTarget(transform, _targetPosition, fROTATE_SPEED);
-            moveVector = new Vector3(transform.forward.x, rbody.velocity.y, transform.forward.z);
-            rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
+            moveVector = new Vector3(transform.forward.x, 0, transform.forward.z);
+            rbody.MovePosition(transform.position + moveVector * fSpeed * Time.fixedDeltaTime);
+            //rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
         }
     }
     public void CheckWalkingArea(Vector3 _targetPosition) // Walk Area Check 
@@ -321,7 +324,7 @@ public class Enemy : MonoBehaviour
             {
                 Vector3 _targetPos = (_targetPosition - transform.position).normalized;
                 transform.forward = _targetPos;
-                moveVector = new Vector3(_targetPos.x, rbody.velocity.y, _targetPos.z);
+                moveVector = new Vector3(_targetPos.x, 0, _targetPos.z);
                 rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
             }
         }
@@ -370,6 +373,10 @@ public class Enemy : MonoBehaviour
     public bool IsEnemyDead()
     {
         return !bIsAlive;
+    }
+    public bool CanFollow()
+    {
+        return bCanFollow;
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// Obstacle Checking

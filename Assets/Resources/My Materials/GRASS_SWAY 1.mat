@@ -40,7 +40,7 @@ Material:
     - Vector1_88C5BFD8: 0
     - Vector1_BA6B2EA6: 1
     - Vector1_C59A5EE4: 0.06
-    - Vector1_EF1D06E8: 0.2
+    - Vector1_EF1D06E8: 0.1
     m_Colors:
     - Vector2_4F0D5745: {r: 6, g: 6, b: 0, a: 0}
     - _SwayDirection: {r: 1, g: 1, b: 0, a: 0}

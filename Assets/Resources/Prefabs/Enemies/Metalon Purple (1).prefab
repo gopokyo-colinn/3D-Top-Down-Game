@@ -847,6 +847,7 @@ MonoBehaviour:
   fOnCollisionKnockBackForce: 4
   tHeadOffset: {x: 0, y: 0.5, z: 0}
   fMaxWalkingDistance: 40
+  travelPoints: []
 --- !u!114 &2016155963780243019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -863,8 +864,10 @@ MonoBehaviour:
   bIsProjectileAttack: 0
   bIsTypeOfEnemy: 1
   bIsPlayer: 0
-  fKnockForce: 10
+  bAttackCompleted: 0
+  fKnockForce: 4
   attackCollider: {fileID: 2016155963506862487}
+  particleEffectPrefab: {fileID: 0}
 --- !u!114 &1921199360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -877,9 +880,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb4cc5f2813645aef95bf7d6d5e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fSpeed: 150
+  fSpeed: 60
   fAvoidanceThreshold: 5
-  fDetectionRadius: 0.4
+  fDetectionRadius: 0.8
   bCanAvoidLargeScaleObstacles: 0
   bMakeThemWalkable: 0
 --- !u!1 &2016155963809532510
