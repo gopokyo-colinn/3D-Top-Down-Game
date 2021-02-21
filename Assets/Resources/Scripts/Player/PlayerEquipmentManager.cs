@@ -63,7 +63,7 @@ public class PlayerEquipmentManager : MonoBehaviour
     {
         //trialEffectAnimator.SetBool("slash_1b", player.IsAttacking());
         trialEffectPrimaryWeapon.transform.parent = primaryWeapon.transform;
-        trialEffectPrimaryWeapon.transform.localPosition = new Vector3(0, -0.2f, 0);
+        trialEffectPrimaryWeapon.transform.localPosition = new Vector3(0, -0.16f, 0);
         trialEffectPrimaryWeapon.transform.localRotation = Quaternion.Euler( Vector3.zero);
         trialEffectPrimaryWeapon.Play();
     }

@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                 if (bIsGrounded)
                 {
                     CheckAheadForColliders();
-                    CheckOnSlope();
+                    //CheckOnSlope();
                 }
 
             }
