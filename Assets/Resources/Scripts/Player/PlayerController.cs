@@ -549,8 +549,8 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     {
         if (bIsGrounded)
         {
-            horizontal = -Input.GetAxis("Horizontal");
-            vertical = -Input.GetAxis("Vertical");
+            horizontal = Input.GetAxis("Horizontal");
+            vertical = Input.GetAxis("Vertical");
         }
         bSheathWeaponPressed = Input.GetKeyDown(KeyCode.T);
         bSprintPressed = Input.GetButton("Sprint");
