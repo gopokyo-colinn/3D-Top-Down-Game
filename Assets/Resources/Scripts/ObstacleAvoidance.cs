@@ -94,19 +94,17 @@ public class ObstacleAvoidance : MonoBehaviour
             adjVector = adjVector * difference;
             steerVelocity = (rb.velocity - adjVector).normalized;
             steerVelocity.y = 0;
-            /*
-                        if (bCanAvoidLargeScaleObstacles)
-                        {
-                            float xVel = transform.InverseTransformDirection(newVelocity).x;
 
-                            if (xVel > 0)
-                                rb.velocity = newVelocity + transform.right * (fSpeed / 1.2f) * Time.fixedDeltaTime;
-                            else
-                                rb.velocity = newVelocity - transform.right * (fSpeed / 1.2f)  * Time.fixedDeltaTime;
-                        }
+            if (bCanAvoidLargeScaleObstacles)
+            {
+                //float xVel = transform.InverseTransformDirection(steerVelocity).x;
+                //if (xVel > 0)
+                //    rb.velocity = steerVelocity + transform.right * (fSpeed / 1.2f) * Time.fixedDeltaTime;
+                //else
+                //    rb.velocity = steerVelocity - transform.right * (fSpeed / 1.2f) * Time.fixedDeltaTime;
+            }
 
-                         TODO: Do Something to make the character look in the direction of facing the steerVelocity
-            */
+       // TODO: Do Something to make the character look in the direction of facing the steerVelocity
             rb.velocity = steerVelocity * fSpeed * Time.fixedDeltaTime; // normal avoidance, it even stop object if there is no forward motion            
 
             if (!bIsEnemy && !bMakeThemWalkable) // if its a enemy then it should not rotate on closing gap, enemies have their own ways to look at player

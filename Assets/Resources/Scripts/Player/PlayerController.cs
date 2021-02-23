@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
 
     const float fHEAD_OFFSET = 1f;
     const float fNPC_DISTANCE_CHECK = 0.8f;
-    const float fDISTANCE_TO_GROUND = 0.12f;
+    const float fDISTANCE_TO_GROUND = 0.25f;
     const float fINVULNERABILITY_TIME = 0.5f;
     const float fSTUN_TIME = 0.4f;
     const float fSPRINT_STAMINA_COST = 10f; // is multipleid by deltaTime
@@ -203,7 +203,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         }
         else
         {
-            rbody.velocity = HelpUtils.VectorZeroWithY(rbody);
+            rbody.velocity =  HelpUtils.VectorZeroWithY(rbody);
             bIsSprinting = false;
         }
     }
@@ -287,11 +287,13 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
             }
             else // normal jumping on ground
             {
-                rbody.AddForce(new Vector3(0, fJumpForce, 0), ForceMode.Impulse);
+                if(rbody.velocity.y <= 0 && rbody.velocity.y >= -0.1f)
+                    rbody.AddForce(new Vector3(0, fJumpForce, 0), ForceMode.Impulse);
                 bJumpPressed = false;
             }
             fCurrentStamina -= 10f;
         }
+        bJumpPressed = false;
     }
     void JumpControlling()
     {
@@ -689,7 +691,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     {
         // Gizmos.DrawSphere(transform.position + transform.forward, 1f);
         // Gizmo for below Function
-        //Gizmos.DrawSphere(transform.position, fDISTANCE_TO_GROUND);
+        Gizmos.DrawSphere(transform.position, fDISTANCE_TO_GROUND);
     }
 }
 

@@ -163,7 +163,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!1 &3759996336672375105
 GameObject:
@@ -9802,22 +9802,22 @@ PrefabInstance:
     - target: {fileID: 3017987916078179229, guid: 71aeb610f26c7ac44af0a129904df619,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: 0.96987206
       objectReference: {fileID: 0}
     - target: {fileID: 3017987916078179229, guid: 71aeb610f26c7ac44af0a129904df619,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0.24361496
       objectReference: {fileID: 0}
     - target: {fileID: 3017987916078179229, guid: 71aeb610f26c7ac44af0a129904df619,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.9698716
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3017987916078179229, guid: 71aeb610f26c7ac44af0a129904df619,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.24361673
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3017987916078179229, guid: 71aeb610f26c7ac44af0a129904df619,
         type: 3}
@@ -9837,7 +9837,7 @@ PrefabInstance:
     - target: {fileID: 3017987916078179229, guid: 71aeb610f26c7ac44af0a129904df619,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -180.00002
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3017987916078179229, guid: 71aeb610f26c7ac44af0a129904df619,
         type: 3}

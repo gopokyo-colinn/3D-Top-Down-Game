@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour
     const float fVISION_RANGE = 5f;
 
     protected const float fROTATE_SPEED = 240f;
-    protected float fAttackRange = 5f;
+    protected float fAttackRange = 4f;
     protected float fFollowRange = 120f;
 
     public float fMaxHitPoints;
@@ -59,7 +59,7 @@ public class Enemy : MonoBehaviour
     //   Vector3[] pathToFollow = new Vector3[0];
 
     // Walk Area Variables
-    public float fMaxWalkingDistance = 40;
+    public float fMaxWalkingDistance = 60;
     private Vector3 startPosition;
 
     public void Initialize()
@@ -259,6 +259,7 @@ public class Enemy : MonoBehaviour
         else if ((transform.position - targetPlayer.transform.position).sqrMagnitude <= _fAttackRange)
         {
             bCanFollow = false;
+            bIsMoving = false;
             //rbody.velocity = Vector3.zero;// HelperFunctions.VectorZero(rbody);
             if (!bIsInvulnerable)
             {
@@ -310,6 +311,7 @@ public class Enemy : MonoBehaviour
     {
         if (!bIsAttacking && !bIsInvulnerable)
         {
+            bIsMoving = true;
             HelpUtils.RotateTowardsTarget(transform, _targetPosition, fROTATE_SPEED);
             moveVector = new Vector3(transform.forward.x, 0, transform.forward.z);
             rbody.MovePosition(transform.position + moveVector * fSpeed * Time.fixedDeltaTime);
@@ -325,7 +327,8 @@ public class Enemy : MonoBehaviour
                 Vector3 _targetPos = (_targetPosition - transform.position).normalized;
                 transform.forward = _targetPos;
                 moveVector = new Vector3(_targetPos.x, 0, _targetPos.z);
-                rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
+                rbody.MovePosition(transform.position + moveVector * fSpeed * Time.fixedDeltaTime);
+                //rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
             }
         }
     }

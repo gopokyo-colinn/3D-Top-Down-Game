@@ -7,7 +7,7 @@ public enum NPCActivities { IDLE = 0, MOVE_RANDOMLY = 1, PATROLLING = 2, FIGHTER
 public class NPCEntity : MonoBehaviour
 {
     const float fDISTANCE_TO_GROUND = 0.2f;
-    const float fDISTANCE_TO_COLIS = 1.2f;
+    const float fDISTANCE_TO_COLIS = 0.8f;
     const float fROTATE_SPEED = 240f;
     //public static List<NPCEntity> npcList;
     [HideInInspector]
@@ -66,13 +66,11 @@ public class NPCEntity : MonoBehaviour
         startPosition = transform.position;
 
         gameObject.layer = LayerMask.NameToLayer("Npc");
-
-        StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsMoving = b; }, true, fWaitTime));
-
+        rbody.isKinematic = true;
     }
     void Update()
     {
-       // SetRbodyAccToGroundCheck();
+        SetRbodyAccToGroundCheck();
         CheckForDialogToFinish();
         StayInWalkingArea();
         SetAnimations();
@@ -93,7 +91,7 @@ public class NPCEntity : MonoBehaviour
     /// Behaviours
     public void StayStill()
     {
-        rbody.velocity = VectorZero();
+        rbody.velocity = HelpUtils.VectorZeroWithY(rbody);
     }
     public void DoActivity(NPCActivities _activity)
     {
@@ -153,8 +151,8 @@ public class NPCEntity : MonoBehaviour
                 }
 
                 moveVector = new Vector3(transform.forward.x, rbody.velocity.y, transform.forward.z);
-               
-                rbody.velocity = moveVector.normalized * fSpeed * Time.fixedDeltaTime;
+                rbody.MovePosition(transform.position + moveVector * fSpeed * Time.fixedDeltaTime);
+               // rbody.velocity = moveVector.normalized * fSpeed * Time.fixedDeltaTime;
             }
             else
             {
@@ -202,7 +200,8 @@ public class NPCEntity : MonoBehaviour
 
             transform.forward = lastDirection;
             moveVector = new Vector3(lastDirection.x, rbody.velocity.y, lastDirection.z);
-            rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
+            rbody.MovePosition(transform.position + moveVector * fSpeed * Time.fixedDeltaTime);
+           // rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
         }
         else
         {
@@ -223,10 +222,7 @@ public class NPCEntity : MonoBehaviour
                 MerchantShop();
                 break;
         }
-        if(npcActivity == NPCActivities.IDLE)
-        {
-            rbody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-        }
+      
     }
     public void SetDialogWithQuest()
     {
@@ -338,7 +334,7 @@ public class NPCEntity : MonoBehaviour
     }
     public void SetAnimations()
     {
-        float _fWalking = (rbody.velocity.sqrMagnitude > 0.1f) ? 1 : 0;
+        float _fWalking = (bIsMoving || rbody.velocity.sqrMagnitude != 0) ? 1 : 0;
         anim.SetFloat("m_speed", _fWalking);
     }
 
@@ -351,7 +347,7 @@ public class NPCEntity : MonoBehaviour
             {
                 if (bDialogCheck)
                 {
-                    StartCoroutine(ChangeBoolAfter((bool b) => { bIsInteracting = b; bIsMoving = true; }, false, 1f));
+                    StartCoroutine(ChangeBoolAfter((bool b) => { bIsInteracting = b; }, false, 1f));
                     bDialogCheck = false;
                 }
             }
@@ -407,7 +403,7 @@ public class NPCEntity : MonoBehaviour
     }
     IEnumerator SetRandomDirection()
     {
-        randomVector = Random.insideUnitSphere * 100f;
+        randomVector = transform.position + Random.insideUnitSphere * 100f;
         randomVector.y = 0;
 
         if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
@@ -434,10 +430,6 @@ public class NPCEntity : MonoBehaviour
     }
 
     /// Other Helper Functions
-    public Vector3 VectorZero()
-    {
-        return new Vector3(0, rbody.velocity.y, 0);
-    }
     public Quest GetQuest()
     {
         return myActiveQuest;
@@ -456,7 +448,8 @@ public class NPCEntity : MonoBehaviour
                 Vector3 _targetPos = (startPosition - transform.position).normalized;
                 transform.forward = _targetPos;
                 moveVector = new Vector3(_targetPos.x, rbody.velocity.y, _targetPos.z);
-                rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
+                rbody.MovePosition(transform.position + moveVector * fSpeed * Time.fixedDeltaTime);
+                //rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
                // HelpUtils.RotateTowardsTarget(transform, startPosition, Random.Range(80f, 120));
             }
         }

@@ -49,7 +49,7 @@ public class ItemContainer : MonoBehaviour
         {
             uiCanvas.gameObject.SetActive(false);
         }
-        uiCanvas.GetComponent<RectTransform>().rotation = Quaternion.Euler(45, 180, 0);//startRotation;
+       // uiCanvas.GetComponent<RectTransform>().rotation = Quaternion.Euler(45, 180, 0);//startRotation;
     }
     void InitializeItem()
     {

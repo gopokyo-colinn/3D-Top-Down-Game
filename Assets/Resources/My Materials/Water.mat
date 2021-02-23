@@ -26,7 +26,7 @@ Material:
     - _RippleSpeed: 2
     - _VoronoiPower: 7
     - _WaveScale: 10
-    - _WaveSpeed: 0.03
+    - _WaveSpeed: 0.01
     m_Colors:
     - Color_27C3C5F4: {r: 0, g: 0.43638232, b: 0.8962264, a: 1}
     - Color_55D5EE1: {r: 0, g: 0.29481512, b: 1.0210413, a: 1}

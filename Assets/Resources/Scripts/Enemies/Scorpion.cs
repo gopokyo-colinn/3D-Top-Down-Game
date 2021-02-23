@@ -83,7 +83,7 @@ public class Scorpion : Enemy, IHittable
     {
         if (bIsAlive)
         {
-            float f = rbody.IsSleeping() ? 0 : 1;
+            float f = bIsMoving ? 1 : 0;
             anim.SetFloat("isWalking", f);
             anim.SetBool("canAttack", bCanAttack);
 
