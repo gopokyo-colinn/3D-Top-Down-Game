@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpittyPlant : Enemy, IHittable
+public class SpittyPlant : Enemy
 {
 
     float fINVULNERABILITY_TIME = 0.7f;
@@ -73,20 +73,4 @@ public class SpittyPlant : Enemy, IHittable
         }
     }
 
-    public void ApplyDamage(float _damage)
-    {
-        if (!bIsInvulnerable)
-        {
-            //Knockback(targetPlayer.transform.position, fPUSHBACKFORCE);
-            bIsInvulnerable = true;
-            bIsHit = true;
-            bTargetFound = true;
-            bCanFollow = false;
-            fCurrentHitPoints -= _damage;
-        }
-        if (fCurrentHitPoints <= 0)
-        {
-            Die();
-        }
-    }
 }

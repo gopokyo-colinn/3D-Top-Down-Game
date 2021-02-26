@@ -34,6 +34,8 @@ public class DamageTarget : MonoBehaviour, ICanDamage
             startPos = transform.position;
 
         attackCollider.isTrigger = true;
+
+
         maxHitTargets = new Collider[4];
         maxParticleEffects = new GameObject[4];
     }

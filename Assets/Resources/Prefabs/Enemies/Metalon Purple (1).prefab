@@ -839,14 +839,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fMaxHitPoints: 21
-  fSpeed: 200
+  fSpeed: 2
   iCollisionDamage: 5
   fWalkTime: 2
   fWaitTime: 2
   fAttackWaitTime: 1
   fOnCollisionKnockBackForce: 4
   tHeadOffset: {x: 0, y: 0.5, z: 0}
-  fMaxWalkingDistance: 40
+  fMaxWalkingDistance: 60
+  maxTravelAreaCol: {fileID: 0}
   travelPoints: []
 --- !u!114 &2016155963780243019
 MonoBehaviour:
@@ -1361,7 +1362,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 343efc4e4daa6884fb114514185426c9, type: 2}
+  - {fileID: 2100000, guid: efbe49ba49d84e14e89d53c8051cfdce, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

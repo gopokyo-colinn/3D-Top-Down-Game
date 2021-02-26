@@ -73,6 +73,12 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
 
     PlayerEquipmentManager pEquimentManager;
 
+    // Using Materials
+    Renderer rend;
+    private Material defaultMat;
+    public Material hightlightMat;
+
+
     // Experimental floats
     //public float fMinDepth;
    // public float fMaxDepth;
@@ -90,6 +96,9 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         bIsAlive = true;
         playerInventory = new Inventory(iStartInventorySize);
         pEquimentManager = GetComponent<PlayerEquipmentManager>();
+        rend = GetComponentInChildren<Renderer>();
+        defaultMat = rend.materials[0];
+       // hightlightMat = rend.materials[1];
     }
     private void Start()
     {
@@ -328,14 +337,18 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                 ItemContainer _itemContainer = _collider.transform.GetComponent<ItemContainer>();
                 NPCEntity _npc = _collider.transform.GetComponent<NPCEntity>();
 
-                if (_npc)
+                if (bIsInteracting)
                 {
-                    CheckForNPC(_npc);
-                    break;
+                    bIsInteracting = false;
                 }
-                else if (_itemContainer)
+                if (_itemContainer)
                 {
                     CheckForItems(_itemContainer);
+                    break;
+                }
+                else if (_npc)
+                {
+                    CheckForNPC(_npc);
                     break;
                 }
             }
@@ -345,22 +358,14 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     {
         if (!bIsInteracting)
         {
-            bIsInteracting = true;
-            // TODO: can make it bit more good
             var targetRotation = Quaternion.LookRotation(_collidedNPC.transform.position - transform.position);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
-
             _collidedNPC.SetDialogWithQuest();
             _collidedNPC.LookAtTarget(transform);
             DisablePlayerMoveActions();
+            bIsInteracting = true;
+            // TODO: can make it bit more good
             GameController.inPlayMode = false;
-        }
-        else
-        {
-            if (bIsInteracting)
-            {
-                bIsInteracting = false;
-            }
         }
     }
     private void CheckForItems(ItemContainer _collidedItemContainer)
@@ -685,6 +690,13 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                 }
             }
         }
+    }
+    public void SwitchMaterial(string sMatName)
+    {
+        if (sMatName == "switch")
+            rend.material = hightlightMat;
+        else
+            rend.material = defaultMat;
     }
     // Gizmos
     private void OnDrawGizmos()

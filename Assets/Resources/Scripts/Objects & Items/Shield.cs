@@ -9,7 +9,7 @@ public class Shield : MonoBehaviour
     void Start()
     {
         coli = GetComponent<Collider>();
-        coli.isTrigger = true;
+        coli.isTrigger = false;
     }
 
     // Update is called once per frame

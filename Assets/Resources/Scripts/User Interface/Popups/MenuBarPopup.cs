@@ -8,6 +8,7 @@ public class MenuBarPopup : Popup
     QuestPopupUI questPopupUI;
     PauseMenuPopup pauseMenuPopup;
     SubMenuPopup subMenuPopup;
+    MapPopup mapPopup;
     List<Popup> lstPopup;
 
     private void Start()
@@ -22,6 +23,8 @@ public class MenuBarPopup : Popup
         lstPopup.Add(pauseMenuPopup);
         subMenuPopup = PopupUIManager.Instance.subMenuPopup;
         lstPopup.Add(subMenuPopup);
+        mapPopup = PopupUIManager.Instance.mapPopup;
+        lstPopup.Add(mapPopup);
         close();
 
     }
@@ -56,6 +59,14 @@ public class MenuBarPopup : Popup
         {
             GameController.inPlayMode = false;
             pauseMenuPopup.open();
+        }
+    }
+    public void OpenMapUI()
+    {
+        if (GameController.inPlayMode)
+        {
+            GameController.inPlayMode = false;
+            mapPopup.open();
         }
     }
     public void OpenQuestUI()

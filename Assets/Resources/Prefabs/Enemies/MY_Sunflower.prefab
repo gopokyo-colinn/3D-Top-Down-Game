@@ -446,7 +446,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!136 &6009726511435969606
 CapsuleCollider:
@@ -458,10 +458,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.3589154
   m_Height: 2.624734
   m_Direction: 1
-  m_Center: {x: 0, y: 1.3559709, z: 0}
+  m_Center: {x: -0.032266892, y: 1.3559709, z: 0.025657943}
 --- !u!114 &6009726511435969608
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -474,7 +474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fff5d8fc33c4ece44a853335c61effb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fMaxHitPoints: 200
+  fMaxHitPoints: 20
   fSpeed: 0
   iCollisionDamage: 5
   fWalkTime: 1
@@ -940,7 +940,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6009726510008239268}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.05, y: 1.91, z: 0.39}
+  m_LocalPosition: {x: -0.05, y: 1.964, z: 0.442}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1593256829475769841}

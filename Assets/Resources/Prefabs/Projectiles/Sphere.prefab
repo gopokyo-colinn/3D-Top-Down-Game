@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2624963483696860688}
   - component: {fileID: 5169268192822808391}
   - component: {fileID: 5294498284874245881}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,8 @@ MonoBehaviour:
   bIsProjectileAttack: 1
   bIsTypeOfEnemy: 0
   bIsPlayer: 0
-  fKnockForce: 8
+  bAttackCompleted: 0
+  fKnockForce: 5
   attackCollider: {fileID: 2409141566461220095}
   particleEffectPrefab: {fileID: 7090807165754516593, guid: 158db0e08fbeb2e4c89a9571ad92cc8b,
     type: 3}

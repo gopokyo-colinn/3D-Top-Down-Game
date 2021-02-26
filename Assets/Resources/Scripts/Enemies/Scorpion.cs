@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Scorpion : Enemy, IHittable
+public class Scorpion : Enemy
 {
     private bool bRotateAnims = true;
     float fSTUN_TIME = 0f; // this is extra time after the animation
@@ -12,7 +12,7 @@ public class Scorpion : Enemy, IHittable
     {
         base.Initialize();
         fAttackRange = 2.5f;
-        fFollowRange = 280f;
+        fFollowRange = 120f;
     }
 
     // Update is called once per frame
@@ -116,20 +116,5 @@ public class Scorpion : Enemy, IHittable
         }
 
     }
-    public void ApplyDamage(float _damage)
-    {
-        if (!bIsInvulnerable)
-        {
-           // Knockback(targetPlayer.transform.position, fPUSHBACKFORCE);
-            bIsInvulnerable = true;
-            bIsHit = true;
-            bTargetFound = true;
-            bCanFollow = false;
-            fCurrentHitPoints -= _damage;
-        }
-        if (fCurrentHitPoints <= 0)
-        {
-            Die();
-        }
-    }
+  
 }

@@ -11,6 +11,7 @@ public class PopupUIManager : MonoBehaviour
 	public MessageBoxPopup msgBoxPopup;
 	public QuestPopupUI questPopupUI;
 	public MenuBarPopup menuBarPopup;
+	public MapPopup mapPopup;
 
 	bool bDialogBoxActive;
 
@@ -30,6 +31,7 @@ public class PopupUIManager : MonoBehaviour
 			EscapeButtonFunction();
 			InventoryInput();
 			QuestUIInput();
+			MapInput();
         }
     }
 	void EscapeButtonFunction()
@@ -53,6 +55,20 @@ public class PopupUIManager : MonoBehaviour
 			if (!inventoryPopup.IsActive())
 			{
 				menuBarPopup.OpenInventoryUI();
+			}
+			else
+			{
+				menuBarPopup.CloseAllPopups();
+			}
+		}
+	}
+	void MapInput()
+    {
+		if (Input.GetButtonDown("Map"))
+		{
+			if (!mapPopup.IsActive())
+			{
+				menuBarPopup.OpenMapUI();
 			}
 			else
 			{

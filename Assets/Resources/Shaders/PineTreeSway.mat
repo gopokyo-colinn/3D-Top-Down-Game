@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PineTree
+  m_Name: PineTreeSway
   m_Shader: {fileID: -6465566751694194690, guid: 15be683c26d8480438d2cbff10341722,
     type: 3}
   m_ShaderKeywords: 
@@ -37,7 +37,7 @@ Material:
     - Vector1_5B00BE4C: 4
     - Vector1_73F9D429: 1
     - Vector1_7EAFF761: 0
-    - Vector1_973E0B0: 0.01
+    - Vector1_973E0B0: 0.1
     - Vector1_9B82C50A: 1
     - Vector1_EE62036E: 0.2
     m_Colors:

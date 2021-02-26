@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum EnemyType { METALON = 0, PLANT = 1 }
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IHittable
 {
     float fInvulnerableCounter;
 
@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour
 
     protected const float fROTATE_SPEED = 240f;
     protected float fAttackRange = 4f;
-    protected float fFollowRange = 120f;
+    protected float fFollowRange = 80f;
 
     public float fMaxHitPoints;
     protected float fCurrentHitPoints;
@@ -57,10 +57,10 @@ public class Enemy : MonoBehaviour
     //  protected bool bFollowingPath;
     //  int iPathIndex = 0;
     //   Vector3[] pathToFollow = new Vector3[0];
-
-    // Walk Area Variables
-    public float fMaxWalkingDistance = 60;
+    /// Walk Area Variables
+    public float fMaxWalkingDistance = 80;
     private Vector3 startPosition;
+    Collider maxTravelAreaCol;
 
     public void Initialize()
     {
@@ -98,10 +98,7 @@ public class Enemy : MonoBehaviour
         {
             if (bIsGrounded)
             { 
-                if (!bTargetFound)
-                {
-                    CheckWalkingArea(startPosition);
-                }
+                CheckWalkingArea(startPosition);
             }
         }
     }
@@ -157,11 +154,11 @@ public class Enemy : MonoBehaviour
         {
             if (bIsMoving)
             {
-                if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
-                {
-                    bIsMoving = false;
-                    StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bCanMove = b; }, false, fWaitTime));
-                }
+                //if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
+                //{
+                //    bIsMoving = false;
+                //    StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bCanMove = b; }, false, fWaitTime));
+                //}
                 moveVector = new Vector3(transform.forward.x, 0, transform.forward.z).normalized;
                 rbody.MovePosition(transform.position + moveVector * fSpeed * Time.fixedDeltaTime);
                // rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
@@ -245,14 +242,12 @@ public class Enemy : MonoBehaviour
         {
             if (!bIsInvulnerable && bTargetFound)
             {
-                bCanAttack = false;
-                bCanFollow = false;
-                bTargetFound = false;
-                bIsMoving = false;
-                bCanRotate = false;
-                //bCanMove = true;
-                //// StopAllCoroutines();
-                StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsMoving = true; bCanMove = b; }, false, fWaitTime * 2f));
+                ResetBools();
+                //bIsMoving = true;
+                //bCanMove = false;
+                //bTargetFound = false;
+                // StopAllCoroutines();
+                //StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsMoving = true; bCanMove = b; }, false, fWaitTime * 2f));
             }
         }
         // In Attack Range
@@ -293,7 +288,7 @@ public class Enemy : MonoBehaviour
         
         if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
         {
-            transform.forward *= -1;// transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(1f, -1f)); //new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
+            randomVector = transform.position + Random.insideUnitSphere * 100f;// transform.forward *= -1;// transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(1f, -1f)); //new Vector3(Random.Range(1f, -1f), 0, Random.Range(-1f, 1f));
         }
 
         bIsMoving = true;
@@ -320,15 +315,32 @@ public class Enemy : MonoBehaviour
     }
     public void CheckWalkingArea(Vector3 _targetPosition) // Walk Area Check 
     {
-        if (!bIsPatroller)
+        if (!bTargetFound)
         {
-            if ((transform.position - _targetPosition).sqrMagnitude > fMaxWalkingDistance)
+            if (!bIsPatroller)
             {
+                if ((transform.position - _targetPosition).sqrMagnitude > fMaxWalkingDistance)
+                {
+                    ResetBools();  
+                    bIsMoving = true;
+                    Vector3 _targetPos = (_targetPosition - transform.position).normalized;
+                    transform.forward = _targetPos;
+                    moveVector = new Vector3(_targetPos.x, 0, _targetPos.z);
+                    rbody.MovePosition(transform.position + moveVector * fSpeed * Time.fixedDeltaTime);
+                    //rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
+                }
+            }
+        }
+        if (maxTravelAreaCol)
+        {
+            if (!maxTravelAreaCol.bounds.Contains(transform.position))
+            {
+                ResetBools();
+                bIsMoving = true;
                 Vector3 _targetPos = (_targetPosition - transform.position).normalized;
                 transform.forward = _targetPos;
                 moveVector = new Vector3(_targetPos.x, 0, _targetPos.z);
                 rbody.MovePosition(transform.position + moveVector * fSpeed * Time.fixedDeltaTime);
-                //rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
             }
         }
     }
@@ -345,6 +357,22 @@ public class Enemy : MonoBehaviour
             rbody.AddForce(pushForce.normalized * _pushForce - Physics.gravity * 0.2f, ForceMode.Impulse);
         }
     }
+    public void ApplyDamage(float _damage)
+    {
+        if (!bIsInvulnerable)
+        {
+            // Knockback(targetPlayer.transform.position, fPUSHBACKFORCE);
+            bIsInvulnerable = true;
+            bIsHit = true;
+            bTargetFound = true;
+            bCanFollow = false;
+            fCurrentHitPoints -= _damage;
+        }
+        if (fCurrentHitPoints <= 0)
+        {
+            Die();
+        }
+    }
     public float GetCurrentHealth()
     {
         return fCurrentHitPoints;
@@ -353,7 +381,17 @@ public class Enemy : MonoBehaviour
     {
         bIsAlive = false;
         StartCoroutine(HelpUtils.WaitForSeconds(OnDeathStuff, 1f));
-        Destroy(gameObject, 4f);
+        //Destroy(gameObject, 4f);
+    }
+    public void DestroyEnemy()
+    {
+        Destroy(gameObject, 5f);
+    }
+    public void Revive(Vector3 _position)
+    {
+        bIsAlive = true;
+        fCurrentHitPoints = fMaxHitPoints;
+        transform.position = _position;
     }
     void OnDeathStuff()
     {
@@ -363,6 +401,7 @@ public class Enemy : MonoBehaviour
         {
             _colliders[i].enabled = false;
         }
+        StartCoroutine(HelpUtils.WaitForSeconds(delegate { gameObject.SetActive(false); }, 4f));
     }// MAKING IT KINEMETIC ON DEATH, AND REMOVING COLLIDERS
     void DissolveOnDeath(float _fDissolveSpeed)
     {
@@ -377,9 +416,27 @@ public class Enemy : MonoBehaviour
     {
         return !bIsAlive;
     }
+    public void SetBoundary(Collider _boundaryCol)
+    {
+        maxTravelAreaCol = _boundaryCol;
+    }
     public bool CanFollow()
     {
         return bCanFollow;
+    }
+    public void ResetWalkingBool()
+    {
+        bCanMove = false;
+    }
+    public void ResetBools()
+    {
+        StopAllCoroutines();
+        bCanAttack = false;
+        bCanFollow = false;
+        bTargetFound = false;
+        bIsMoving = false;
+        bCanRotate = false;
+        bCanMove = false;
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// Obstacle Checking
