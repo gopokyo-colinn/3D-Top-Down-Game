@@ -11,10 +11,11 @@ public class ObstacleAvoidance : MonoBehaviour
     public float fAvoidanceThreshold = 2f;
     public float fDetectionRadius = 1f;
     public bool bCanAvoidLargeScaleObstacles;
-    Vector3 direction;
     Vector3 steerVelocity = Vector3.zero;
     Vector3 tHeadOffset = new Vector3(0,.5f,0);
     public bool bMakeThemWalkable;
+    Vector3 distanceVector;
+    Vector3 adjVector;
 
     Enemy enemy;
     bool bIsEnemy;
@@ -83,12 +84,12 @@ public class ObstacleAvoidance : MonoBehaviour
     }
     void CollisionAvoidance(Vector3 _targetPosition)
     {
-        Vector3 distanceVector = _targetPosition - transform.position;
+        distanceVector = _targetPosition - transform.position;
         float fLength = distanceVector.sqrMagnitude;
         
         if (fLength < fAvoidanceThreshold)
         {
-            Vector3 adjVector = distanceVector.normalized;
+            adjVector = distanceVector.normalized;
             adjVector.y = 0;
             float difference = fAvoidanceThreshold - fLength;
             adjVector = adjVector * difference;
