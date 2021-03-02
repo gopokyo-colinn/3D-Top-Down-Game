@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Knight Right Hand
+  m_Mask: 00000000000000000000000000000000000000000100000000000000010000000000000000000000000000000100000000000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: Male Main Rig
+    m_Weight: 1
+  - m_Path: Rig
+    m_Weight: 1
+  - m_Path: RigLPlatform
+    m_Weight: 1
+  - m_Path: RigPelvis
+    m_Weight: 1
+  - m_Path: RigPelvis/RigLThigh
+    m_Weight: 1
+  - m_Path: RigPelvis/RigLThigh/RigLCalf
+    m_Weight: 1
+  - m_Path: RigPelvis/RigLThigh/RigLCalf/RigLFoot
+    m_Weight: 1
+  - m_Path: RigPelvis/RigLThigh/RigLCalf/RigLFoot/RigLToe11
+    m_Weight: 1
+  - m_Path: RigPelvis/RigLThigh/RigLCalf/RigLFoot/RigLToe11/RigLToe12
+    m_Weight: 1
+  - m_Path: RigPelvis/RigRThigh
+    m_Weight: 1
+  - m_Path: RigPelvis/RigRThigh/RigRCalf
+    m_Weight: 1
+  - m_Path: RigPelvis/RigRThigh/RigRCalf/RigRFoot
+    m_Weight: 1
+  - m_Path: RigPelvis/RigRThigh/RigRCalf/RigRFoot/RigRToe11
+    m_Weight: 1
+  - m_Path: RigPelvis/RigRThigh/RigRCalf/RigRFoot/RigRToe11/RigRToe12
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigLCollarbone
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigLCollarbone/RigLUpperarm
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigLCollarbone/RigLUpperarm/RigLForearm
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigLCollarbone/RigLUpperarm/RigLForearm/RigLPalm
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigLCollarbone/RigLUpperarm/RigLForearm/RigLPalm/RigLFinger11
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigLCollarbone/RigLUpperarm/RigLForearm/RigLPalm/RigLFinger11/RigLFinger12
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigLCollarbone/RigLUpperarm/RigLForearm/RigLPalm/RigLFinger11/RigLFinger12/RigLFinger13
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigLCollarbone/RigLUpperarm/RigLForearm/RigLPalm/RigLFinger21
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigLCollarbone/RigLUpperarm/RigLForearm/RigLPalm/RigLFinger21/RigLFinger22
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigLCollarbone/RigLUpperarm/RigLForearm/RigLPalm/RigLFinger21/RigLFinger22/RigLFinger23
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigNeck
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigNeck/RigHead
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigNeck/RigHead/RigHeadBone001
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigRCollarbone
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigRCollarbone/RigRUpperarm
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigRCollarbone/RigRUpperarm/RigRForearm
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigRCollarbone/RigRUpperarm/RigRForearm/RigRPalm
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigRCollarbone/RigRUpperarm/RigRForearm/RigRPalm/RigRFinger11
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigRCollarbone/RigRUpperarm/RigRForearm/RigRPalm/RigRFinger11/RigRFinger12
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigRCollarbone/RigRUpperarm/RigRForearm/RigRPalm/RigRFinger11/RigRFinger12/RigRFinger13
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigRCollarbone/RigRUpperarm/RigRForearm/RigRPalm/RigRFinger21
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigRCollarbone/RigRUpperarm/RigRForearm/RigRPalm/RigRFinger21/RigRFinger22
+    m_Weight: 1
+  - m_Path: RigPelvis/RigSpine1/RigSpine2/RigSpine3/RigRibcage/RigRCollarbone/RigRUpperarm/RigRForearm/RigRPalm/RigRFinger21/RigRFinger22/RigRFinger23
+    m_Weight: 1
+  - m_Path: RigRPlatform
+    m_Weight: 1

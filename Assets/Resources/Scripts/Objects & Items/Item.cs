@@ -123,7 +123,7 @@ public class Item: ScriptableObject
     {
         if (!bIsEquipped)
         {
-            if (!_player.IsAttacking())
+            if (!_player.IsAttacking() && !_player.PrimaryWeaponEquipped())
             {
                 bIsEquipped = true;
                 UnequipOtherSimilarItem(_player.GetInventory(), eType);
@@ -133,7 +133,7 @@ public class Item: ScriptableObject
         }
         else
         {
-            if (!_player.IsAttacking())
+            if (!_player.IsAttacking() && !_player.PrimaryWeaponEquipped())
             {
                 bIsEquipped = false;
                 _player.SetPrimaryWeaponEquipped(null);

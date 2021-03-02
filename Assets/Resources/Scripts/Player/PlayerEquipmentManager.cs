@@ -16,9 +16,9 @@ public class PlayerEquipmentManager : MonoBehaviour
     public Transform phPrimaryWeaponUnEquipped;
     public Transform phSecondaryWeaponUnEquipped;
     //  Assigned Weapons and Shiled Itself
-    public GameObject shield;
-    public GameObject primaryWeapon;
-    public GameObject secondaryWeapon;
+    public Shield shield;
+    public Weapon primaryWeapon;
+    public Weapon secondaryWeapon;
     // Assigned Weapons and Equipment SFX
    // public GameObject trialEffectContainer;
     //GameObject swish1;
@@ -63,7 +63,7 @@ public class PlayerEquipmentManager : MonoBehaviour
     {
         //trialEffectAnimator.SetBool("slash_1b", player.IsAttacking());
         trialEffectPrimaryWeapon.transform.parent = primaryWeapon.transform;
-        trialEffectPrimaryWeapon.transform.localPosition = new Vector3(0, -0.16f, 0);
+        trialEffectPrimaryWeapon.transform.localPosition = new Vector3(0, -0.14f, 0);
         trialEffectPrimaryWeapon.transform.localRotation = Quaternion.Euler( Vector3.zero);
         trialEffectPrimaryWeapon.Play();
     }
@@ -76,10 +76,15 @@ public class PlayerEquipmentManager : MonoBehaviour
     public void SetAttackBool(int _bSetAttack)
     {
         if(_bSetAttack == 1)
+        {
             player.SetIsAttacking(true);
+            primaryWeapon.WeaponColiSetActive(true);
+        }
         else
+        {
             player.SetIsAttacking(false);
-
+            primaryWeapon.WeaponColiSetActive(false);
+        }
     }
 
     IEnumerator disableGameObjectAfter(GameObject _go, bool _enableDisable)
@@ -88,31 +93,42 @@ public class PlayerEquipmentManager : MonoBehaviour
         _go.SetActive(_enableDisable);
     }
 
-    public void SetPrimaryWeapon(GameObject _primaryWeapon)
+    public void SetPrimaryWeapon(GameObject _primaryWeaponToSet)
     {
         if(primaryWeapon != null)
-            Destroy(primaryWeapon);
+            Destroy(primaryWeapon.gameObject);
 
-        primaryWeapon = _primaryWeapon;
-
-        if (primaryWeapon)
-            trialEffectPrimaryWeapon = primaryWeapon.GetComponent<Weapon>().weaponTrialEffect;
+        if (_primaryWeaponToSet != null)
+        {
+            primaryWeapon = _primaryWeaponToSet.GetComponent<Weapon>();
+            trialEffectPrimaryWeapon = primaryWeapon.weaponTrialEffect;
+        }
+        else
+            primaryWeapon = null;
     }
-    public void SetSecondaryWeapon(GameObject _secondaryWeapon)
+    public void SetSecondaryWeapon(GameObject _secondaryWeaponToSet)
     {
         if (secondaryWeapon != null)
+            Destroy(secondaryWeapon.gameObject);
+
+        if (_secondaryWeaponToSet != null)
         {
-            Destroy(secondaryWeapon);
+            secondaryWeapon = _secondaryWeaponToSet.GetComponent<Weapon>();
         }
-        secondaryWeapon = _secondaryWeapon;
+        else
+            secondaryWeapon = null;
     }
-    public void SetShield(GameObject _shield)
+    public void SetShield(GameObject _shieldToSet)
     {
         if (shield != null)
+            Destroy(shield.gameObject);
+
+        if (_shieldToSet != null)
         {
-            Destroy(shield);
+            shield = _shieldToSet.GetComponent<Shield>();
         }
-        shield = _shield;
+        else
+            shield = null;
     }
     public Item GetPrimaryWeaponItem()
     {

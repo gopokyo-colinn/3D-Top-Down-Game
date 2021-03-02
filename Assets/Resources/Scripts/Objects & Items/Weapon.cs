@@ -18,25 +18,10 @@ public class Weapon : MonoBehaviour
         coli.isTrigger = true;
     }
 
-    public void Update()
-    {
-        if (player.IsAttacking())
-        {
-            coli.enabled = true;
-            StartCoroutine(HelpUtils.ChangeBoolAfter((bool b)=> { coli.enabled = b; }, false, player.GetAnimator().GetCurrentAnimatorStateInfo(player.GetAnimator().GetLayerIndex("SwordAnims(Right Hand)")).length));
-        }
-    }
 
-    public void CheckPlayerForAttack()
+    public void WeaponColiSetActive(bool _bToEnable)
     {
-        if (player.IsAttacking())
-        {
-            coli.enabled = true;
-        }
-        else
-        {
-            coli.enabled = false;
-        }
+        coli.enabled = _bToEnable;
     }
 
 }

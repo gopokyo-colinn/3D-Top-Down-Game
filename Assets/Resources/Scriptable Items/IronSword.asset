@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sID: 6f277b16-e049-4e41-959a-20e049f797b2
   sItemName: Iron Sword
-  sItemDescription: 'Iron sword made to slain enemies.
+  sItemDescription: 'Rookie sword made of iron to slain enemies.
 
 
     Damage: 15'
@@ -27,5 +27,5 @@ MonoBehaviour:
   iQuantity: 1
   iStackLimit: 1
   bIsEquipable: 1
-  prefabItem: {fileID: 137455695499148879, guid: f8e66db88511f6846a717951d887c832,
+  prefabItem: {fileID: 2558655935486412976, guid: 02b83737b793dad45afada77e31a0756,
     type: 3}

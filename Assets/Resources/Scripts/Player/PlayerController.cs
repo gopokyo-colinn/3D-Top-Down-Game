@@ -44,10 +44,10 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     Vector3 movementVector;
 
     private bool bIsAlive;
-    private bool bIsShielding;
     private bool bIsSprinting;
     private bool bCanSprint = true;
-    private bool bDrawPrimaryWeapon;
+    private bool bIsShielding;
+    private bool bEquipPrimaryWeapon;
     private bool bIsAttacking;
     private bool bIsInteracting;
     private bool bIsInvulnerable;
@@ -195,24 +195,26 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
 
             if (movementVector != Vector3.zero)
             {
-                if (bIsSprinting)
+                if (!bIsAttacking)
                 {
-                    if (bIsAttacking)
-                        bIsSprinting = false;
-                    else
+                    if (bIsSprinting)
+                    {
                         rbody.velocity = (movementVector * fSpeed * fSpeedMultiplier * Time.fixedDeltaTime) + HelpUtils.VectorZeroWithY(rbody); //rbody.AddForce(movementVector * fSpeed * fSpeedMultiplier * Time.fixedDeltaTime, ForceMode.VelocityChange); ////;
+                    }
+                    else if (bIsShielding)
+                        rbody.velocity = (movementVector * fSPEED_DIVISION * fSpeed * Time.fixedDeltaTime) + HelpUtils.VectorZeroWithY(rbody); //rbody.AddForce(movementVector * fSpeed * fSPEED_DIVISION * Time.fixedDeltaTime, ForceMode.VelocityChange); ////
+                    else
+                        rbody.velocity = (movementVector * fSpeed * Time.fixedDeltaTime) + HelpUtils.VectorZeroWithY(rbody);// rbody.AddForce(movementVector * fSpeed * Time.fixedDeltaTime, ForceMode.VelocityChange);
                 }
-                else if (bIsShielding || bIsAttacking)
-                    rbody.velocity = (movementVector * fSPEED_DIVISION * fSpeed * Time.fixedDeltaTime) + HelpUtils.VectorZeroWithY(rbody); //rbody.AddForce(movementVector * fSpeed * fSPEED_DIVISION * Time.fixedDeltaTime, ForceMode.VelocityChange); ////
                 else
-                    rbody.velocity = (movementVector * fSpeed * Time.fixedDeltaTime) + HelpUtils.VectorZeroWithY(rbody);// rbody.AddForce(movementVector * fSpeed * Time.fixedDeltaTime, ForceMode.VelocityChange);
+                    rbody.velocity = Vector3.zero;
                     //rbody.MovePosition(transform.position + movementVector * fSpeed * Time.fixedDeltaTime);
             }
                 ///////////////////////////////////////////////////
         }
         else
         {
-            rbody.velocity =  HelpUtils.VectorZeroWithY(rbody);
+            rbody.velocity = HelpUtils.VectorZeroWithY(rbody);
             bIsSprinting = false;
         }
     }
@@ -222,6 +224,9 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         {
             if (bShieldPressed)
             {
+                if(horizontal == 0 && vertical == 0)
+                    rbody.velocity = Vector3.zero;
+
                 if (fCurrentStamina > fSHIELD_STAMINA_COST)
                 {
                     bIsShielding = true;
@@ -240,11 +245,11 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     {
         if (pEquimentManager.primaryWeapon != null)
         {
-            if (!bDrawPrimaryWeapon)
+            if (!bEquipPrimaryWeapon)
             {
                 if (bAttackPressed)
                 {
-                    bDrawPrimaryWeapon = true;
+                    bEquipPrimaryWeapon = true;
                 }
             }
             else
@@ -258,17 +263,16 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     void SheathWeapon(bool _bIsRemoved = false)
     {
-        anim.ResetTrigger("weapon_removed");
-        if (_bIsRemoved)
-            anim.SetTrigger("weapon_removed");
+        //anim.SetBool("weapon_equipped", bDrawPrimaryWeapon);
+        bEquipPrimaryWeapon = _bIsRemoved;
 
-        bDrawPrimaryWeapon = false;
+        bEquipPrimaryWeapon = false;
         bIsAttacking = false;
         iAttackCombo = -1;
     }
     void SwordAttacks()
     {
-        if (bDrawPrimaryWeapon)
+        if (bEquipPrimaryWeapon)
         {
             if (bAttackPressed)
             {
@@ -277,7 +281,9 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                 {
                     fCurrentStamina -= fATTACK_STAMINA_COST;
                     anim.SetTrigger("attack1");
+                    iAttackCombo = -1;
                 }
+
             }
         }
     }
@@ -316,7 +322,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     public void DisablePlayerMoveActions()
     {
-        //rbody.velocity = new Vector3(0, rbody.velocity.y, 0);
+        rbody.velocity = new Vector3(0, 0, 0);
         anim.SetTrigger("idle");
         anim.SetFloat("moveVelocity", 0f);
         anim.SetBool("isShielding", false);
@@ -336,11 +342,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                 Debug.Log(_collider.gameObject.name);
                 ItemContainer _itemContainer = _collider.transform.GetComponent<ItemContainer>();
                 NPCEntity _npc = _collider.transform.GetComponent<NPCEntity>();
-
-                if (bIsInteracting)
-                {
-                    bIsInteracting = false;
-                }
+               
                 if (_itemContainer)
                 {
                     CheckForItems(_itemContainer);
@@ -358,15 +360,17 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     {
         if (!bIsInteracting)
         {
+            bIsInteracting = true;
             var targetRotation = Quaternion.LookRotation(_collidedNPC.transform.position - transform.position);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
             _collidedNPC.SetDialogWithQuest();
             _collidedNPC.LookAtTarget(transform);
             DisablePlayerMoveActions();
-            bIsInteracting = true;
             // TODO: can make it bit more good
             GameController.inPlayMode = false;
         }
+        else
+            bIsInteracting = false;
     }
     private void CheckForItems(ItemContainer _collidedItemContainer)
     {
@@ -571,8 +575,8 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     public void PlayerAnimations()
     {
         anim.SetBool("isSprinting", bIsSprinting);
-        anim.SetBool("isShielding", bIsShielding);
-        anim.SetBool("draw_Weapon", bDrawPrimaryWeapon);
+        anim.SetBool("shield_equipped", bIsShielding);
+        anim.SetBool("weapon_equipped", bEquipPrimaryWeapon);
         anim.SetFloat("moveVelocity", rbody.velocity.sqrMagnitude);
     }
     public bool IsInteracting()
@@ -594,6 +598,10 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     public bool IsUsingShield()
     {
         return bIsShielding;
+    }
+    public bool PrimaryWeaponEquipped()
+    {
+        return bEquipPrimaryWeapon;
     }
     public void SetPrimaryWeaponEquipped(Item _swordToEquip)
     {

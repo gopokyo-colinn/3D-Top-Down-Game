@@ -9,12 +9,13 @@ public class CamToPlayerCheck : MonoBehaviour
     Vector3 playerHeadOffset;
     Vector3 direction;
     bool bIsVisible;
+    public float fPlayerHeight = 1f;
     // Start is called before the first frame update
     void Start()
     {
         player = PlayerController.Instance;
         playerLayer = LayerMask.NameToLayer("Player");
-        playerHeadOffset = new Vector3(0, 1.2f, 0);
+        playerHeadOffset = new Vector3(0, fPlayerHeight, 0);
     }
 
     // Update is called once per frame
