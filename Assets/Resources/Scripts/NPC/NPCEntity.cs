@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-public enum NPCBehaviour { SIMPLE = 0, QUEST_GIVER = 1, MERCHANT = 2}
-public enum NPCActivities { IDLE = 0, MOVE_RANDOMLY = 1, PATROLLING = 2, FIGHTER = 3, SLEEPING = 4 }
+public enum NPCBehaviour { SIMPLE = 0, AVOID_OBSTACLES = 1}
+public enum NPCActivities { IDLE = 0, MOVE_RANDOMLY = 1, PATROLLING = 2}
 public class NPCEntity : MonoBehaviour
 {
     const float fDISTANCE_TO_GROUND = 0.2f;
@@ -23,11 +23,12 @@ public class NPCEntity : MonoBehaviour
     private Rigidbody rbody;
     public float fWalkTime;
     public float fWaitTime;
-    private Vector3 randomVector;
     private bool bCanMove;
     private bool bIsMoving;
     private bool bIsInteracting;
-    private bool bOutOfBoundary;
+    private Vector3 randomVector;
+    private Vector3 moveVector;
+
     private bool bCanRotate;
     private bool bDialogCheck;
     // Patrolling
@@ -43,7 +44,8 @@ public class NPCEntity : MonoBehaviour
     // Walk Area Variables
     public float fMaxWalkingDistance = 60;
     private Vector3 startPosition;
-    Vector3 moveVector;
+    private Quaternion startRotation;
+
 
     void Start()
     {
@@ -51,26 +53,25 @@ public class NPCEntity : MonoBehaviour
         rbody = GetComponent<Rigidbody>();
 
         assignedQuestGoals = GetComponentsInChildren<NPCAssignedQuestGoal>();
-
         if(assignedQuestGoals.Length <= 0)
-        {
             assignedQuestGoals = null;
-        }
 
-        //rbody.isKinematic = true;
-        SetNPCBehaviour();
-
-        if (string.IsNullOrEmpty(sNpcID))
-            sNpcID = System.Guid.NewGuid().ToString();
+        AddQuestsIfAny();
+        SetNPCActivities();
 
         startPosition = transform.position;
+        startRotation = transform.rotation;
 
         gameObject.layer = LayerMask.NameToLayer("Npc");
-        rbody.isKinematic = true;
+
+
+        // Starting Idle Animation at random time
+        AnimatorStateInfo _animState = anim.GetCurrentAnimatorStateInfo(0);
+        anim.Play(_animState.fullPathHash, -1, Random.Range(0f, 1f));
     }
     void Update()
     {
-        SetRbodyAccToGroundCheck();
+        //SetRbodyAccToGroundCheck(); Maybe use it if you need npc's in action
         CheckForDialogToFinish();
         StayInWalkingArea();
         SetAnimations();
@@ -80,19 +81,11 @@ public class NPCEntity : MonoBehaviour
         if(HelpUtils.Grounded(transform, 0.25f))
         {
             DoActivity(npcActivity);
-
-            if(rbody.velocity.y > 0)
-            {
-                rbody.velocity = new Vector3(rbody.velocity.x, 0, rbody.velocity.z);
-            }
         }
     }
 
     /// Behaviours
-    public void StayStill()
-    {
-        rbody.velocity = HelpUtils.VectorZeroWithY(rbody);
-    }
+  
     public void DoActivity(NPCActivities _activity)
     {
         if (!bIsInteracting)
@@ -101,7 +94,7 @@ public class NPCEntity : MonoBehaviour
             switch (npcActivity)
             {
                 case NPCActivities.IDLE:
-                    StayStill();
+                    IdleActivity();
                     break;
                 case NPCActivities.MOVE_RANDOMLY:
                     MovingRandomly();
@@ -114,9 +107,9 @@ public class NPCEntity : MonoBehaviour
     }
 
     /// NPC QUESTING SYSTEM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-    public void AddQuests()
+    public void AddQuestsIfAny()
     {
-        if (npcBehaviour == NPCBehaviour.QUEST_GIVER)
+       // if (npcBehaviour == NPCBehaviour.QUEST_GIVER)
         {
             myQuestsLst = GetComponents<AddNewQuest>().ToArray();
         }
@@ -125,13 +118,12 @@ public class NPCEntity : MonoBehaviour
     {
         myActiveQuest.Initialize();
     }
-    // NPC SHOP SYSTEM
-    public void MerchantShop()
-    {
-        Debug.Log("I m a Merchant");
-    }
 
     /// Activities
+    public void IdleActivity()
+    {
+        rbody.velocity = HelpUtils.VectorZeroWithY(rbody);
+    }
     public void MovingRandomly()
     {
         if (!bCanMove)
@@ -144,21 +136,21 @@ public class NPCEntity : MonoBehaviour
             if (bIsMoving)
             {
                 StayInWalkingArea();
+
                 if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
                 {
                     bIsMoving = false;
-                    StartCoroutine(ChangeBoolAfter((bool b) => { bCanMove = b; }, false, fWaitTime));
+                    StartCoroutine(HelpUtils.WaitForSeconds(delegate { bCanMove = false; }, fWaitTime / 2)); ;
                 }
 
                 moveVector = new Vector3(transform.forward.x, rbody.velocity.y, transform.forward.z);
                 rbody.MovePosition(transform.position + moveVector * fSpeed * Time.fixedDeltaTime);
-               // rbody.velocity = moveVector.normalized * fSpeed * Time.fixedDeltaTime;
             }
             else
             {
                 if (bCanRotate)
                 {
-                    HelpUtils.RotateTowardsTarget(transform, randomVector, fROTATE_SPEED);
+                    HelpUtils.RotateTowards(transform, randomVector, fROTATE_SPEED);
                 }
             }
         }
@@ -169,11 +161,9 @@ public class NPCEntity : MonoBehaviour
         {
             lastDirection = (tPatrolPoints[iPatrolPos].position - transform.position).normalized;
             lastDirection.y = 0;
-            if ((transform.position - tPatrolPoints[iPatrolPos].position).sqrMagnitude <= 1f)
-            {
-                bIsMoving = false;
-                StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsMoving = b; }, true, fWaitTime));
 
+            if ((transform.position - tPatrolPoints[iPatrolPos].position).sqrMagnitude <= 0.2f)
+            {
                 if (bDirReversing)
                     iPatrolPos--;
                 else
@@ -196,40 +186,45 @@ public class NPCEntity : MonoBehaviour
                         bDirReversing = false;
                     }
                 }
+                if (fWaitTime > 0.3f)
+                {
+                    bIsMoving = false;
+                    StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsMoving = b; }, true, fWaitTime));
+                }
+                else
+                    transform.LookAt(tPatrolPoints[iPatrolPos].position);
             }
-
-            transform.forward = lastDirection;
             moveVector = new Vector3(lastDirection.x, rbody.velocity.y, lastDirection.z);
             rbody.MovePosition(transform.position + moveVector * fSpeed * Time.fixedDeltaTime);
-           // rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
         }
         else
         {
-            HelpUtils.RotateTowardsTarget(transform, tPatrolPoints[iPatrolPos].position, fROTATE_SPEED);
+            HelpUtils.RotateTowards(transform, tPatrolPoints[iPatrolPos].position, fROTATE_SPEED);
         }
     }
     // Setter Functions
-    public void SetNPCBehaviour()
+    public void SetNPCActivities()
     {
-        switch (npcBehaviour)
+        switch (npcActivity)
         {
-            case NPCBehaviour.SIMPLE:
+            case NPCActivities.IDLE:
+                rbody.isKinematic = true;
                 break;
-            case NPCBehaviour.QUEST_GIVER:
-                AddQuests();
+            case NPCActivities.PATROLLING:
+                bIsMoving = true;
+                rbody.isKinematic = false;
                 break;
-            case NPCBehaviour.MERCHANT:
-                MerchantShop();
+            default:
+                rbody.isKinematic = false;
                 break;
-        }
-      
+        } 
     }
-    public void SetDialogWithQuest()
+    public bool SetDialogWithQuest()
     {
         bIsInteracting = true;
         bDialogCheck = true;
 
-        if(npcBehaviour == NPCBehaviour.QUEST_GIVER)
+        if(myQuestsLst.Length > 0)
         {
             SetActiveQuest(); // Setting myActive Quest
 
@@ -251,17 +246,29 @@ public class NPCEntity : MonoBehaviour
                     SetQuestDialogToUse();
                 }
             }
+            PopupUIManager.Instance.dialogBoxPopup.SetQuestNPC(this);
+            PopupUIManager.Instance.dialogBoxPopup.setDialogText(sDialogsToUse);
+            return true;
         }
         else
         {
-            if (!CheckNpcAssignedTalkingGoals())
+            if (sRandomDialogs.Length > 0)
             {
-                sDialogsToUse = SelectRandomDialog();
+                if (sRandomDialogs[0].sDialogLines.Length > 0)
+                {
+                    if (!CheckNpcAssignedTalkingGoals())
+                    {
+                        sDialogsToUse = SelectRandomDialog();
+                        PopupUIManager.Instance.dialogBoxPopup.SetQuestNPC(this);
+                        PopupUIManager.Instance.dialogBoxPopup.setDialogText(sDialogsToUse);
+                        return true;
+                    }
+                }
             }
         }
-
-        PopupUIManager.Instance.dialogBoxPopup.SetQuestNPC(this);
-        PopupUIManager.Instance.dialogBoxPopup.setDialogText(sDialogsToUse);
+        bIsInteracting = false;
+        bDialogCheck = false;
+        return false;
     }
     public void SetQuestDialogToUse()
     {
@@ -330,7 +337,7 @@ public class NPCEntity : MonoBehaviour
         StopAllCoroutines();
         bCanMove = false;
         bIsMoving = false;
-        StartCoroutine(RotateTowardsTarget(_target));
+        StartCoroutine(HelpUtils.RotateTowardsTarget(transform, _target));
     }
     public void SetAnimations()
     {
@@ -347,7 +354,9 @@ public class NPCEntity : MonoBehaviour
             {
                 if (bDialogCheck)
                 {
-                    StartCoroutine(ChangeBoolAfter((bool b) => { bIsInteracting = b; }, false, 1f));
+                    StartCoroutine(HelpUtils.WaitForSeconds(delegate { bIsInteracting = false;}, 1f));
+                    if(npcActivity == NPCActivities.IDLE)
+                        StartCoroutine(HelpUtils.RotateTowardsTarget(transform, startRotation));
                     bDialogCheck = false;
                 }
             }
@@ -389,27 +398,15 @@ public class NPCEntity : MonoBehaviour
     }
 
     /// Enumerators
-    IEnumerator RotateTowardsTarget(Transform _target)
-    {
-        var targetRotation = Quaternion.LookRotation(_target.position - transform.position);
-        while (transform.rotation != targetRotation)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.2f);
-            transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, 0);
-            yield return null;
-        }
-
-        yield return new WaitForSeconds(1f);
-    }
     IEnumerator SetRandomDirection()
     {
-        randomVector = transform.position + Random.insideUnitSphere * 100f;
+        randomVector = transform.position + new Vector3(Random.Range(-1,1), 0, Random.Range(-1,1));// Random.insideUnitSphere * 100;
         randomVector.y = 0;
 
-        if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
-        {
-            transform.forward *= -1;
-        }
+        //if (HelpUtils.CheckAheadForColi(transform, fDISTANCE_TO_COLIS))
+        //{
+        //    transform.forward *= -1;
+        //}
 
         bCanMove = true;
         bIsMoving = true;
@@ -421,12 +418,6 @@ public class NPCEntity : MonoBehaviour
         bCanRotate = false;
         yield return new WaitForSeconds(fWaitTime / 3);
         bCanMove = false;
-    }
-    IEnumerator ChangeBoolAfter(System.Action<bool> _callBack,bool _setBool , float _time)
-    {
-        yield return new WaitForSeconds(_time);
-        _callBack(_setBool);
-        StopAllCoroutines();
     }
 
     /// Other Helper Functions

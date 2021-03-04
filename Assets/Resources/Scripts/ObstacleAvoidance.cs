@@ -109,7 +109,7 @@ public class ObstacleAvoidance : MonoBehaviour
             rb.velocity = steerVelocity * fSpeed * Time.fixedDeltaTime; // normal avoidance, it even stop object if there is no forward motion            
 
             if (!bIsEnemy && !bMakeThemWalkable) // if its a enemy then it should not rotate on closing gap, enemies have their own ways to look at player
-                HelpUtils.RotateTowardsTarget(transform, _targetPosition, 240f);
+                HelpUtils.RotateTowards(transform, _targetPosition, 100f);
         }
     }
     public bool IsHit()

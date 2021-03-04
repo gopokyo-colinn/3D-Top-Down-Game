@@ -19,9 +19,21 @@ public class PlayerEquipmentManager : MonoBehaviour
     public Shield shield;
     public Weapon primaryWeapon;
     public Weapon secondaryWeapon;
+    public GameObject playerHead;
+    public GameObject playerHair;
+    public GameObject playerBody;
+    public Material highLightMaterial;
     // Assigned Weapons and Equipment SFX
-   // public GameObject trialEffectContainer;
+    // public GameObject trialEffectContainer;
     //GameObject swish1;
+    // materials
+    Renderer headRenderer;
+    Renderer hairRenderer;
+    Renderer bodyRenderer;
+
+    Material defaultHeadMaterial;
+    Material defaultHairMaterial;
+    Material defaultBodyMaterial;
 
     ParticleSystem trialEffectPrimaryWeapon;
     //public GameObject swordSlashParticles;
@@ -29,6 +41,13 @@ public class PlayerEquipmentManager : MonoBehaviour
     private void Start()
     {
         player = GetComponent<PlayerController>();
+        headRenderer = playerHead.GetComponent<Renderer>();
+        hairRenderer = playerHair.GetComponent<Renderer>();
+        bodyRenderer = playerBody.GetComponent<Renderer>();
+
+        defaultHeadMaterial = headRenderer.material;
+        defaultHairMaterial = hairRenderer.material;
+        defaultBodyMaterial = bodyRenderer.material;
         //trialEffectContainer = trialEffects.GetComponent<Animator>();
        // swish1 = trialEffects.transform.GetChild(0).gameObject;
        // swish1.SetActive(false);
@@ -129,6 +148,18 @@ public class PlayerEquipmentManager : MonoBehaviour
         }
         else
             shield = null;
+    }
+    public void HighlightMaterial()
+    {
+        headRenderer.material = highLightMaterial;
+        hairRenderer.material = highLightMaterial;
+        bodyRenderer.material = highLightMaterial;
+    }
+    public void SetDefaultMaterials()
+    {
+        headRenderer.material = defaultHeadMaterial;
+        hairRenderer.material = defaultHairMaterial;
+        bodyRenderer.material = defaultBodyMaterial;
     }
     public Item GetPrimaryWeaponItem()
     {

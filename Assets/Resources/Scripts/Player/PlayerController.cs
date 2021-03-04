@@ -73,12 +73,6 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
 
     PlayerEquipmentManager pEquimentManager;
 
-    // Using Materials
-    Renderer rend;
-    private Material defaultMat;
-    public Material hightlightMat;
-
-
     // Experimental floats
     //public float fMinDepth;
    // public float fMaxDepth;
@@ -96,8 +90,6 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         bIsAlive = true;
         playerInventory = new Inventory(iStartInventorySize);
         pEquimentManager = GetComponent<PlayerEquipmentManager>();
-        rend = GetComponentInChildren<Renderer>();
-        defaultMat = rend.materials[0];
        // hightlightMat = rend.materials[1];
     }
     private void Start()
@@ -282,6 +274,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
                     fCurrentStamina -= fATTACK_STAMINA_COST;
                     anim.SetTrigger("attack1");
                     iAttackCombo = -1;
+                   // HelpUtils.WaitForSeconds(delegate { bIsAttacking = false; }, anim.GetCurrentAnimatorStateInfo(0).length);
                 }
 
             }
@@ -360,14 +353,13 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     {
         if (!bIsInteracting)
         {
-            bIsInteracting = true;
-            var targetRotation = Quaternion.LookRotation(_collidedNPC.transform.position - transform.position);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
-            _collidedNPC.SetDialogWithQuest();
-            _collidedNPC.LookAtTarget(transform);
-            DisablePlayerMoveActions();
-            // TODO: can make it bit more good
-            GameController.inPlayMode = false;
+            if (_collidedNPC.SetDialogWithQuest())
+            {
+                bIsInteracting = true;
+                DisablePlayerMoveActions();
+                _collidedNPC.LookAtTarget(transform);
+                GameController.inPlayMode = false;
+            }
         }
         else
             bIsInteracting = false;
@@ -460,17 +452,22 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
         {
             bIsInvulnerable = true;
             fCurrentHitPoints -= _damage;
+            if (fCurrentHitPoints <= 0)
+                Die();
+            else if(_damage > 0)
+                anim.SetTrigger("isHit");
             OnReciveDamageUI.Invoke();
-            StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsInvulnerable = b; }, false, fINVULNERABILITY_TIME));
-        }
-        if (fCurrentHitPoints <= 0)
-        {
-            Die();
+            StartCoroutine(HelpUtils.ChangeBoolAfter((bool b) => { bIsInvulnerable = b; SetIsAttacking(b); }, false, fINVULNERABILITY_TIME));
         }
     }
     public void Die()
     {
+        if(bIsAlive)
+            anim.SetTrigger("isDead");
+
         bIsAlive = false;
+        rbody.isKinematic = true;
+        //GetComponent<Collider>().isTrigger = true;
         //TODO: Add a beath animation and remove collisions
         //gameObject.SetActive(false); // deactivating it or destroying can coz some loading bugs
     }
@@ -637,6 +634,7 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     }
     public void SetIsAttacking(bool _bIsAttacking)
     {
+        anim.ResetTrigger("attack1");
         bIsAttacking = _bIsAttacking;
     }
     public Animator GetAnimator()
@@ -702,9 +700,13 @@ public class PlayerController : MonoBehaviour, IHittable, ISaveable
     public void SwitchMaterial(string sMatName)
     {
         if (sMatName == "switch")
-            rend.material = hightlightMat;
+        {
+            pEquimentManager.HighlightMaterial();
+        }
         else
-            rend.material = defaultMat;
+        {
+            pEquimentManager.SetDefaultMaterials();
+        }
     }
     // Gizmos
     private void OnDrawGizmos()

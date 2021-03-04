@@ -37,7 +37,7 @@ public class NPCScriptEditor : Editor
         EditorGUILayout.PropertyField(npcBehaviour);
         EditorGUILayout.PropertyField(npcActivity);        
 
-        if (npc.npcActivity != NPCActivities.IDLE && npc.npcActivity != NPCActivities.SLEEPING)
+        if (npc.npcActivity != NPCActivities.IDLE)
         {
             npc.fSpeed = EditorGUILayout.FloatField("Speed", npc.fSpeed);
             switch (npc.npcActivity)

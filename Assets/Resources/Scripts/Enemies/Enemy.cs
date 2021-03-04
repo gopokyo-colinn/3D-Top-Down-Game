@@ -109,7 +109,7 @@ public class Enemy : MonoBehaviour, IHittable
         {
             if (_collision.collider)
             {
-                if (_collision.collider.gameObject.CompareTag("Player"))
+                if (_collision.collider.gameObject.layer == LayerMask.NameToLayer("Player"))
                 {
                     if (_collision.collider.GetComponent<IHittable>() != null)
                     {
@@ -167,7 +167,7 @@ public class Enemy : MonoBehaviour, IHittable
             {
                 if (bCanRotate)
                 {
-                    HelpUtils.RotateTowardsTarget(transform, randomVector, fROTATE_SPEED);
+                    HelpUtils.RotateTowards(transform, randomVector, fROTATE_SPEED);
                 }
             }
         }
@@ -216,7 +216,7 @@ public class Enemy : MonoBehaviour, IHittable
         }
         else
         {
-            HelpUtils.RotateTowardsTarget(transform, _patrollingPoints[iPatrolPos].position, fROTATE_SPEED);
+            HelpUtils.RotateTowards(transform, _patrollingPoints[iPatrolPos].position, fROTATE_SPEED);
         }
     }
     public void CalculateInvulnerability(float _fStunTime)
@@ -269,7 +269,7 @@ public class Enemy : MonoBehaviour, IHittable
                     else
                     {
                         bCanAttack = false;
-                        HelpUtils.RotateTowardsTarget(transform, targetPlayer.transform.position, fROTATE_SPEED / 3f);
+                        HelpUtils.RotateTowards(transform, targetPlayer.transform.position, fROTATE_SPEED / 3f);
                     }
                 }
             }
@@ -307,7 +307,7 @@ public class Enemy : MonoBehaviour, IHittable
         if (!bIsAttacking && !bIsInvulnerable)
         {
             bIsMoving = true;
-            HelpUtils.RotateTowardsTarget(transform, _targetPosition, fROTATE_SPEED);
+            HelpUtils.RotateTowards(transform, _targetPosition, fROTATE_SPEED);
             moveVector = new Vector3(transform.forward.x, 0, transform.forward.z);
             rbody.MovePosition(transform.position + moveVector * fSpeed * Time.fixedDeltaTime);
             //rbody.velocity = moveVector * fSpeed * Time.fixedDeltaTime;
