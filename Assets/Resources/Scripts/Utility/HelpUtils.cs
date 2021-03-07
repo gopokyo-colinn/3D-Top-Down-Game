@@ -33,7 +33,6 @@ public static class HelpUtils
 
         while (dot <= 0.99f)
         {
-            Debug.Log("I rand ");
             dot = Vector3.Dot(_transform.forward, _targetDir);
             _transform.rotation = Quaternion.Slerp(_transform.rotation, targetRotation, 0.2f);
             _transform.localEulerAngles = new Vector3(0, _transform.localEulerAngles.y, 0);
@@ -48,7 +47,6 @@ public static class HelpUtils
 
         while (_fRotateTime < 1f)
         {
-            Debug.Log("loop running");
             _fRotateTime += Time.deltaTime;
             _transform.rotation = Quaternion.Slerp(_transform.rotation, _targetRotation, 0.1f);
             _transform.localEulerAngles = new Vector3(0, _transform.localEulerAngles.y, 0);

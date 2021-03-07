@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using System;
 
 public enum QuestType { MAINQUEST = 0, SIDEQUEST = 1 }
@@ -11,6 +12,7 @@ public class Quest
     const string sMainQuestAdded = "New Main Quest Added...";
     const string sSideQuestAdded = "New Side Quest Added...";
     const string sQuestCompleted = "Quest Completed...";
+    const float fMsgTime = 2f;
 
     [UniqueID]
     public string sQuestID;
@@ -18,6 +20,8 @@ public class Quest
     [TextArea(2, 4)]
     public string sQuestDescription;
     public QuestType eQuestType;
+    [Tooltip("Only check the box if the quest is not given my any npc (if its auto add quest).")]
+    public bool bSelfAssignedQuest;
     public bool bQuestInAnyOrder;
     // public QuestGoal qGoal;
    
@@ -30,17 +34,21 @@ public class Quest
     private bool bIsCompleted;
 
     public string sRewards; //TODO: Replace this with type of reward such as GOLD, EXP, ITEMS. Make it a array to choose a number of rewards.\\
-
+    [SerializeField]
+    public UnityEvent activateNextQuestUponCompletion;
     PlayerController player;
 
     public void Initialize()
     {
-        if (!GetQuestCompleted())
+        if (!IsCompleted())
         {
             player = PlayerController.Instance;
             SetQuestActive(true);
             AddQuestToManager(); // Quest Added Popup Msg is in here
-            ActivateNextGoal();
+            if (bQuestInAnyOrder)
+                ActivateAllGoals();
+            else
+                ActivateNextGoal();
         }
         else
         {
@@ -53,25 +61,18 @@ public class Quest
         if (!bIsCompleted)
             CheckGoalProgress();
     }
-
-    public void StartCondition()
-    {
-
-    }
-
-    public void QuestTrigger()
-    {
-
-    }
-
    
-    public void GiveReward()
+    public void GiveRewardAndFinish()
     {
         if (bAllGoalsCompleted)
         {
-            PopupUIManager.Instance.msgBoxPopup.ShowMessageAfterDialog(sQuestCompleted + " \n" + sRewards, 1);
+            PopupUIManager.Instance.msgBoxPopup.ShowMessageAfterDialog(sQuestCompleted + " \n" + sRewards, fMsgTime);
             Debug.Log(sRewards);
             RemoveQuest();
+            if(activateNextQuestUponCompletion != null)
+            {
+                activateNextQuestUponCompletion.Invoke();
+            }
         }
     }
 
@@ -93,10 +94,6 @@ public class Quest
                         GoToLocationGoal(qGoal);
                         break;
                 }
-                if (qGoal.GetIsFinished())
-                {
-                    PopupUIManager.Instance.msgBoxPopup.ShowMessageAfterDialog(sQuestUpdated, 1);
-                }
             }
         }
     }
@@ -104,10 +101,6 @@ public class Quest
     {
         for (int i = 0; i < qGoals.Length; i++)
         {
-            if(qGoals[i].eGoalType == QuestGoalType.RETURN_TO_QUEST_GIVER)
-            {
-                qGoals[i].SetIsFinished(true);
-            }
             if (!qGoals[i].GetIsFinished())
             {
                 bAllGoalsCompleted = false;
@@ -115,7 +108,15 @@ public class Quest
                 return bAllGoalsCompleted;
             }
         }
+
         bAllGoalsCompleted = true;
+
+        GiveRewardAndFinish();
+
+        return bAllGoalsCompleted;
+    }
+    public bool CheckQuestComplete()
+    {
         return bAllGoalsCompleted;
     }
 
@@ -146,16 +147,16 @@ public class Quest
 
     public void KillEnemiesGoal(QuestGoal _qGoal)
     {
-        if (bQuestInAnyOrder)
-        {
-            if (_qGoal.enemiesSpawner.CheckIfAllEnemiesDead())
-            {
-                _qGoal.enemiesSpawner.SetActive(false);
-                _qGoal.SetIsFinished(true);
-                //PopupUIManager.Instance.msgBoxPopup.ShowTextMessage("Quest Updated...", 1);
-            }
-        }
-        else
+        //if (bQuestInAnyOrder)
+        //{
+        //    if (_qGoal.enemiesSpawner.CheckIfAllEnemiesDead())
+        //    {
+        //        _qGoal.enemiesSpawner.SetActive(false);
+        //        _qGoal.SetIsFinished(true);
+        //        //PopupUIManager.Instance.msgBoxPopup.ShowTextMessage("Quest Updated...", 1);
+        //    }
+        //}
+        //else
         {
             if (_qGoal.GetIsActive())
             {
@@ -171,44 +172,21 @@ public class Quest
     }
     public void GoToLocationGoal(QuestGoal _qGoal)
     {
-        if (bQuestInAnyOrder)
-        {
-            if ((player.transform.position - _qGoal.tLocationToReach.position).sqrMagnitude <= 1f)
+        if (_qGoal.GetIsActive())
             {
-                _qGoal.SetIsFinished(true);
-                //PopupUIManager.Instance.msgBoxPopup.ShowTextMessage("Quest Updated...", 1);
-            }
-        }
-        else
-        {
-            if (_qGoal.GetIsActive())
-            {
-                if ((player.transform.position - _qGoal.tLocationToReach.position).sqrMagnitude <= 1f)
+                if ((player.transform.position - _qGoal.tLocationToReach.position).sqrMagnitude <= 2f)
                 {
                     _qGoal.SetIsFinished(true);
-                   // PopupUIManager.Instance.msgBoxPopup.ShowTextMessage("Quest Updated...", 1);
                     ActivateNextGoal();
                 }
             }
-        }
+      // }
     }
     public void SetGoToNPCGoal(QuestGoal _qGoal, bool _isCompleted) // This will be directly used by the NPC's
     {
-        if (bQuestInAnyOrder)
         {
             if (_isCompleted)
             {
-                if(!_qGoal.GetIsFinished()) // this is to show the popup message only once
-                    PopupUIManager.Instance.msgBoxPopup.ShowMessageAfterDialog(sQuestUpdated, 1);
-                _qGoal.SetIsFinished(_isCompleted);
-            }
-        }
-        else
-        {
-            if (_isCompleted)
-            {
-                if (!_qGoal.GetIsFinished()) // this is to show the popup message only once
-                    PopupUIManager.Instance.msgBoxPopup.ShowMessageAfterDialog(sQuestUpdated, 1);
                 _qGoal.SetIsFinished(_isCompleted);
                 ActivateNextGoal();
             }
@@ -216,14 +194,6 @@ public class Quest
     }
     public void GatherItemGoal(QuestGoal _qGoal)
     {
-        if (bQuestInAnyOrder)
-        {
-            if (player.GetInventory().HasItem(_qGoal.itemToGatherOrDeliver.item.sID))
-            {
-                _qGoal.SetIsFinished(true);
-            }
-        }
-        else
         {
             if (_qGoal.GetIsActive())
             {
@@ -235,41 +205,29 @@ public class Quest
             }
         }
     }// Not yet Done
-    public void DeliverItemGoal(QuestGoal _qGoal, bool _bIsCompleted)
+    public bool DeliverItemGoal(QuestGoal _qGoal)
     {
-        if (bQuestInAnyOrder)
         {
-            if (_bIsCompleted)
+            if (player.GetInventory().HasItem(_qGoal.itemToGatherOrDeliver.item.sID))
             {
                 if (!_qGoal.GetIsFinished()) // this is to show the popup message only once
                 {
-                    Item _itemToRemove = new Item(_qGoal.itemToGatherOrDeliver.item);
-                    _itemToRemove.eType = ItemType.QuestItem;
-                    player.GetInventory().RemoveQuestItem(_itemToRemove);
-                    PopupUIManager.Instance.msgBoxPopup.ShowMessageAfterDialog(sQuestUpdated, 1);
+                    player.GetInventory().RemoveQuestItem(_qGoal.itemToGatherOrDeliver.item);
                 }
-                _qGoal.SetIsFinished(_bIsCompleted);
-            }
-        }
-        else
-        {
-            if (_bIsCompleted)
-            {
-                if (!_qGoal.GetIsFinished()) // this is to show the popup message only once
-                {
-                    Item _itemToRemove = new Item(_qGoal.itemToGatherOrDeliver.item);
-                    _itemToRemove.eType = ItemType.QuestItem;
-                    player.GetInventory().RemoveQuestItem(_itemToRemove);
-                    PopupUIManager.Instance.msgBoxPopup.ShowMessageAfterDialog(sQuestUpdated, 1);
-                }
-                _qGoal.SetIsFinished(_bIsCompleted);
+                _qGoal.SetIsFinished(true);
                 ActivateNextGoal();
+                return true;
             }
+            return false;
         }
     } // Not Yet Done
-    public bool AllGoalsCompleted()
+    public void ReturnToQuestGiverGoal(QuestGoal _qGoal, bool _bIsCompleted)
     {
-        return bAllGoalsCompleted;
+        if (_bIsCompleted)
+        {
+            _qGoal.SetIsFinished(_bIsCompleted);
+            ActivateNextGoal();
+        }
     }
     public void AddQuestToManager()
     {
@@ -277,7 +235,7 @@ public class Quest
         {
             if (!QuestManager.Instance.dictMainQuests.ContainsKey(sQuestID))
             {
-                PopupUIManager.Instance.msgBoxPopup.ShowMessageAfterDialog(sMainQuestAdded, 1);
+                PopupUIManager.Instance.msgBoxPopup.ShowMessageAfterDialog(sMainQuestAdded, fMsgTime);
                 QuestManager.Instance.dictMainQuests.Add(sQuestID, this);
             }
         }
@@ -285,8 +243,19 @@ public class Quest
         {
             if (!QuestManager.Instance.dictSideQuests.ContainsKey(sQuestID))
             {
-                PopupUIManager.Instance.msgBoxPopup.ShowMessageAfterDialog(sSideQuestAdded, 1);
+                PopupUIManager.Instance.msgBoxPopup.ShowMessageAfterDialog(sSideQuestAdded, fMsgTime);
                 QuestManager.Instance.dictSideQuests.Add(sQuestID, this);
+            }
+        }
+    }
+    public void ActivateAllGoals()
+    {
+        for (int i = 0; i < qGoals.Length; i++)
+        {
+            if (!qGoals[i].GetIsActive())
+            {
+                qGoals[i].SetIsActive(true);
+                qGoals[i].InitializeGoal(sQuestID);
             }
         }
     }
@@ -295,11 +264,9 @@ public class Quest
     {
         if (bQuestInAnyOrder)
         {
-            for (int i = 0; i < qGoals.Length; i++)
-            {
-                qGoals[i].SetIsActive(true);
-                qGoals[i].InitializeGoal(sQuestID);
-            }
+            CheckQuestProgress();
+            if(!IsCompleted()) // meaning if an goal is completed then show updated text
+                    PopupUIManager.Instance.msgBoxPopup.ShowMessageAfterDialog(sQuestUpdated, fMsgTime);
         }
         else
         {
@@ -307,6 +274,8 @@ public class Quest
             {
                 if (!qGoals[i].GetIsActive())
                 {
+                    if(i != 0)
+                        PopupUIManager.Instance.msgBoxPopup.ShowMessageAfterDialog(sQuestUpdated, fMsgTime); // To not show update text when new quest is just added
                     qGoals[i].SetIsActive(true);
                     qGoals[i].InitializeGoal(sQuestID);
                     break;
@@ -315,6 +284,9 @@ public class Quest
                 {
                     if (qGoals[i].GetIsFinished())
                     {
+                        //  if(bSelfAssignedQuest)
+                        if (CheckQuestProgress())
+                            break;
                         continue;
                     }
                     else
@@ -325,11 +297,11 @@ public class Quest
             }
         }
     }
-    public bool GetQuestCompleted()
+    public bool IsCompleted()
     {
         return bIsCompleted;
     }
-    public bool GetQuestActive()
+    public bool IsActive()
     {
         return bIsActive;
     }

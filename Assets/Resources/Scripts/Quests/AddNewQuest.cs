@@ -45,7 +45,7 @@ public class AddNewQuest : MonoBehaviour
     }
     public string[] QuestFinishedDialog()
     {
-        quest.GiveReward();
+       // quest.GiveRewardAndFinish();
        // quest.qGoals = null;
         return sQuestEndDialogLines;
     }

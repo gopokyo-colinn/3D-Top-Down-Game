@@ -20,6 +20,8 @@ public class ItemContainer : MonoBehaviour
         uiCanvas.gameObject.SetActive(false);
         player = PlayerController.Instance;
         gameObject.layer = LayerMask.NameToLayer("Item");
+        if (item.eType == ItemType.QuestItem)
+            bIsQuestItem = true;
 
         if (bIsQuestItem)
         {
@@ -28,7 +30,8 @@ public class ItemContainer : MonoBehaviour
     }
     public void Update()
     {
-        UIActivator();
+        if(uiCanvas != null)
+            UIActivator();
     }
     public void SetItem(Item _item)
     {
@@ -96,7 +99,8 @@ public class ItemContainer : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("Weapon");
 
         Destroy(GetComponent<Rigidbody>());
-        Destroy(uiCanvas.gameObject);
+        if(uiCanvas)
+            Destroy(uiCanvas.gameObject);
         Destroy(this);
     }
     private void OnDrawGizmos()

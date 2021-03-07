@@ -7,7 +7,7 @@ public class WorldSpaceUI : MonoBehaviour
     public TextMeshProUGUI txtUiLabel;
     ItemContainer itemContainer;
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
         itemContainer = GetComponentInParent<ItemContainer>();
         txtUiLabel.text = itemContainer.item.sItemName;

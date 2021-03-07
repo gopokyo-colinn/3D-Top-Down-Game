@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public enum QuestGoalType { KILL = 0, GATHER = 1, DELIVER = 2, GO_TO_LOCATION = 3, GO_TO_NPC = 4, RETURN_TO_QUEST_GIVER}
+public enum QuestGoalType { KILL = 0, GATHER = 1, DELIVER = 2, GO_TO_LOCATION = 3, GO_TO_NPC = 4}
 
 [Serializable]
 public class QuestGoal 
@@ -13,7 +13,7 @@ public class QuestGoal
     public Transform tLocationToReach;
     [Tooltip("Set Spawn Location for these Enemies in KillQuestManager")]
     public EnemySpawner enemiesSpawner;
-    public NPCAssignedQuestGoal taskNPC;
+    public NPCAssignedQuestDialog taskNPC;
     public ItemContainer itemToGatherOrDeliver;
 
 
@@ -43,10 +43,10 @@ public class QuestGoal
                 case QuestGoalType.DELIVER:
                     taskNPC.SetQuestID(_sID); // this task npc is to whom you are delivering the item
                     taskNPC.SetIsFinished(bIsFinished);
-                    Item _itemToAdd = new Item(itemToGatherOrDeliver.item);
-                    _itemToAdd.eType = ItemType.QuestItem;
-                    if(!PlayerController.Instance.GetInventory().HasQuestItem(_itemToAdd))
-                        PlayerController.Instance.GetInventory().AddItem(_itemToAdd);
+                    //Item _itemToDeliver = new Item(itemToGatherOrDeliver.item); // the item that you are delivering
+                   // _itemToAdd.eType = ItemType.QuestItem;
+                    //if(!PlayerController.Instance.GetInventory().HasQuestItem(_itemToDeliver))
+                    //    PlayerController.Instance.GetInventory().AddItem(_itemToDeliver);
                     break;
             }
         }

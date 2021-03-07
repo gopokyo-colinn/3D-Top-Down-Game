@@ -40,7 +40,7 @@ public class NPCEntity : MonoBehaviour
     // Quest Variables
     private Quest myActiveQuest;
     private AddNewQuest[] myQuestsLst;
-    private NPCAssignedQuestGoal[] assignedQuestGoals;
+    private NPCAssignedQuestDialog[] assignedQuestGoals;
     // Walk Area Variables
     public float fMaxWalkingDistance = 60;
     private Vector3 startPosition;
@@ -52,7 +52,7 @@ public class NPCEntity : MonoBehaviour
         anim = GetComponent<Animator>();
         rbody = GetComponent<Rigidbody>();
 
-        assignedQuestGoals = GetComponentsInChildren<NPCAssignedQuestGoal>();
+        assignedQuestGoals = GetComponentsInChildren<NPCAssignedQuestDialog>();
         if(assignedQuestGoals.Length <= 0)
             assignedQuestGoals = null;
 
@@ -111,7 +111,7 @@ public class NPCEntity : MonoBehaviour
     {
        // if (npcBehaviour == NPCBehaviour.QUEST_GIVER)
         {
-            myQuestsLst = GetComponents<AddNewQuest>().ToArray();
+            myQuestsLst = GetComponentsInChildren<AddNewQuest>().ToArray();
         }
     }
     public void ActivateQuest()
@@ -122,7 +122,7 @@ public class NPCEntity : MonoBehaviour
     /// Activities
     public void IdleActivity()
     {
-        rbody.velocity = HelpUtils.VectorZeroWithY(rbody);
+       // rbody.velocity = HelpUtils.VectorZeroWithY(rbody);
     }
     public void MovingRandomly()
     {
@@ -235,10 +235,10 @@ public class NPCEntity : MonoBehaviour
                     SetQuestDialogToUse();
                 }
             }
-            else if (myActiveQuest.GetQuestActive()) // if this npc has an active quest then it prioritize its quest than other assigned goals
-            {
-                SetQuestDialogToUse();
-            }
+            //else if (myActiveQuest.IsActive()) // if this npc has an active quest then it prioritize its quest than other assigned goals
+            //{
+            //    SetQuestDialogToUse();
+            //}
             else
             {
                 if (!CheckNpcAssignedTalkingGoals()) // if quest not active then it prioritize any active assigned goals
@@ -252,11 +252,11 @@ public class NPCEntity : MonoBehaviour
         }
         else
         {
-            if (sRandomDialogs.Length > 0)
+            if (!CheckNpcAssignedTalkingGoals())
             {
-                if (sRandomDialogs[0].sDialogLines.Length > 0)
+                if (sRandomDialogs.Length > 0)
                 {
-                    if (!CheckNpcAssignedTalkingGoals())
+                    if (sRandomDialogs[0].sDialogLines.Length > 0)
                     {
                         sDialogsToUse = SelectRandomDialog();
                         PopupUIManager.Instance.dialogBoxPopup.SetQuestNPC(this);
@@ -265,6 +265,13 @@ public class NPCEntity : MonoBehaviour
                     }
                 }
             }
+            else
+            {
+                PopupUIManager.Instance.dialogBoxPopup.SetQuestNPC(this);
+                PopupUIManager.Instance.dialogBoxPopup.setDialogText(sDialogsToUse);
+                return true;
+            }
+            
         }
         bIsInteracting = false;
         bDialogCheck = false;
@@ -281,14 +288,14 @@ public class NPCEntity : MonoBehaviour
             }
             else
             {
-                if (myActiveQuest.GetQuestCompleted()) // if this is completed, continue to nextone
+                if (myActiveQuest.IsCompleted()) // if this is completed, continue to next one
                 {
                     sDialogsToUse = SelectRandomDialog();
                     continue;
                 }
                 else
                 {
-                    if (!myActiveQuest.GetQuestActive()) // means quest is not active or started, or not there in quest manager
+                    if (!myActiveQuest.IsActive()) // means quest is not active or started, or not there in quest manager
                     {
                         if (myActiveQuest.eQuestType == QuestType.MAINQUEST) // Initialize quest directly only if it is a main quest, else ask for response.
                         {
@@ -299,7 +306,7 @@ public class NPCEntity : MonoBehaviour
                     }
                     else
                     {
-                        if (myActiveQuest.CheckQuestProgress()) // quest is active and checking its progress to check 
+                        if (myActiveQuest.IsCompleted()) // quest is active and checking its progress if it is finished
                         {
                             sDialogsToUse = myQuestsLst[i].QuestFinishedDialog().ToArray();
                             break;
@@ -370,7 +377,11 @@ public class NPCEntity : MonoBehaviour
             {
                 if (assignedQuestGoals[i].IsFinished()) // it checks if this goal is done already, then check for the latest one
                 {
-                    sDialogsToUse = assignedQuestGoals[i].sQuestDialog.ToArray();
+                    /// Its to make npc start speaking its normal dialog after the assigned quest dialog.
+                    continue;
+
+                  /// Its to make the npc repeat the quest assigned dialog until quest is finished
+                  /*  sDialogsToUse = assignedQuestGoals[i].sQuestDialog.ToArray();
 
                     if(i == assignedQuestGoals.Length - 1) // if its the last assigned goal then, it should check if the mission exist and return on based of that 
                     {
@@ -380,7 +391,7 @@ public class NPCEntity : MonoBehaviour
                         }
                         return false;
                     }
-                    continue;
+                    continue; */
                 }
                 if (assignedQuestGoals[i].QuestGoalCheck()) //this is to check if the assigned goal is not finished yet
                 {

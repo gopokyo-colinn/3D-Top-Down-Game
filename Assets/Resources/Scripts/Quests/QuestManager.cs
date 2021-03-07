@@ -93,8 +93,8 @@ public class QuestManager: MonoBehaviour, ISaveable
 		{
 			structQuest _structQuest = new structQuest();
 			_structQuest.sQuestID = _quest.Value.sQuestID;
-			_structQuest.bIsActive = _quest.Value.GetQuestActive();
-			_structQuest.bIsCompleted = _quest.Value.GetQuestCompleted();
+			_structQuest.bIsActive = _quest.Value.IsActive();
+			_structQuest.bIsCompleted = _quest.Value.IsCompleted();
 			_structQuest.qGoalsLst = GetGoals(_quest.Value);
 			_questsLst.Add(_structQuest);
 		}
@@ -178,7 +178,7 @@ public class QuestManager: MonoBehaviour, ISaveable
         {
 			if (_quest.Value.sQuestID == _questToFind.sQuestID)
 			{
-				if(!_quest.Value.GetQuestActive())
+				if(!_quest.Value.IsActive())
 					return _quest.Value;
 			}
 		}
